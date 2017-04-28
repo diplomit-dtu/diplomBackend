@@ -34,6 +34,11 @@
       <artifactId>javax.servlet-api</artifactId>
       <version>4.0.0-b01</version>
     </dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>5.1.40</version>
+    </dependency>
 
 
   </dependencies>
