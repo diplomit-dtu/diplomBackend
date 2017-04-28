@@ -5,4 +5,5 @@ package config;
  */
 public class Config {
     public static final String CAMPUSNET_LOGIN_URL = "https://auth.dtu.dk/dtu/login";
+    public static final String CAMPUSNET_VALIDATE_URL = "https://auth.dtu.dk/dtu/validate";
 }
