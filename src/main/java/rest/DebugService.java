@@ -1,3 +1,7 @@
+package rest;
+
+import deployment.DeployConfig;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
@@ -10,7 +14,7 @@ public class DebugService {
     @Path("env")
     @GET
     public String getEnv(){
-        return System.getenv().toString();
+        return DeployConfig.CN_REDIRECT_URL;
 
     }
 }
