@@ -8,6 +8,6 @@ import javax.ws.rs.Path;
 public class HelloService {
     @GET
     public String getHello(){
-        return "HELLO, REST";
+        return "HELLO From Jersey!";
     }
 }

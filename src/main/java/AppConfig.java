@@ -1,4 +1,5 @@
 import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.GET;
 import javax.ws.rs.core.Application;
 
 /** Initial Configuration
@@ -6,4 +7,5 @@ import javax.ws.rs.core.Application;
  */
 @ApplicationPath("/rest")
 public class AppConfig extends Application{
+
 }
