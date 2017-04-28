@@ -13,6 +13,6 @@ public class CampusNetService {
 
     @GET
     public Response getRedirect(@QueryParam("ticket") String ticket){
-        return Response.ok().entity(ticket).build();
+        return Response.ok().entity("ticket:" + ticket).build();
     }
 }
