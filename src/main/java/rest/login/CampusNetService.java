@@ -1,4 +1,4 @@
-package rest;
+package rest.login;
 
 import config.Config;
 import deployment.DeployConfig;
@@ -7,7 +7,9 @@ import okhttp3.Request;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URI;
@@ -25,7 +27,8 @@ public class CampusNetService {
     }
 
     @GET
-    public Response getRedirect(@QueryParam("ticket") String ticket){
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getToken(@QueryParam("ticket") String ticket){
         OkHttpClient client = new OkHttpClient();
         String url = Config.CAMPUSNET_VALIDATE_URL + "?service=" + DeployConfig.CN_REDIRECT_URL + "&ticket=" + ticket;
         Request request = new Request.Builder().url(url).build();
@@ -33,6 +36,15 @@ public class CampusNetService {
         try {
             okhttp3.Response response = client.newCall(request).execute();
             validationReply = response.body().string();
+            String[] validationArray = validationReply.split(" ");
+            if (validationArray!=null && validationArray.length==2 && validationArray[0].toLowerCase().equals("yes")) {
+
+                String jwtToken;
+                return Response.ok().header("Authorization", "Bearer " + jwtToken);
+            } else {
+
+            }
+            return Response.ok().header("Authorization", "Bearer");
         } catch (IOException e) {
             e.printStackTrace();
         }

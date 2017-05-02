@@ -8,4 +8,6 @@ public class DeployConfig {
     private static final String DEFAULT_CN_REDIRECT_URL = "http://localhost:8080/rest/cn";
     public static final String CN_REDIRECT_URL = (System.getenv(CAMPUSNET_REDIRECT_URL) != null) ?
             System.getenv(CAMPUSNET_REDIRECT_URL): DEFAULT_CN_REDIRECT_URL;
+
+    public static final String JWT_TOKEN_SECRET = System.getenv("JWT_TOKEN_SECRET");
 }
