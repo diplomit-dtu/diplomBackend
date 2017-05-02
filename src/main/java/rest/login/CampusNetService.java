@@ -40,14 +40,14 @@ public class CampusNetService {
             String jwtToken="";
             if (validationArray != null && validationArray.length == 2 && validationArray[0].toLowerCase().equals("yes")) {
 
-                return Response.ok().header("Authorization", "Bearer " + jwtToken).build();
+                return Response.ok().entity("Login Success, id: " + validationArray[1]).header("Authorization", "Bearer " + jwtToken).build();
             } else {
-
+                return Response.status(401).entity("Login failed").build();
             }
-            return Response.ok().header("Authorization", "Bearer " + jwtToken).build();
         } catch (IOException e) {
             e.printStackTrace();
+            return Response.serverError().entity("Could not connect to campusnet-auth").build();
         }
-        return Response.ok().entity("ticket:" + ticket + ", validation: " + validationReply).build();
+
     }
 }
