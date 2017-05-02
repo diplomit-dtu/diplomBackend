@@ -1,4 +1,4 @@
-package test;
+
 
 import org.junit.Test;
 
@@ -11,7 +11,6 @@ public class UnitTest {
 
     @Test
     public void test(){
-        assertTrue(true);
-        fail();
+        assertTrue("Test System working",true);
     }
 }
