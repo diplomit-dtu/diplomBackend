@@ -37,14 +37,14 @@ public class CampusNetService {
             okhttp3.Response response = client.newCall(request).execute();
             validationReply = response.body().string();
             String[] validationArray = validationReply.split(" ");
-            if (validationArray!=null && validationArray.length==2 && validationArray[0].toLowerCase().equals("yes")) {
+            String jwtToken="";
+            if (validationArray != null && validationArray.length == 2 && validationArray[0].toLowerCase().equals("yes")) {
 
-                String jwtToken;
-                return Response.ok().header("Authorization", "Bearer " + jwtToken);
+                return Response.ok().header("Authorization", "Bearer " + jwtToken).build();
             } else {
 
             }
-            return Response.ok().header("Authorization", "Bearer");
+            return Response.ok().header("Authorization", "Bearer " + jwtToken).build();
         } catch (IOException e) {
             e.printStackTrace();
         }
