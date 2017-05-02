@@ -17,25 +17,29 @@ import java.net.URI;
 /** Service for Campusnet redirects
  * Created by Christian on 28-04-2017.
  */
-@Path("cn")
+@Path(Config.CN_SERVICE_PATH)
 public class CampusNetService {
-    @Path("login")
+
+
+
+    //Redirecting to campusNet Authentication
+    @Path(Config.CN_SERVICE_LOGIN)
     @GET
     public Response getLogin(){
         URI uri = URI.create(Config.CAMPUSNET_LOGIN_URL + "?service=" + DeployConfig.CN_REDIRECT_URL);
         return Response.temporaryRedirect(uri).build();
     }
 
+    //Redirect
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getToken(@QueryParam("ticket") String ticket){
         OkHttpClient client = new OkHttpClient();
         String url = Config.CAMPUSNET_VALIDATE_URL + "?service=" + DeployConfig.CN_REDIRECT_URL + "&ticket=" + ticket;
         Request request = new Request.Builder().url(url).build();
-        String validationReply = "";
         try {
             okhttp3.Response response = client.newCall(request).execute();
-            validationReply = response.body().string();
+            String validationReply = response.body().string();
             String[] validationArray = validationReply.split(" ");
             String jwtToken="";
             if (validationArray != null && validationArray.length == 2 && validationArray[0].toLowerCase().equals("yes")) {
