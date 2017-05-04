@@ -4,4 +4,23 @@
 
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
+  <filter>
+    <filter-name>SecurityFilter</filter-name>
+    <filter-class>data.JWTFilter</filter-class>
+  </filter>
+  <filter>
+    <filter-name>corsFilter</filter-name>
+    <filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
+  </filter>
+<!--Allows Cross origin requests -remove if api should not be public-->
+  <filter-mapping>
+    <filter-name>SecurityFilter</filter-name>
+    <url-pattern>/rest/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>corsFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+
 </web-app>

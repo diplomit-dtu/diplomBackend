@@ -40,13 +40,14 @@ public class CampusNetService {
         try {
             okhttp3.Response response = client.newCall(request).execute();
             String validationReply = response.body().string();
-            String[] validationArray = validationReply.split(" ");
+            String[] validationArray = validationReply.split("\n");
+
             String jwtToken="";
-            if (validationArray != null && validationArray.length == 2 && validationArray[0].toLowerCase().equals("yes")) {
+            if (validationArray != null && validationArray.length == 2 && validationArray[0].toLowerCase().trim().equals("yes")) {
 
                 return Response.ok().entity("Login Success, id: " + validationArray[1]).header("Authorization", "Bearer " + jwtToken).build();
             } else {
-                return Response.status(401).entity("Login failed").build();
+                return Response.status(401).entity("Login failed,  reply was: \n" + validationReply).build();
             }
         } catch (IOException e) {
             e.printStackTrace();
