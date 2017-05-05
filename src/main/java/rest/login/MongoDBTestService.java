@@ -3,16 +3,20 @@ package rest.login;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.POJONode;
+import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import data.LinkDTO;
 import deployment.DeployConfig;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import javax.ws.rs.*;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -25,6 +29,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Consumes(APPLICATION_JSON)
 public class MongoDBTestService {
     protected static final String TEST_COLLECTION = "Test";
+    protected static final String LINK_COLLECTION = "Links";
     MongoClientURI uri = new MongoClientURI(DeployConfig.MONGODB_URI);
     MongoClient client = new MongoClient(uri);
 
@@ -32,29 +37,25 @@ public class MongoDBTestService {
     public String getTest(){
 
         MongoDatabase db = client.getDatabase(uri.getDatabase());
-        MongoCollection<Document> test= db.getCollection(TEST_COLLECTION);
-        Document first = test.find(new Document("test","test")).first();
-        return first.toJson();
+        MongoCollection<Document> testCollection= db.getCollection(TEST_COLLECTION);
+        MongoCursor<Document> cursor = testCollection.find().iterator();
+        while (cursor.hasNext()){
+            System.out.println(cursor.next().toString());
+        }
+        Document  first = testCollection.find(new Document("test","test")).first();
+        return first.get("links").toString();
 
     }
 
     @POST
-    public JsonNode postTest(JsonNode json){
-        System.out.println(json.toString());
+    @Path("links")
+    public String postTest(LinkDTO link){
         MongoDatabase db = client.getDatabase(uri.getDatabase());
-        MongoCollection<Document> test = db.getCollection(TEST_COLLECTION);
-        if (test.find(new Document("test","test")).first()==null){
-            test.insertOne(new Document("test","test"));
-        }
-        Document first = test.find(new Document("test", "test")).first();
-        System.out.println(first);
-
+        MongoCollection<Document> links = db.getCollection(LINK_COLLECTION);
         ObjectMapper mapper = new ObjectMapper();
-        Map<String,Object> map = mapper.convertValue(json,Map.class);
-        Document newDoc = new Document(map);
-        test.updateOne(new Document("test","test"),new Document("$set", new Document(map)));
-        System.out.println(newDoc);
-        return json;
+        Map map = mapper.convertValue(link, Map.class);
+        links.insertOne(new Document(map));
+        return map.toString();
     }
 
     @DELETE
@@ -62,7 +63,7 @@ public class MongoDBTestService {
         MongoDBTestService service = new MongoDBTestService();
         System.out.println(service.getTest());
         JsonNode node = new POJONode(new String("test"));
-        System.out.println(service.postTest(node));
+        System.out.println(service.postTest(null));
     }
 }
 
