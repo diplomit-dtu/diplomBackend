@@ -77,7 +77,7 @@ public class AbstractCRUDMongoDAO {
 
     public static void main(String[] args) {
         AbstractCRUDMongoDAO baseDao = new AbstractCRUDMongoDAO();
-        LinkDTO linkDTO = new LinkDTO();
+        LinkDTO linkDTO = new LinkDTO("test","test");
         linkDTO.setHref("test");
         LinkDTO savedDTO = baseDao.simpleSave(linkDTO);
 

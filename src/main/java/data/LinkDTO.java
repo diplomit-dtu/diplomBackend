@@ -2,7 +2,7 @@ package data;
 
 import java.util.List;
 
-/**
+/** Basic LinkDTO
  * Created by Christian on 04-05-2017.
  */
 public class LinkDTO extends BaseDTO{
@@ -10,6 +10,14 @@ public class LinkDTO extends BaseDTO{
     private String href;
     private List<String> addData;
 
+    public LinkDTO(String text, String href) {
+        this.text = text;
+        this.href = href;
+    }
+
+    public LinkDTO(){
+
+    }
     @Override
     public String toString() {
         return "LinkDTO{" +
