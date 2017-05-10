@@ -3,20 +3,17 @@ package rest.login;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.POJONode;
-import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-import data.LinkDTO;
-import deployment.DeployConfig;
+import data.dbDTO.LinkDTO;
+import config.DeployConfig;
 import org.bson.Document;
-import org.bson.types.ObjectId;
 
 import javax.ws.rs.*;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;

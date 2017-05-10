@@ -1,7 +1,7 @@
 package rest.login;
 
 import config.Config;
-import deployment.DeployConfig;
+import config.DeployConfig;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 

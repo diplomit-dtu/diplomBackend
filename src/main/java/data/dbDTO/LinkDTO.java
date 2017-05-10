@@ -1,31 +1,21 @@
-package data;
+package data.dbDTO;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 /** Basic LinkDTO
  * Created by Christian on 04-05-2017.
  */
-public class LinkDTO extends BaseDTO{
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class LinkDTO {
     private String text;
     private String href;
     private List<String> addData;
-
-    public LinkDTO(String text, String href) {
-        this.text = text;
-        this.href = href;
-    }
-
-    public LinkDTO(){
-
-    }
-    @Override
-    public String toString() {
-        return "LinkDTO{" +
-                "text='" + text + '\'' +
-                ", href='" + href + '\'' +
-                ", addData=" + addData +
-                '}' + super.toString();
-    }
 
     public String getHref() {
         return href;

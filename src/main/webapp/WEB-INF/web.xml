@@ -6,7 +6,7 @@
   <display-name>Archetype Created Web Application</display-name>
   <filter>
     <filter-name>SecurityFilter</filter-name>
-    <filter-class>data.JWTFilter</filter-class>
+    <filter-class>rest.JWTFilter</filter-class>
   </filter>
   <filter>
     <filter-name>corsFilter</filter-name>

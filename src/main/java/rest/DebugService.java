@@ -1,6 +1,6 @@
 package rest;
 
-import deployment.DeployConfig;
+import config.DeployConfig;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
