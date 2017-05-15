@@ -12,4 +12,6 @@ public class Config {
     public static final String CN_SERVICE_PATH = "cn";
     public static final String CN_SERVICE_LOGIN = "login";
 
+    //Package for Morphia DTO's
+    public static final String DATA_DB_DTO = "data.dbDTO";
 }

@@ -8,19 +8,19 @@ import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-import data.dbDTO.LinkDTO;
 import config.DeployConfig;
+import data.dbDTO.Link;
 import org.bson.Document;
 
 import javax.ws.rs.*;
-
 import java.util.Map;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
-/**
+/** Initial service for testing purposes
  * Created by Christian on 04-05-2017.
  */
+@Deprecated
 @Path("mongodb")
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
@@ -46,7 +46,7 @@ public class MongoDBTestService {
 
     @POST
     @Path("links")
-    public String postTest(LinkDTO link){
+    public String postTest(Link link){
         MongoDatabase db = client.getDatabase(uri.getDatabase());
         MongoCollection<Document> links = db.getCollection(LINK_COLLECTION);
         ObjectMapper mapper = new ObjectMapper();

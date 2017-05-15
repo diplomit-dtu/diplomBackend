@@ -1,6 +1,6 @@
 package rest;
 
-import data.dbDTO.LinkDTO;
+import data.dbDTO.Link;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -19,16 +19,16 @@ public class LinkService {
 
     @GET
     @Path("default")
-    public List<LinkDTO> getDefaultLinks(){
-        ArrayList<LinkDTO> links = new ArrayList<>();
-        links.add(new LinkDTO("campusnet-test1", "http://cn.dtu.dk",null));
+    public List<Link> getDefaultLinks(){
+        ArrayList<Link> links = new ArrayList<>();
+        links.add(new Link("campusnet-test1", "http://cn.dtu.dk"));
         return links;
     }
 
     @GET
-    public List<LinkDTO> getLinks(@QueryParam("user") String userId, @QueryParam("course") String courseId){
-        ArrayList<LinkDTO> links = new ArrayList<>();
-        links.add(new LinkDTO("campusnet-Test2", "http://cn.dtu.dk",null));
+    public List<Link> getLinks(@QueryParam("user") String userId, @QueryParam("course") String courseId){
+        ArrayList<Link> links = new ArrayList<>();
+        links.add(new Link("campusnet-Test2", "http://cn.dtu.dk"));
         return links;
     }
 
