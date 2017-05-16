@@ -31,10 +31,10 @@ public class JWTFilter implements Filter {
             String params = httpRequest.getQueryString();
             String authHeader = httpRequest.getHeader("Authorization");
             System.out.println("Caught in filter - Url: " + url + " Query: " + params + "Headers: " + authHeader);
-            httpResponse.addHeader("Access-Control-Allow-Origin", "*");
-            httpResponse.addHeader("Access-Control-Allow-Origin", "*");
-            httpResponse.addHeader("Access-Control-Allow-Credentials:", "true");
-            httpResponse.addHeader("Access-Control-Expose-Headers","Authorization");
+            httpResponse.setHeader("Access-Control-Allow-Origin", "*");
+            httpResponse.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS, PATCH");
+            httpResponse.setHeader("Access-Control-Allow-Credentials:", "true");
+            httpResponse.setHeader("Access-Control-Expose-Headers","Authorization");
             chain.doFilter(request,response);
         }
     }
