@@ -18,8 +18,10 @@ public class Permission {
     String permissionPath;
     @NonNull
     RestMethod method;
+    @NonNull
+    Boolean accessControl;
 
     public enum RestMethod {
-        GET, PUT,POST,DELETE,PATCH
+        GET, PUT,POST,DELETE,PATCH, ALL, OWN
     }
 }
