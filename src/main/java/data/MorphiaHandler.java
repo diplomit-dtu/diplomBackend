@@ -35,6 +35,8 @@ public class MorphiaHandler {
         morphia.mapPackage(Config.DATA_DB_DTO);
         datastore = morphia.createDatastore(client,"heroku_x9sh8t01");
         datastore.ensureIndexes();
+        //For nice cleanup of MongoDB connection - make sure that morphiaHandler get garbage collected.
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> morphiaHandler=null));
     }
 
     public static MorphiaHandler getInstance() {

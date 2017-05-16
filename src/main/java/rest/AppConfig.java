@@ -11,4 +11,5 @@ import javax.ws.rs.core.Application;
 @ApplicationPath(Config.BASE_API_PATH)
 public class AppConfig extends Application{
 
+
 }

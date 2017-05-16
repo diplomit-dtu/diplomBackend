@@ -9,8 +9,14 @@ import org.mongodb.morphia.annotations.Id;
  * Created by Christian on 15-05-2017.
  */
 @Data
-@Entity
 public class BaseDTO {
     @Id
     ObjectId objectId;
+
+    public String getId(){
+        return this.objectId==null?null:objectId.toHexString();
+    }
+    public void setId(String id){
+        if(id!=null) this.objectId=new ObjectId(id);
+    }
 }

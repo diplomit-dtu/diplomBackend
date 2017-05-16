@@ -1,14 +1,11 @@
 package data.mongoImpl;
 
 import data.MorphiaHandler;
-import data.dbDTO.Link;
-import data.dbDTO.User;
 import data.interfaces.BaseDAO;
-import data.interfaces.LinkDAO;
 import data.interfaces.PersistenceException;
 import org.bson.types.ObjectId;
+import rest.ValidException;
 
-import javax.xml.transform.sax.SAXSource;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,8 +44,13 @@ public class MongoBaseDAO<T> implements BaseDAO<T> {
     }
 
     @Override
-    public T get(ObjectId oid) throws PersistenceException {
-        return MorphiaHandler.getInstance().getById(oid, type);
+    public T get(String oid) throws PersistenceException, ValidException {
+        try {
+            ObjectId objectId = new ObjectId(oid);
+            return MorphiaHandler.getInstance().getById(objectId, type);
+        } catch (IllegalArgumentException e){
+            throw new ValidException("ObjectID not Valid: " + oid);
+        }
     }
 
     @Override
@@ -57,7 +59,13 @@ public class MongoBaseDAO<T> implements BaseDAO<T> {
     }
 
     @Override
-    public Boolean delete(ObjectId oid) throws PersistenceException {
-        return MorphiaHandler.getInstance().deleteById(oid,type);
+    public Boolean delete(String oid) throws PersistenceException, ValidException {
+        try {
+            ObjectId objectId = new ObjectId(oid);
+            return MorphiaHandler.getInstance().deleteById(objectId,type);
+        } catch (IllegalArgumentException e){
+            throw new ValidException("ObjectID not Valid: " + oid);
+        }
+
     }
 }
