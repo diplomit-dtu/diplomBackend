@@ -10,6 +10,6 @@ import javax.ws.rs.Path;
 public class RootService {
     @GET
     public String getRoot(){
-        return "API Description coming up";
+        return "API Description coming up <br>see <a href=\"rest/application.wadl\">application.wadl</a>";
     }
 }
