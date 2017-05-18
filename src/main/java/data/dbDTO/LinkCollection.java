@@ -1,9 +1,6 @@
 package data.dbDTO;
 
-import lombok.Data;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Singular;
+import lombok.*;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
@@ -17,12 +14,8 @@ import java.util.List;
  */
 @Entity
 @Data
-@RequiredArgsConstructor
-public class LinkCollection {
-
-    @Id
-    private ObjectId id;
-    @NonNull
+@NoArgsConstructor
+public class LinkCollection extends BaseDTO {
     private String course;
     @Reference
     private List<Link> links = new ArrayList<>();

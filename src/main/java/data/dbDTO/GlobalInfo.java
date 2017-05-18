@@ -12,12 +12,9 @@ import java.util.List;
  */
 @Entity
 @Data
-public class GlobalInfo {
-    @Id
-    ObjectId objectId;
-
-    List<Course> courses;
-    ObjectId generalLinkCollection;
+public class GlobalInfo extends BaseDTO{
+    String defaultLinkCollectionId;
+    List<String> courseIds;
 
 
 }

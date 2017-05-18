@@ -1,11 +1,11 @@
 package rest;
 
+import business.impl.LinkControllerImpl;
+import business.interfaces.LinkController;
 import data.dbDTO.Link;
+import data.interfaces.PersistenceException;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +16,22 @@ import java.util.List;
 @Path("links")
 @Produces(MediaType.APPLICATION_JSON)
 public class LinkService {
+    private LinkController linkController = new LinkControllerImpl();
 
     @GET
     @Path("default")
-    public List<Link> getDefaultLinks(){
-        ArrayList<Link> links = new ArrayList<>();
-        links.add(new Link("campusnet-test1", "http://cn.dtu.dk"));
+    public List<Link> getDefaultLinks() throws PersistenceException, ValidException {
+        List<Link> links = linkController.getDefaultLinks();
+        if(links.size()==0) {
+            links.add(new Link("campusnet", "http://cn.dtu.dk"));
+        }
         return links;
+    }
+    @POST
+    @Path("default")
+    public Link postDefaultLink(Link link) throws ValidException, PersistenceException {
+
+        return linkController.saveDefaultLink(link);
     }
 
     @GET
@@ -30,6 +39,11 @@ public class LinkService {
         ArrayList<Link> links = new ArrayList<>();
         links.add(new Link("campusnet-Test2", "http://cn.dtu.dk"));
         return links;
+    }
+
+    @POST
+    public Link postLink(Link link){
+        return null;
     }
 
 

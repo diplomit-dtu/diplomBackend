@@ -19,7 +19,8 @@ public class LinkCollectionDAOTest {
     public void testCreate(){
         Link link = new Link("test","test");
         LinkDAO linkDAO = new MongoLinkDAO();
-        LinkCollection linkCollection = new LinkCollection("02324F17");
+        LinkCollection linkCollection = new LinkCollection();
+        linkCollection.setCourse("F1702324");
         linkCollection.getLinks().add(link);
         linkCollection.getLinks().add(null);
         LinkCollectionDAO linkCollectionDAO = new MongoLinkCollectionDAO();

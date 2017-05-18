@@ -14,9 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Entity
-public class Link {
-    @Id
-    private ObjectId id;
+public class Link extends BaseDTO{
+
     @NonNull private String text;
     @NonNull private String href;
     private List<String> addData;
