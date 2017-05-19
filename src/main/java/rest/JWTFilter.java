@@ -33,7 +33,7 @@ public class JWTFilter implements Filter {
             System.out.println("Caught in filter - Url: " + url + " Query: " + params + "Headers: " + authHeader);
             httpResponse.setHeader("Access-Control-Allow-Origin", "*");
             httpResponse.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS, PATCH");
-            httpResponse.setHeader("Access-Control-Allow-Headers",((HttpServletRequest) request).getHeader("Access-Control-Request-Headers"));
+            httpResponse.setHeader("Access-Control-Allow-Headers","*");
             httpResponse.setHeader("Access-Control-Allow-Credentials:", "true");
             httpResponse.setHeader("Access-Control-Expose-Headers","Authorization");
             chain.doFilter(request,response);
