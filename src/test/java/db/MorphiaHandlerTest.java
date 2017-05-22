@@ -1,6 +1,7 @@
 package db;
 
 import data.MorphiaHandler;
+import data.interfaces.PersistenceException;
 import org.bson.types.ObjectId;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -12,7 +13,7 @@ import static org.junit.Assert.*;
 public class MorphiaHandlerTest {
 
     @Test
-    public void TestCRUD() throws Exception {
+    public void TestCRUD() throws Exception, PersistenceException {
         int initialCount = getSize();
         //test one insert
         TestDTO test = MorphiaHandler.getInstance().createOrUpdate(new TestDTO());
@@ -31,7 +32,7 @@ public class MorphiaHandlerTest {
 
     }
 
-    private int getSize() {
+    private int getSize() throws PersistenceException {
         return MorphiaHandler.getInstance().getAll(TestDTO.class).size();
     }
 }

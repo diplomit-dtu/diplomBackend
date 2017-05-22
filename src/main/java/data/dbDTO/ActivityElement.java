@@ -1,10 +1,8 @@
 package data.dbDTO;
 
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Embedded;
-import org.mongodb.morphia.annotations.Id;
+import jdk.nashorn.internal.ir.annotations.Reference;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +10,10 @@ import java.util.List;
 /**
  * Created by Christian on 11-05-2017.
  */
-@Embedded
-@RequiredArgsConstructor
-public class ActivityElement {
-    @NonNull
-    String title;
-
-    List<ActivitySubElement> subElements = new ArrayList<>();
+@Data
+@NoArgsConstructor
+public class ActivityElement extends BaseDTO {
+    private String title;
+    @Reference
+    private List<ActivitySubElement> subElements = new ArrayList<>();
 }

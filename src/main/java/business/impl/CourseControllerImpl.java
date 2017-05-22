@@ -1,6 +1,7 @@
 package business.impl;
 
 import business.interfaces.CourseController;
+import data.dbDTO.ActivityElement;
 import data.dbDTO.Course;
 import data.dbDTO.CourseActivity;
 import data.dbDTO.CoursePlan;
@@ -77,6 +78,11 @@ public class CourseControllerImpl implements CourseController {
         CourseActivity courseActivity = new CourseActivity();
         courseActivity.setDescription("Forberedelse");
         courseActivity.setStartDate(Calendar.getInstance().getTime());
+        List<ActivityElement> activityElementList = courseActivity.getActivityElementList();
+        ActivityElement activityElement = new ActivityElement();
+        activityElement.setTitle("Lektion 1");
+        activityElementList.add(activityElement);
+
         coursePlan.getCourseActivityList().add(courseActivity);
         return coursePlan;
     }
