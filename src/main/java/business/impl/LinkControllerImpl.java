@@ -11,9 +11,9 @@ import data.interfaces.PersistenceException;
 import data.mongoImpl.MongoGlobalInfoDAO;
 import data.mongoImpl.MongoLinkCollectionDAO;
 import data.mongoImpl.MongoLinkDAO;
-import org.bson.types.ObjectId;
 import rest.ValidException;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -22,6 +22,7 @@ import java.util.List;
 public class LinkControllerImpl implements LinkController {
     GlobalInfoDAO globalInfoDAO = new MongoGlobalInfoDAO();
     LinkCollectionDAO linkCollectionDAO = new MongoLinkCollectionDAO();
+    LinkDAO linkDAO = new MongoLinkDAO();
 
     @Override
     public List<Link> getDefaultLinks() throws PersistenceException, ValidException {
@@ -38,6 +39,26 @@ public class LinkControllerImpl implements LinkController {
         linkCollectionDAO.save(linkCollection);
         System.out.println(System.currentTimeMillis());
         return link;
+    }
+
+    @Override
+    public String deleteDefaultLink(String id) throws ValidException, PersistenceException {
+        LinkCollection linkCollection = getDefaultLinkCollection();
+        System.out.println(id);
+        //TODO improve performance
+        List<Link> links = linkCollection.getLinks();
+        for (Iterator<Link> linkIterator = links.iterator();linkIterator.hasNext();){
+            Link link = linkIterator.next();
+            System.out.println(link.getId());
+            if (link.getId().equals(id)) {
+                linkIterator.remove();
+                linkCollectionDAO.save(linkCollection);
+                linkDAO.delete(id);
+                return link.getId();
+            }
+        }
+
+        throw new ValidException("Link not found - could not delete");
     }
 
     private LinkCollection getDefaultLinkCollection() throws ValidException, PersistenceException {

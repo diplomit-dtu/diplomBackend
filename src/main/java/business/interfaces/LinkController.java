@@ -13,4 +13,6 @@ public interface LinkController {
     List<Link> getDefaultLinks() throws PersistenceException, ValidException;
 
     Link saveDefaultLink(Link link) throws ValidException, PersistenceException;
+
+    String deleteDefaultLink(String id) throws ValidException, PersistenceException;
 }

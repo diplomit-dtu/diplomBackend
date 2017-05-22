@@ -33,6 +33,12 @@ public class LinkService {
 
         return linkController.saveDefaultLink(link);
     }
+    @DELETE
+    @Path("default/{id}")
+    public String deleteDefaultLink(@PathParam("id") String id) throws ValidException, PersistenceException {
+        System.out.println(id);
+        return linkController.deleteDefaultLink(id);
+    }
 
     @GET
     public List<Link> getLinks(@QueryParam("user") String userId, @QueryParam("course") String courseId){
