@@ -50,12 +50,9 @@ public class GoogleCoursePlanParser {
             } else if (index == 1) { //Second Row description
                 activity.setDescription(formattedValue);
             } else if (index == 2 && cellD.getEffectiveValue()!=null && cellD.getEffectiveFormat().getNumberFormat()!=null){
-                System.out.println(cellD.getEffectiveFormat().getNumberFormat().getType().toLowerCase().contains("date"));
-                System.out.println(cellD.getEffectiveFormat().getNumberFormat().getType());
                 Double numberValue = cellD.getEffectiveValue().getNumberValue();
                 numberValue-= GOOGLEEPOCHOFFSET;
                 long millisSince1970 = (long) (numberValue * 24*60*60*1000);
-                System.out.println(millisSince1970);
                 activity.setEndDate(new Date(millisSince1970));
             } else {
                 ActivityElement activityElement = new ActivityElement();

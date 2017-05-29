@@ -13,8 +13,6 @@ import org.mongodb.morphia.annotations.Reference;
 @Data
 
 public class StudentAgenda extends BaseDTO {
-    @Id
-    ObjectId objectId;
     @Reference
     CoursePlan coursePlan;
 
