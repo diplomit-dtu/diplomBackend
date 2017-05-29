@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Agenda</title>
+<script src="js/jquery-3.2.0.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/Sortable.js"></script>
+<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+</head>
+<body>
+	<div>
+
+		<nav class="navbar navbar-default">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand navbar-link" href="#">02324▼ </a>
+					<button class="navbar-toggle collapsed" data-toggle="collapse"
+						data-target="#navcol-1">
+						<span class="sr-only">Toggle navigation</span><span
+							class="icon-bar"></span><span class="icon-bar"></span><span
+							class="icon-bar"></span>
+					</button>
+				</div>
+				<div class="collapse navbar-collapse" id="navcol-1">
+					<p class="navbar-text">Videregående programmering</p>
+					<ul class="nav navbar-nav">
+						<li class="active" role="presentation"><a href="index.html">Agenda
+						</a></li>
+						<li role="presentation"><a href="questions.html">Forum </a></li>
+						<li role="presentation"><a href="pensum.html">Pensum </a></li>
+						<li role="presentation"><a href="oversigt.html">Kursus oversigt</a></li>
+						<li role="presentation"><a href="administration.html">Administration
+						</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+
+		<div class="container">
+			<ul>
+				<li><span class="glyphicon glyphicon-calendar"></span><a
+					href="#">KursusKalender</a></li>
+				<li><span class="glyphicon glyphicon-question-sign"></span><a
+					href="#">Stil Spørgsmål</a></li>
+				<li>...???</li>
+
+
+			</ul>
+			<hr>
+			<table class="table table-hover">
+				<thead>
+					<tr class="vdivide">
+						<th>Aktivitet</th>
+						<th>Dato</th>
+						<th>Forberedelse</th>
+						<th>Forelæsning</th>
+						<th>Øvelser</th>
+						<th>Stil spørgsmål
+					</tr>
+				</thead>
+				<tbody id="agendatable">
+					<tr>
+						<td contenteditable="true"><i class="glyphicon glyphicon-pencil"></i>Lektion 1</td>
+						<td contenteditable="true"><i class="glyphicon glyphicon-calendar"></i>1/9</td>
+						<td contenteditable="true"><i class="glyphicon glyphicon-pencil"></i><a href="Forberedelse.html">Link</a> <img
+							src="img/glyphicons-153-check.png"></td>
+						<td contenteditable="true"><i class="glyphicon glyphicon-pencil"></i><a href="#" onclick="$('#quizModal').modal('show')">Quiz</a><img
+							src="img/glyphicons-153-check.png"></td>
+						<td contenteditable="true"><i class="glyphicon glyphicon-pencil"></i><a
+							href="https://docs.google.com/document/d/1a7O4-yxQiQlEwq8SxVKjzqKN_FqOunnS7-_yQ_ETWY0/pub">Øvelser</a><img
+							src="img/glyphicons-153-check.png"></td>
+						<td contenteditable="true"><img src="img/glyphicons-195-question-sign.png"></td>
+						<td contenteditable="true"><i class="glyphicon glyphicon-move mover"></i></td>
+					</tr>
+					<tr>
+						<td>Lektion 2</td>
+						<td>8/9</td>
+						<td><a href="Forberedelse.html">Link</a> <img
+							src="img/glyphicons-154-unchecked.png"></td>
+						<td><a href="#" onclick="$('#quizModal').modal('show')">Quiz</a><img
+							src="img/glyphicons-154-unchecked.png"></td>
+						<td><a
+							href="https://docs.google.com/document/d/1a7O4-yxQiQlEwq8SxVKjzqKN_FqOunnS7-_yQ_ETWY0/pub">Øvelser</a><img
+							src="img/glyphicons-154-unchecked.png"></td>
+						<td><img src="img/glyphicons-195-question-sign.png"></td>
+						<td><i class="glyphicon glyphicon-move mover"></i></td>
+					</tr>
+					<tr>
+						<td>CDIO 1</td>
+						<td>14/9</td>
+						<td><a href="Forberedelse.html">Link</a> <img
+							src="img/glyphicons-154-unchecked.png"></td>
+						<td></td>
+						<td></td>
+						<td><img src="img/glyphicons-195-question-sign.png"></td>
+						<td><i class="glyphicon glyphicon-move mover"></i></td>
+					</tr>
+					<tr>
+					<td colspan="6">
+					</td>
+					<td>
+					<i class="glyphicon glyphicon-plus"></i>
+					</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		
+		
+		
+		<!-- QuizModal -->
+		<div id="quizModal" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Quiz</h4>
+					</div>
+					<div class="modal-body">
+						<h2>Hvad står HTML for</h2>
+						<form>
+							<div class="radio">
+								<label><input type="radio" name="quiz" id="1" value="1">
+									Home Tool Markup Language</label>
+							</div>
+							<div class="radio">
+								<label><input type="radio" name="quiz" id="2" value="2">
+									Hyperlinks and Text Markup Language</label>
+							</div>
+							<div class="radio">
+								<label><input type="radio" name="quiz" id="3" value="3">
+									Hyper Text Markup Language</label>
+							</div>
+							<br> <input type="submit"
+								class="w3-btn w3-orange w3-large w3-text-white" value=" Next ">
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+
+	</div>
+	
+	<script>
+	Sortable.create(document.getElementById('agendatable'), {
+		animation : 150,
+		handle : '.mover',
+		onAdd: function (evt){ console.log('onAdd.bar:', evt.item); },
+		onUpdate: function (evt){ console.log('onUpdate.bar:', evt.item); },
+		onRemove: function (evt){ console.log('onRemove.bar:', evt.item); },
+		onStart:function(evt){ console.log('onStart.foo:', evt.item);},
+		onEnd: function(evt){ console.log('onEnd.foo:', evt);}
+	})
+	</script>
+</body>
+</html>

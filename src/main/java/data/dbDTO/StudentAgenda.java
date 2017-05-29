@@ -15,11 +15,10 @@ import java.util.ArrayList;
 @Entity
 @Data
 
-public class StudentAgenda {
+public class StudentAgenda extends BaseDTO {
     @Id
     ObjectId objectId;
     @Reference
     CoursePlan coursePlan;
-    //TODO: Add Elements
 
 }

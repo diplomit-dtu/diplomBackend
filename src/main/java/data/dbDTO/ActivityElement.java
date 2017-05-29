@@ -1,8 +1,8 @@
 package data.dbDTO;
 
-import jdk.nashorn.internal.ir.annotations.Reference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.mongodb.morphia.annotations.Reference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,18 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class ActivityElement extends BaseDTO {
-    private String title;
+
     @Reference
     private List<ActivitySubElement> subElements = new ArrayList<>();
+    private String hyperLink;
+    private String GoogleSheetId;
+    private String title;
+
+
+    private ActivityElementType activityElementType = ActivityElementType.Native; //Pr default native
+
+    public enum ActivityElementType{
+        Native, Link, GoogleSheet
+    }
+
 }

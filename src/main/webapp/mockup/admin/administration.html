@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Agenda</title>
+<script src="js/jquery-3.2.0.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/Sortable.js"></script>
+<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+</head>
+<body>
+	<div>
+
+		<nav class="navbar navbar-default">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand navbar-link" href="#">02324▼ </a>
+					<button class="navbar-toggle collapsed" data-toggle="collapse"
+						data-target="#navcol-1">
+						<span class="sr-only">Toggle navigation</span><span
+							class="icon-bar"></span><span class="icon-bar"></span><span
+							class="icon-bar"></span>
+					</button>
+				</div>
+				<div class="collapse navbar-collapse" id="navcol-1">
+					<p class="navbar-text">Videregående programmering</p>
+					<ul class="nav navbar-nav">
+						<li class="active" role="presentation"><a href="index.html">Agenda</a></li>
+						<li role="presentation"><a href="questions.html">Forum </a></li>
+						<li role="presentation"><a href="pensum.html">Pensum </a></li>
+						<li role="presentation"><a href="kursusoversigt.html">Kursus
+								Info</a></li>
+						<li role="presentation"><a href="administration.html">Administration
+						</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-3">
+					<div>
+
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title">
+									<strong>Kursus administration</strong>
+								</h3>
+							</div>
+
+							<!-- LeftMenu -->
+							<div class="panel-body">
+								<ul>
+									<li><a href="#1">02324</a></li>
+									<li><a href="#2">02312</a></li>
+									<li><a href="nytkursus.html">Nyt kursus </a></li>
+								</ul>
+								<div class="dropdown">
+									<a class="btn btn-default dropdown-toggle"
+										data-toggle="dropdown" aria-expanded="false" role="button"
+										href="#">Ældre kurser<span class="caret"></span></a>
+									<ul role="menu" class="dropdown-menu">
+										<li role="presentation"><a href="#">02324 F16</a></li>
+										<li role="presentation"><a href="#">02312 E15</a></li>
+										<li role="presentation"><a href="#">02314 E15</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title">
+									<strong>Portal administration</strong>
+								</h3>
+							</div>
+
+							<!-- LeftMenu -->
+							<div class="panel-body">
+								<ul id="sortable">
+									<li><a href="#1">Administrer brugere</a></li>
+									
+								</ul>
+							
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--body-->
+				<div class="col-md-9">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h2 class="panel-title">02324 Videregående programmering</h2>
+						</div>
+						<div class="panel-body">
+							<ul class="list-group"></ul>
+							<div role="tablist" aria-multiselectable="true"
+								class="panel-group" id="accordion-1">
+								<div class="panel panel-default">
+									<div role="tab" class="panel-heading">
+										<h4 class="panel-title">
+											<a role="button" data-toggle="collapse"
+												data-parent="#accordion-1" aria-expanded="true"
+												href="#accordion-1 .item-1">Administrer Brugere</a>
+										</h4>
+									</div>
+									<div role="tabpanel" class="panel-collapse collapse in item-1">
+										<div class="panel-body">
+											<span>Tilføj ny bruger:</span>
+											<form>
+												<div class="form-group">
+													<label class="control-label">brugernavn
+														(studienummer)</label> <input type="text" class="form-control" />
+												</div>
+												<div class="form-group">
+													<input type="checkbox" /> <label class="control-label">Studerende
+													</label>
+												</div>
+												<div class="form-group">
+													<input type="checkbox" /> <label class="control-label">Hjælpelærer
+													</label>
+												</div>
+												<div class="form-group">
+													<input type="checkbox" /> <label class="control-label">Underviser
+													</label>
+												</div>
+												<div class="form-group">
+													<label class="control-label">Navn </label> <input
+														type="text" class="form-control" />
+												</div>
+												<div class="form-group">
+													<label class="control-label">Email </label> <input
+														type="text" class="form-control" />
+												</div>
+											</form>
+											<label>Vælg .csv fil</label> <input type="file" />
+											<div class="table-responsive">
+												<table class="table">
+													<thead>
+														<tr>
+															<th>Studerende</th>
+															<th>lektion 11</th>
+															<th>lektion 12</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr>
+															<td>Cell 1</td>
+															<td>Cell 2</td>
+														</tr>
+														<tr>
+															<td>Cell 3</td>
+															<td>Cell 4</td>
+														</tr>
+													</tbody>
+												</table>
+												<nav>
+													<ul class="pagination">
+														<li><a aria-label="Previous"><span
+																aria-hidden="true">«</span></a></li>
+														<li><a>1</a></li>
+														<li><a>2</a></li>
+														<li><a>3</a></li>
+														<li><a>4</a></li>
+														<li><a>5</a></li>
+														<li><a aria-label="Next"><span aria-hidden="true">»</span></a></li>
+													</ul>
+												</nav>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div role="tab" class="panel-heading">
+										<h4 class="panel-title">
+											<a role="button" data-toggle="collapse"
+												data-parent="#accordion-1" aria-expanded="false"
+												href="#accordion-1 .item-2">Fremmøde </a>
+										</h4>
+									</div>
+									<div role="tabpanel" class="panel-collapse collapse item-2">
+										<div class="panel-body">
+											<ul>
+												<li><a>Lektion</a></li>
+												<li><a>Studerende</a></li>
+											</ul>
+											<table class="table table-hover table-bordered">
+												<thead>
+													<tr>
+														<th>Studerende</th><th>
+														Fremmøde
+														<th>
+													</tr>
+												</thead>
+											</table>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div role="tab" class="panel-heading">
+										<h4 class="panel-title">
+											<a role="button" data-toggle="collapse"
+												data-parent="#accordion-1" aria-expanded="false"
+												href="#accordion-1 .item-3">Undervisningselementer </a>
+										</h4>
+									</div>
+									<div role="tabpanel" class="panel-collapse collapse item-3">
+										<div class="panel-body">
+											<span>Item body.</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">Portal administration</h3>
+						</div>
+						<div class="panel-body">
+							<span>Tilføj ny portal administrator</span>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+
+
+		</div>
+
+
+	</div>
+
+</body>
+</html>

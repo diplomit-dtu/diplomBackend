@@ -17,26 +17,24 @@ import java.time.LocalDate;
 @Data
 @Entity
 @RequiredArgsConstructor
-public class Course {
-    public static final String COURSE_ID = "courseId";
-
-    @Id
-    private ObjectId objectId;
-    @NonNull @Property(COURSE_ID)
-    private String courseId;
-    @NonNull
-    private String courseName;
-    @NonNull
-    private LocalDate startingDate;
-    @NonNull
-    private LocalDate endingDate;
+public class Course extends BaseDTO{
+    private final static String COURSE_ID = "courseId";
+    private String courseId; //ShortHandCode for Course ie. 02324F17
+    private String courseName; //Course name - Advanced programming
+    private LocalDate startingDate; //Start of course
+    private LocalDate endingDate; //End of course
 
     //Referenced documents
-    private ObjectId linkCollection;
+    private String linkCollection;
 
     //Reference for fetching courseplan
-    private ObjectId coursePlan;
+
+    private corsePlanSource source;
+    private String coursePlanId;
 
     //TODO add relevant ekstra information
+    public enum corsePlanSource{
+        GoogleSheet, Mongo
+    }
 
 }

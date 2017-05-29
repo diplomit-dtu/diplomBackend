@@ -1,4 +1,4 @@
-package rest.login;
+package rest;
 
 import data.interfaces.PersistenceException;
 

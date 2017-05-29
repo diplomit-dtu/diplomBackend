@@ -21,7 +21,7 @@ public class MongoCourseDAO extends MongoBaseDAO<Course> implements CourseDAO {
     public Course findCourseByCourseID(String courseId) throws PersistenceException {
         Datastore dataStore = MorphiaHandler.getInstance().getDatastore();
         List<Course> courses = dataStore.createQuery(Course.class)
-                .field(Course.COURSE_ID).equal(courseId).asList();
+                .field("course").equal(courseId).asList();
         if (courses.size()>1) throw new PersistenceException("more than one course with this ID exists! - Contact your sysadmin");
         if (courses.size()<1) return null;
         return courses.get(0);

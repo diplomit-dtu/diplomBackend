@@ -5,6 +5,7 @@ import business.interfaces.CourseController;
 import data.dbDTO.CoursePlan;
 import data.interfaces.PersistenceException;
 import org.bson.types.ObjectId;
+import sun.plugin.dom.core.CoreConstants;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -28,6 +29,12 @@ public class CoursePlanService {
     @Path("id/{id}")
     public CoursePlan getCoursePlan(@PathParam("id")String id) throws PersistenceException, ElementNotFoundException, ValidException {
         return ctrl.getCoursePlan(id);
+    }
+
+    @GET
+    @Path("google/id/{id}")
+    public CoursePlan getGoogleCoursePlan(@PathParam("id") String id) throws ValidException, PersistenceException {
+        return ctrl.getGoogleCoursePlan(id);
     }
 
     @POST

@@ -31,4 +31,7 @@ public interface CourseController {
     CoursePlan createCoursePlan(CoursePlan coursePlan) throws PersistenceException;
 
     CoursePlan updateCoursePlan(CoursePlan coursePlan) throws PersistenceException;
+
+    //GoogleCoursePlans
+    CoursePlan getGoogleCoursePlan(String id) throws ValidException, PersistenceException;
 }

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Agenda</title>
+<script src="js/jquery-3.2.0.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+</head>
+<body>
+	<div>
+		<nav class="navbar navbar-default">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand navbar-link" href="#">02324▼ </a>
+					<button class="navbar-toggle collapsed" data-toggle="collapse"
+						data-target="#navcol-1">
+						<span class="sr-only">Toggle navigation</span><span
+							class="icon-bar"></span><span class="icon-bar"></span><span
+							class="icon-bar"></span>
+					</button>
+				</div>
+				<div class="collapse navbar-collapse" id="navcol-1">
+					<p class="navbar-text">Videregående programmering</p>
+					<ul class="nav navbar-nav">
+						<li role="presentation"><a href="index.html">Agenda</a></li>
+						<li class="active"  role="presentation"><a href="questions.html">Forum </a></li>
+						<li role="presentation"><a href="pensum.html">Pensum </a></li>
+						<li role="presentation"><a href="kursusoversigt.html">Kursus Info</a></li>
+						<li role="presentation"><a href="administration.html">Administration
+						</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		<div class="container">
+
+			<ul class="nav nav-tabs">
+				<li class="nav-item"><a class="nav-link active" href="#">Alle</a>
+				</li>
+				<li class="nav-item"><a class="nav-link" href="#">Lektion 1</a></li>
+				<li class="nav-item"><a class="nav-link" href="#">Lektion 2</a></li>
+				<li class="nav-item"><a class="nav-link" href="#">Lektion 3</a></li>
+				<li class="nav-item"><a class="nav-link" href="#">CDIO 1</a></li>
+				<li class="nav-item"><a class="nav-link disabled" href="#">Disabled</a>
+				</li>
+			</ul>
+
+
+			<div class="panel-group" role="tablist" aria-multiselectable="true"
+				id="accordion-1">
+				<div class="panel panel-default">
+					<div class="panel-heading" role="tab">
+						<h4 class="panel-title">
+							<a role="button" data-toggle="collapse"
+								data-parent="#accordion-1" aria-expanded="true"
+								href="#accordion-1 .item-1">Hvorfor virker min Switch ikke?</a>
+						</h4>
+					</div>
+					<div class="panel-collapse collapse in item-1" role="tabpanel">
+						<div class="panel-body">
+							<p>Hvad er der galt?</p>
+							<div class="well"><pre>
+switch(test) 
+   case "ko": 
+      System.out.println("test"); 
+   case "gris": 
+      System.out.println("testtest");</pre>
+							</div>
+							<hr>
+							<div >
+								<h4>Instruktørernes svar</h4>
+								<span>Du mangler et break!</span>
+							</div>
+							<hr>
+							<div >
+								<h4>De studerendes svar</h4>
+								<span contenteditable="true">... og {} rundt om case's</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="panel panel-default">
+					<div class="panel-heading" role="tab">
+						<h4 class="panel-title">
+							<a role="button" data-toggle="collapse"
+								data-parent="#accordion-1" aria-expanded="false"
+								href="#accordion-1 .item-2">Accordion Item</a>
+						</h4>
+					</div>
+					<div class="panel-collapse collapse item-2" role="tabpanel">
+						<div class="panel-body">
+							<span>Item body.</span>
+						</div>
+					</div>
+				</div>
+				<div class="panel panel-default">
+					<div class="panel-heading" role="tab">
+						<h4 class="panel-title">
+							<a role="button" data-toggle="collapse"
+								data-parent="#accordion-1" aria-expanded="false"
+								href="#accordion-1 .item-3">Accordion Item</a>
+						</h4>
+					</div>
+					<div class="panel-collapse collapse item-3" role="tabpanel">
+						<div class="panel-body">
+							<span>Item body.</span>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+
+	</div>
+</body>
+</html>

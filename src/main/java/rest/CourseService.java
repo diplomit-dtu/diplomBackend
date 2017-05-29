@@ -26,6 +26,7 @@ public class CourseService {
     public Course getCourse(@PathParam("id") String id) throws PersistenceException, ValidException {
         return ctrl.getCourse(id);
     }
+
     @POST
     public Course createCourse(Course newCourse) throws ValidException, PersistenceException {
         if(newCourse.getObjectId()!=null) throw new ValidException("ObjectId must be null");

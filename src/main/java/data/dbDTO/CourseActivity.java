@@ -17,13 +17,12 @@ import java.util.List;
  * Created by Christian on 11-05-2017.
  */
 @Data
-@NoArgsConstructor
-@RequiredArgsConstructor
 @Embedded
 public class CourseActivity {
-    @NonNull
+
+    private String title;
     private String Description;
-    @NonNull ActivityStatus status = ActivityStatus.DRAFT;
+    private ActivityStatus status = ActivityStatus.VISIBLE;
 
     private Date startDate;
     private Date EndDate;

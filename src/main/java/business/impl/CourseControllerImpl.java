@@ -5,12 +5,12 @@ import data.dbDTO.ActivityElement;
 import data.dbDTO.Course;
 import data.dbDTO.CourseActivity;
 import data.dbDTO.CoursePlan;
+import data.googleImpl.GoogleCoursePlanDAO;
 import data.interfaces.CourseDAO;
 import data.interfaces.CoursePlanDAO;
 import data.interfaces.PersistenceException;
 import data.mongoImpl.MongoCourseDAO;
 import data.mongoImpl.MongoCoursePlanDAO;
-import org.bson.types.ObjectId;
 import rest.ElementNotFoundException;
 import rest.ValidException;
 
@@ -23,7 +23,8 @@ import java.util.List;
 public class CourseControllerImpl implements CourseController {
     //TODO refactor for serviceRegistry
     CourseDAO courseDAO = new MongoCourseDAO();
-    CoursePlanDAO coursePlanDAO = new MongoCoursePlanDAO();
+    CoursePlanDAO mongoCoursePlanDAO = new MongoCoursePlanDAO();
+    CoursePlanDAO googleCoursePlanDAO = new GoogleCoursePlanDAO();
 
     @Override
     public List<Course> getCourses(){
@@ -67,7 +68,7 @@ public class CourseControllerImpl implements CourseController {
 
     @Override
     public CoursePlan getCoursePlan(String id) throws PersistenceException, ElementNotFoundException, ValidException {
-        CoursePlan coursePlan = coursePlanDAO.get(id);
+        CoursePlan coursePlan = mongoCoursePlanDAO.get(id);
         if (coursePlan==null) throw new ElementNotFoundException("CoursePlan notFound: " + id);
         return coursePlan;
     }
@@ -89,12 +90,17 @@ public class CourseControllerImpl implements CourseController {
 
     @Override
     public CoursePlan createCoursePlan(CoursePlan coursePlan) throws PersistenceException {
-        return coursePlanDAO.save(coursePlan);
+        return mongoCoursePlanDAO.save(coursePlan);
     }
 
     @Override
     public CoursePlan updateCoursePlan(CoursePlan coursePlan) throws PersistenceException {
-        return coursePlanDAO.save(coursePlan);
+        return mongoCoursePlanDAO.save(coursePlan);
+    }
+
+    @Override
+    public CoursePlan getGoogleCoursePlan(String id) throws ValidException, PersistenceException {
+        return googleCoursePlanDAO.get(id);
     }
 
 

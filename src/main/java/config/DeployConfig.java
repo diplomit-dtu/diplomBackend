@@ -17,6 +17,7 @@ public class DeployConfig {
 
     public static final String JWT_TOKEN_SECRET = System.getenv("JWT_TOKEN_SECRET");
     public static final String PORTAL_FRONT_URL = System.getenv("PORTAL_FRONT_URL");
+    public static final String GOOGLE_API_KEY = System.getenv("GOOGLE_API_KEY");
 
     public static void main(String[] args) {
         System.out.println(CN_REDIRECT_URL);
