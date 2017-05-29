@@ -4,8 +4,6 @@ import business.impl.CourseControllerImpl;
 import business.interfaces.CourseController;
 import data.dbDTO.CoursePlan;
 import data.interfaces.PersistenceException;
-import org.bson.types.ObjectId;
-import sun.plugin.dom.core.CoreConstants;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

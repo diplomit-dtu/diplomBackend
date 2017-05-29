@@ -4,7 +4,6 @@ import business.impl.CourseControllerImpl;
 import business.interfaces.CourseController;
 import data.dbDTO.Course;
 import data.interfaces.PersistenceException;
-import org.bson.types.ObjectId;
 
 import javax.ws.rs.*;
 import java.util.List;
