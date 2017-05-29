@@ -1,9 +1,7 @@
 package data.dbDTO;
 
 import lombok.Data;
-import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
 
 import java.util.List;
 

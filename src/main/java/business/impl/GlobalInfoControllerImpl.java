@@ -1,7 +1,6 @@
 package business.impl;
 
 import business.interfaces.GlobalInfoController;
-import data.dbDTO.GlobalInfo;
 import data.dbDTO.Link;
 import data.interfaces.GlobalInfoDAO;
 import data.interfaces.LinkDAO;

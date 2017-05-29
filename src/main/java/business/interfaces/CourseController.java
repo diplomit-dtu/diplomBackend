@@ -3,7 +3,6 @@ package business.interfaces;
 import data.dbDTO.Course;
 import data.dbDTO.CoursePlan;
 import data.interfaces.PersistenceException;
-import org.bson.types.ObjectId;
 import rest.ElementNotFoundException;
 import rest.ValidException;
 

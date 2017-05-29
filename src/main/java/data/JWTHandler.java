@@ -1,21 +1,13 @@
 package data;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import data.dbDTO.User;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.impl.crypto.MacProvider;
+
 import java.security.Key;
 import java.util.Calendar;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import data.dbDTO.User;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.impl.crypto.MacProvider;
 
 public class JWTHandler {
 		private static final int TOKEN_EXPIRY = 10;

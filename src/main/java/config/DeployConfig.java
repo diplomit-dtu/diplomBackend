@@ -1,7 +1,5 @@
 package config;
 
-import config.Config;
-
 /**
  * Created by Christian on 28-04-2017.
  */

@@ -2,8 +2,6 @@ package data.dbDTO;
 
 import lombok.Data;
 import lombok.NonNull;
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Id;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

@@ -1,20 +1,15 @@
 package data;
 
-import com.mongodb.*;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
+import com.mongodb.WriteResult;
 import config.Config;
 import config.DeployConfig;
-import data.dbDTO.Link;
-import data.dbDTO.User;
 import data.interfaces.PersistenceException;
-import data.viewDTO.UserPass;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
-import org.mongodb.morphia.query.Query;
-import org.mongodb.morphia.query.UpdateOperations;
-import org.mongodb.morphia.query.UpdateResults;
 
-import javax.xml.transform.sax.SAXSource;
 import java.util.List;
 
 /**

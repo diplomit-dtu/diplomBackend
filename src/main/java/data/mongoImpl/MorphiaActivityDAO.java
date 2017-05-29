@@ -1,10 +1,8 @@
 package data.mongoImpl;
 
-import com.mongodb.MongoClient;
 import data.MorphiaHandler;
 import data.dbDTO.CourseActivity;
 import data.interfaces.PersistenceException;
-import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.dao.BasicDAO;
 import org.mongodb.morphia.dao.DAO;
 

@@ -1,7 +1,6 @@
 package data.mongoImpl;
 
 import data.dbDTO.User;
-import data.interfaces.BaseDAO;
 import data.interfaces.UserDAO;
 
 /**

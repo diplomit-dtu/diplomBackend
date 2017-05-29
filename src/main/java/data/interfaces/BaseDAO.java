@@ -1,6 +1,5 @@
 package data.interfaces;
 
-import org.bson.types.ObjectId;
 import rest.ValidException;
 
 import java.util.List;

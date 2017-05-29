@@ -8,7 +8,6 @@ import data.interfaces.LinkDAO;
 import data.interfaces.PersistenceException;
 import data.interfaces.UserDAO;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
