@@ -21,6 +21,10 @@ public interface CourseController {
 
     Course updateCourse(Course updatedCourse) throws PersistenceException;
 
+    String deleteCourse(String id) throws PersistenceException, ValidException;
+
+
+
     //CoursePlans
 
     CoursePlan getCoursePlan(String id) throws PersistenceException, ElementNotFoundException, ValidException;

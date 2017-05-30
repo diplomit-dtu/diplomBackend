@@ -3,6 +3,7 @@ package rest;
 import business.impl.LinkControllerImpl;
 import business.interfaces.LinkController;
 import data.dbDTO.Link;
+import data.dbDTO.LinkCollection;
 import data.interfaces.PersistenceException;
 
 import javax.ws.rs.*;
@@ -26,6 +27,12 @@ public class LinkService {
             links.add(new Link("campusnet", "http://cn.dtu.dk"));
         }
         return links;
+    }
+
+    @GET
+    @Path("id/{id}")
+    public LinkCollection getLinkCollectionById(@PathParam("id") String id) throws ValidException, PersistenceException {
+        return linkController.getLinkCollectionById(id);
     }
     @POST
     @Path("default")

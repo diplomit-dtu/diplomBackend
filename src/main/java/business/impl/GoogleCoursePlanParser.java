@@ -51,8 +51,7 @@ public class GoogleCoursePlanParser {
                 activity.setDescription(formattedValue);
             } else if (index == 2 && cellD.getEffectiveValue()!=null && cellD.getEffectiveFormat().getNumberFormat()!=null){
                 Double numberValue = cellD.getEffectiveValue().getNumberValue();
-                numberValue-= GOOGLEEPOCHOFFSET;
-                long millisSince1970 = (long) (numberValue * 24*60*60*1000);
+                long millisSince1970 = getMillisSince1970(numberValue);
                 activity.setEndDate(new Date(millisSince1970));
             } else {
                 ActivityElement activityElement = new ActivityElement();
@@ -66,6 +65,14 @@ public class GoogleCoursePlanParser {
             index++;
         }
         return activity;
+    }
+
+    private static long getMillisSince1970(Double numberValue) {
+        numberValue-= GOOGLEEPOCHOFFSET; //Fix google offset 30/12 1899
+        long millisSince1970 = (long) (numberValue * 24*60*60*1000); //Convert from days to millis
+        long rest = millisSince1970 %1000; // Round off millis to avoid rounding errors (13:00 -> 12:59)
+        millisSince1970 += (rest>500 ?rest : -rest);
+        return millisSince1970;
     }
 
     private static boolean parseLinkForSheet(String link) {

@@ -67,6 +67,16 @@ public class CourseControllerImpl implements CourseController {
     }
 
     @Override
+    public String deleteCourse(String id) throws PersistenceException, ValidException {
+        if (courseDAO.delete(id)){
+            return id;
+        } else {
+            return null;
+        }
+
+    }
+
+    @Override
     public CoursePlan getCoursePlan(String id) throws PersistenceException, ElementNotFoundException, ValidException {
         CoursePlan coursePlan = mongoCoursePlanDAO.get(id);
         if (coursePlan==null) throw new ElementNotFoundException("CoursePlan notFound: " + id);

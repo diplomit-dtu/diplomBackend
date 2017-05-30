@@ -25,6 +25,6 @@ public class CourseActivity {
     private List<ActivityElement> activityElementList = new ArrayList<>();
 
     public enum ActivityStatus{
-        INVISIBLE, DRAFT, VISIBLE
+        INVISIBLE, DRAFT, VISIBLE,
     }
 }

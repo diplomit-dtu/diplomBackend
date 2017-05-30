@@ -1,6 +1,7 @@
 package business.interfaces;
 
 import data.dbDTO.Link;
+import data.dbDTO.LinkCollection;
 import data.interfaces.PersistenceException;
 import rest.ValidException;
 
@@ -15,4 +16,6 @@ public interface LinkController {
     Link saveDefaultLink(Link link) throws ValidException, PersistenceException;
 
     String deleteDefaultLink(String id) throws ValidException, PersistenceException;
+
+    LinkCollection getLinkCollectionById(String id) throws ValidException, PersistenceException;
 }

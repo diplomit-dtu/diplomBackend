@@ -5,12 +5,16 @@ import business.interfaces.CourseController;
 import data.dbDTO.Course;
 import data.interfaces.PersistenceException;
 
+import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 /**
  * Created by Christian on 15-05-2017.
  */
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 @Path("courses")
 public class CourseService {
     CourseController ctrl = new CourseControllerImpl();

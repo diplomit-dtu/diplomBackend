@@ -61,6 +61,11 @@ public class LinkControllerImpl implements LinkController {
         throw new ValidException("Link not found - could not delete");
     }
 
+    @Override
+    public LinkCollection getLinkCollectionById(String id) throws ValidException, PersistenceException {
+        return linkCollectionDAO.get(id);
+    }
+
     private LinkCollection getDefaultLinkCollection() throws ValidException, PersistenceException {
         GlobalInfo info = globalInfoDAO.getInfo();
         LinkCollection linkCollection = linkCollectionDAO.get(info.getDefaultLinkCollectionId());
