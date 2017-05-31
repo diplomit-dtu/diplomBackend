@@ -29,7 +29,7 @@ public class JWTFilter implements Filter {
             String url = httpRequest.getRequestURI();
             String params = httpRequest.getQueryString();
             String authHeader = httpRequest.getHeader("Authorization");
-            if(DEBUG)  System.out.println("Caught in filter - Url: " + url + " Query: " + params + ", AuthHeaders: " + authHeader + ", Method" + ((HttpServletRequest) request).getMethod());
+            if(DEBUG)  System.out.println("Caught in filter - Url: " + url + " Query: " + params + ", AuthHeaders: " + authHeader + ", Method: " + ((HttpServletRequest) request).getMethod());
             httpResponse.setHeader("Access-Control-Allow-Origin", "*");
 
             httpResponse.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS, PATCH");

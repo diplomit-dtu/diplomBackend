@@ -22,8 +22,7 @@ public class CourseDAOTest {
         CourseController courseController= new CourseControllerImpl();
 
         Course newCourse = new Course();
-        newCourse.setCourseId("TestCourse" +
-                "");
+        newCourse.setCourseId("TestCourse");
         newCourse.setCourseName("Videregående Programmering");
         newCourse.setCoursePlanId(new ObjectId().toHexString());
         newCourse.setCoursePlanSource(Course.CoursePlanSource.GoogleSheet);

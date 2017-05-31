@@ -1,19 +1,24 @@
 package data.dbDTO;
 
 import lombok.Data;
-import lombok.NonNull;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
+/** Actual Contents of course activities
  * Created by Christian on 11-05-2017.
  */
 @Data
 public class ActivitySubElement extends BaseDTO{
-
-    @NonNull
     private String title;
 
-    private Map<String,String> ContentBlocks = new LinkedHashMap<>();
+    private String content;
+    private SubElementType subElementType;
+    private String googleSheetId; //For elements in google sheets
+    private String hyperLink;
+
+
+    public enum SubElementType{
+        Text, Embedded_Link, Pop_Out_Link, Quiz, Concept_Question, Code
+    }
 }

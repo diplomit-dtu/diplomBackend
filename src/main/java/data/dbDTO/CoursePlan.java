@@ -13,6 +13,9 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class CoursePlan extends BaseDTO {
+
+    private String googleSheetId;
+
     @Embedded
     List<CourseActivity> courseActivityList = new ArrayList<>();
 

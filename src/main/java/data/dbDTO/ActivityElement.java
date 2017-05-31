@@ -24,7 +24,7 @@ public class ActivityElement extends BaseDTO {
     private ActivityElementType activityElementType = ActivityElementType.Native; //Pr default native
 
     public enum ActivityElementType{
-        Native, Link, GoogleSheet
+        Native, Link, GoogleSheet, Text
     }
 
 }

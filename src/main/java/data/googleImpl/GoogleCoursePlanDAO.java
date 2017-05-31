@@ -30,7 +30,7 @@ public class GoogleCoursePlanDAO implements CoursePlanDAO{
         GoogleSheetsDAOImpl googleSheetsDAO = new GoogleSheetsDAOImpl();
         Spreadsheet sheet = googleSheetsDAO.getSheet(oid);
         CoursePlan coursePlan = GoogleCoursePlanParser.parseCoursePlanFromSheet(sheet);
-        coursePlan.setGoogleId(oid);
+        coursePlan.setGoogleSheetId(oid);
         return coursePlan;
     }
 

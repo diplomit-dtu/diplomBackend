@@ -11,7 +11,6 @@ import org.mongodb.morphia.annotations.Id;
 public class BaseDTO {
     @Id
     ObjectId objectId;
-    String googleId;
 
     public String getId(){
         return this.objectId==null?null:objectId.toHexString();
