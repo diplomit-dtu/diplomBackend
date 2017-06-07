@@ -54,6 +54,13 @@ public class MongoBaseDAO<T> implements BaseDAO<T> {
     }
 
     @Override
+    public List<T> findByField(String fieldName, String value) throws PersistenceException {
+        List<T> ts = MorphiaHandler.getDS().createQuery(type)
+                .field(fieldName).equal(value).asList();
+        return ts;
+    }
+
+    @Override
     public List<T> getAll() throws PersistenceException {
         return MorphiaHandler.getInstance().getAll(type) ;
     }

@@ -15,7 +15,8 @@ import java.util.Map;
 
 @Data
 @Entity
-public class User {
+public class User extends BaseDTO{
+	public static final String userNameString="userName";
 	private String userName;
 	private List<Role> roles;
 	private Map<String, Permission> permissions = new HashMap<>();

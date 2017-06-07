@@ -5,20 +5,20 @@ import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Id;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Christian on 11-05-2017.
  */
-public class Role {
-    @Id
-    ObjectId objectId;
-    String RoleName;
+public class Role extends BaseDTO {
+
+    private String RoleName;
 
     @Embedded
-    List<Permission> permissions = new ArrayList<>();
+    private Map<String, Permission> permissions = new HashMap<>();
 
-    List<ObjectId> inheritsPermissionsFromRole = new ArrayList<>();
-
+    private List<String> inheritsPermissionsFromRole = new ArrayList<>();
 
 }

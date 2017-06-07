@@ -11,6 +11,9 @@ public interface BaseDAO <T>{
     T save(T element) throws PersistenceException;
     List<T> saveMultiple(List<T> elements) throws PersistenceException;
     T get(String oid) throws PersistenceException, ValidException;
+
+    List<T> findByField(String fieldName, String value) throws PersistenceException;
+
     List<T> getAll() throws PersistenceException;
 
     Boolean delete(String oid) throws PersistenceException, ValidException;
