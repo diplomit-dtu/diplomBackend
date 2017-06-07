@@ -25,20 +25,28 @@ public class JWTFilter implements Filter {
         } else {
             HttpServletRequest httpRequest = ((HttpServletRequest) request);
             HttpServletResponse httpResponse = ((HttpServletResponse) response);
-
-            String url = httpRequest.getRequestURI();
-            String params = httpRequest.getQueryString();
-            String authHeader = httpRequest.getHeader("Authorization");
-            if(DEBUG)  System.out.println("Caught in filter - Url: " + url + " Query: " + params + ", AuthHeaders: " + authHeader + ", Method: " + ((HttpServletRequest) request).getMethod());
-            httpResponse.setHeader("Access-Control-Allow-Origin", "*");
-
-            httpResponse.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS, PATCH");
-            String requestAllowHeader = httpRequest.getHeader("Access-Control-Request-Headers");
-            httpResponse.setHeader("Access-Control-Allow-Headers",requestAllowHeader);
-            httpResponse.setHeader("Access-Control-Allow-Credentials:", "true");
-            httpResponse.setHeader("Access-Control-Expose-Headers","Authorization");
+            //Set CORS headers so API can be used
+            setCorsHeaders(httpRequest, httpResponse);
+            //Check permissions
+            permissionFilter((HttpServletRequest) request, httpRequest);
             chain.doFilter(request,response);
         }
+    }
+
+    private void permissionFilter(HttpServletRequest request, HttpServletRequest httpRequest) {
+        String url = httpRequest.getRequestURI();
+        String params = httpRequest.getQueryString();
+        String authHeader = httpRequest.getHeader("Authorization");
+        if(DEBUG)  System.out.println("Caught in filter - Url: " + url + " Query: " + params + ", AuthHeaders: " + authHeader + ", Method: " + request.getMethod());
+    }
+
+    private void setCorsHeaders(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+        httpResponse.setHeader("Access-Control-Allow-Origin", "*");
+        httpResponse.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS, PATCH");
+        String requestAllowHeader = httpRequest.getHeader("Access-Control-Request-Headers");
+        httpResponse.setHeader("Access-Control-Allow-Headers",requestAllowHeader);
+        httpResponse.setHeader("Access-Control-Allow-Credentials:", "true");
+        httpResponse.setHeader("Access-Control-Expose-Headers","Authorization");
     }
 
     public void destroy() {
