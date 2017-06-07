@@ -1,6 +1,7 @@
 package data.dbDTO;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Reference;
@@ -11,6 +12,7 @@ import java.util.List;
 /** LinkCollection
  * Created by Christian on 11-05-2017.
  */
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @NoArgsConstructor

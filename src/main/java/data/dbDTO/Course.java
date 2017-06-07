@@ -1,6 +1,7 @@
 package data.dbDTO;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import org.mongodb.morphia.annotations.Entity;
 
@@ -9,6 +10,7 @@ import java.time.LocalDate;
 /** CourseDTO
  * Created by Christian on 11-05-2017.
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 public class Course extends BaseDTO{

@@ -35,6 +35,12 @@ public class GoogleCoursePlanDAO implements CoursePlanDAO{
     }
 
     @Override
+    public List<CoursePlan> findByField(String fieldName, String value) throws PersistenceException {
+        throw new PersistenceException("Not implemented for Google Courseplan");
+
+    }
+
+    @Override
     public List<CoursePlan> getAll() throws PersistenceException {
         throw new PersistenceException("Only GET implemented for Google API");
     }

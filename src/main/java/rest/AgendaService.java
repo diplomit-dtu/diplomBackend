@@ -3,6 +3,7 @@ package rest;
 import business.impl.AgendaControllerImpl;
 import business.interfaces.AgendaController;
 import data.dbDTO.StudentAgenda;
+import data.interfaces.PersistenceException;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -14,13 +15,13 @@ import javax.ws.rs.QueryParam;
  */
 @Path("agendas")
 public class AgendaService {
-    AgendaController agendaController = new AgendaControllerImpl();
+    private AgendaController agendaController = new AgendaControllerImpl();
 
     @GET
-    @Path("userid/{userid}/courseid/{courseid}")
-    public StudentAgenda getAgendaByUser(@PathParam("userid") String userId, @PathParam("courseid") String courseId){
+    @Path("id/{id}")
+    public StudentAgenda getAgendaByUser(@PathParam("id") String id) throws ValidException, ElementNotFoundException, PersistenceException {
 
-        return agendaController.getAgenda(courseId,userId);
+        return agendaController.getAgenda(id);
     }
 
     @GET

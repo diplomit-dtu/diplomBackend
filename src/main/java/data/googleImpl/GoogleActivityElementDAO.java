@@ -15,7 +15,7 @@ import java.util.List;
  * Created by Christian on 31-05-2017.
  */
 public class GoogleActivityElementDAO implements ActivityElementDAO  {
-    GoogleSheetsDAO googleSheetsDAO = new GoogleSheetsDAOImpl();
+    private GoogleSheetsDAO googleSheetsDAO = new GoogleSheetsDAOImpl();
 
     @Override
     public ActivityElement save(ActivityElement element) throws PersistenceException {
@@ -30,9 +30,13 @@ public class GoogleActivityElementDAO implements ActivityElementDAO  {
     @Override
     public ActivityElement get(String oid) throws PersistenceException, ValidException {
         Spreadsheet sheet = googleSheetsDAO.getSheet(oid);
-        ActivityElement activityElement = GoogleActivityElementParser.parseSheet(sheet);
-        return activityElement;
+        return GoogleActivityElementParser.parseSheet(sheet);
 
+    }
+
+    @Override
+    public List<ActivityElement> findByField(String fieldName, String value) throws PersistenceException {
+        throw new PersistenceException("Not implemented for GoogleActivityElementDAO");
     }
 
     @Override

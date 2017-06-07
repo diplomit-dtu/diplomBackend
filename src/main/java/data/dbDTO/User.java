@@ -2,6 +2,7 @@ package data.dbDTO;
 
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Embedded;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 public class User extends BaseDTO{
@@ -23,7 +25,7 @@ public class User extends BaseDTO{
 	@Embedded
 	private List<AgendaInfo> StudentAgendaInfos = new ArrayList<>();
 
-	User(String userName){
+	public User(String userName){
 		this.userName=userName;
 	}
 
