@@ -6,14 +6,13 @@ import org.mongodb.morphia.annotations.Entity;
 
 import java.time.LocalDate;
 
-/**
+/** CourseDTO
  * Created by Christian on 11-05-2017.
  */
 @Data
 @Entity
-@RequiredArgsConstructor
 public class Course extends BaseDTO{
-    public final static String COURSE_ID = "courseId";
+    public final static String COURSE_ID = "courseId"; //For Unique identification - used for seaching
     private String courseId; //ShortHandCode for Course ie. 02324F17
     private String courseName; //Course name - Advanced programming
     private LocalDate startingDate; //Start of course
@@ -23,9 +22,8 @@ public class Course extends BaseDTO{
     private String linkCollection;
 
     //Reference for fetching courseplan
-
     private CoursePlanSource coursePlanSource;
-    private String coursePlanId;
+    private String coursePlanId; //Could both be GoogleSheetId and MongoDbObjectId
 
     //TODO add relevant ekstra information
     public enum CoursePlanSource {

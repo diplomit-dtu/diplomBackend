@@ -17,13 +17,11 @@ import java.util.Set;
 @Data
 @Embedded
 @NoArgsConstructor
-@RequiredArgsConstructor
 public class Permission {
 
     String permissionPath;
     Set<RestMethod> allowedMethods = new HashSet<>();
     Set<RestMethod> allowedOwnMethods = new HashSet<>();
-    Boolean accessControl;
     Map<String, Permission> subPermissions = new HashMap<>();
 
     public enum RestMethod {

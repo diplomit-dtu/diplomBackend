@@ -8,6 +8,7 @@ import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,8 @@ import java.util.Map;
 public class User {
 	private String userName;
 	private List<Role> roles;
-	private Map<String, Permission> permissions = new HashMap();
+	private Map<String, Permission> permissions = new HashMap<>();
+	private List<String> StudentAgendas = new ArrayList<>();
 
 	User(String userName){
 		this.userName=userName;

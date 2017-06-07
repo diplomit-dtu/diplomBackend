@@ -7,6 +7,8 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Reference;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,9 +18,10 @@ import java.util.Map;
 @Entity
 @Data
 public class StudentAgenda extends BaseDTO {
-    @Reference
-    private CoursePlan coursePlan;
-    private Map<String, >
+
+    transient private CoursePlan coursePlan;
+    private Map<String, SubElementMetaData> metaData = new HashMap<>();
+    private List<Link> courseLinks;
 
 
 }
