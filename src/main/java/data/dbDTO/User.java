@@ -19,7 +19,8 @@ public class User {
 	private String userName;
 	private List<Role> roles;
 	private Map<String, Permission> permissions = new HashMap<>();
-	private List<String> StudentAgendas = new ArrayList<>();
+	@Embedded
+	private List<AgendaInfo> StudentAgendaInfos = new ArrayList<>();
 
 	User(String userName){
 		this.userName=userName;
@@ -27,6 +28,5 @@ public class User {
 
 	@Embedded
 	private LinkCollection generalLinks;
-
 
 }

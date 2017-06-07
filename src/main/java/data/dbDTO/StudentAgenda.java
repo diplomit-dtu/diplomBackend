@@ -19,6 +19,7 @@ import java.util.Map;
 @Data
 public class StudentAgenda extends BaseDTO {
 
+    private String courseOId;
     transient private CoursePlan coursePlan;
     private Map<String, SubElementMetaData> metaData = new HashMap<>();
     private List<Link> courseLinks;

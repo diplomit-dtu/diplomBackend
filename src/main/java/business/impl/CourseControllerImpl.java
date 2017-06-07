@@ -22,9 +22,9 @@ import java.util.List;
  */
 public class CourseControllerImpl implements CourseController {
     //TODO refactor for serviceRegistry
-    CourseDAO courseDAO = new MongoCourseDAO();
-    CoursePlanDAO mongoCoursePlanDAO = new MongoCoursePlanDAO();
-    CoursePlanDAO googleCoursePlanDAO = new GoogleCoursePlanDAO();
+    private CourseDAO courseDAO = new MongoCourseDAO();
+    private CoursePlanDAO mongoCoursePlanDAO = new MongoCoursePlanDAO();
+    private CoursePlanDAO googleCoursePlanDAO = new GoogleCoursePlanDAO();
 
     @Override
     public List<Course> getCourses(){

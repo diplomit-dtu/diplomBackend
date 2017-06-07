@@ -19,11 +19,13 @@ public class AgendaControllerImpl implements AgendaController {
     private AgendaDAO agendaDAO = new MongoAgendaDAO();
 
     @Override
-    public StudentAgenda getAgenda(String courseId, String studentId) throws ValidException, PersistenceException, ElementNotFoundException {
-        Course course = courseController.getCourse(courseId);
-        if (course==null){
-            return null;
-        }
+    public StudentAgenda getAgenda(String agendaId) throws ValidException, PersistenceException, ElementNotFoundException {
+        StudentAgenda agenda = agendaDAO.get(agendaId);
+        if (agenda == null) throw new ElementNotFoundException("Agenda not found!");
+        String courseOId = agenda.getCourseOId();
+        if (courseOId == null) throw new PersistenceException("courseId missing on agenda!");
+        Course course = courseController.getCourse(courseOId);
+        if (course==null) throw new PersistenceException("Course doesn't exist! " + courseOId);
         Course.CoursePlanSource coursePlanSource = course.getCoursePlanSource();
         CoursePlan coursePlan;
         if (Course.CoursePlanSource.GoogleSheet.equals(coursePlanSource)){
@@ -33,14 +35,15 @@ public class AgendaControllerImpl implements AgendaController {
         } else {
             throw new PersistenceException("Wrong type of CoursePlanSource: " + coursePlanSource); //Forgot to implent an enum!
         }
-        StudentAgenda agenda = agendaDAO.get()
+        agenda.setCoursePlan(coursePlan);
 
-        return null ;
+
+        return agenda ;
     }
 
-    private StudentAgenda enrich(CoursePlan coursePlan) {
-
-
-        return null;
+    @Override
+    public StudentAgenda saveAgenda(StudentAgenda agenda) throws PersistenceException {
+        return agendaDAO.save(agenda);
     }
+
 }
