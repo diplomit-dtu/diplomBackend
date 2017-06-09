@@ -3,6 +3,7 @@ package data.dbDTO;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Embedded;
@@ -16,6 +17,7 @@ import java.util.Map;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+@NoArgsConstructor
 @Entity
 public class User extends BaseDTO{
 	public static final String userNameString="userName";

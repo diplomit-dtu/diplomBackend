@@ -1,11 +1,15 @@
 package rest.login;
 
+import business.impl.UserControllerImpl;
+import business.interfaces.UserController;
 import config.Config;
 import config.DeployConfig;
 import data.JWTHandler;
 import data.dbDTO.User;
+import data.interfaces.PersistenceException;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import rest.ElementNotFoundException;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -22,6 +26,7 @@ import java.net.URI;
  */
 @Path(Config.CN_SERVICE_PATH)
 public class CampusNetService {
+    UserController userController = new UserControllerImpl();
 
 
     //STEP 1: Redirecting to campusNet Authentication
@@ -48,6 +53,8 @@ public class CampusNetService {
             String jwtToken = "";
             //STEP 4: Issue Token and redicret to frontpage including token in url:
             if (validationArray != null && validationArray.length == 2 && validationArray[0].toLowerCase().trim().equals("yes")) {
+                User user = resolveUser(validationArray[1]);
+
                 jwtToken = JWTHandler.generateJwtToken(new User(validationArray[1]));
                 return Response.ok().entity(
                         "Login Success, id: " + validationArray[1] + "<a href=\"" + frontUrl + "/?token=" + jwtToken + "\">Goto main page</a>"
@@ -67,5 +74,26 @@ public class CampusNetService {
             return Response.serverError().entity("Could not connect to campusnet-auth").build();
         }
 
+    }
+
+    private User resolveUser(String cnId){
+        User userByCampusNetId = null;
+        try {
+            userByCampusNetId = userController.getUserByCampusNetId(cnId);
+            if (userByCampusNetId==null){
+                throw new ElementNotFoundException("null User in db");
+            }
+        } catch (ElementNotFoundException e) {
+            try {
+                userByCampusNetId = userController.saveUser(new User());
+            } catch (PersistenceException e1) {
+               userByCampusNetId = userController.getAnonymous();
+            }
+
+        } catch (PersistenceException e) {
+            userByCampusNetId = userController.getAnonymous();
+        }
+
+        return userByCampusNetId;
     }
 }

@@ -20,7 +20,6 @@ public class MongoUserDAO extends MongoBaseDAO<User> implements UserDAO {
 
     @Override
     public User findByCampusNetId(String campusNetId) throws PersistenceException, ElementNotFoundException {
-        Datastore ds = MorphiaHandler.getDS();
         List<User> users = findByField(User.userNameString, campusNetId);
         if (users.size()<1){
             throw new ElementNotFoundException("No such user");
