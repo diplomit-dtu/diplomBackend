@@ -1,5 +1,8 @@
 package rest;
 
+import auth.Permission;
+import auth.SecureEndpoint;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
@@ -12,4 +15,12 @@ public class HelloService {
     public String getHello(){
         return "HELLO From Jersey!";
     }
+
+    @GET
+    @Path("secure")
+    @SecureEndpoint({Permission.ADMIN_USERS,Permission.USER_UPDATE_SELF})
+    public String getSecureHello(){
+        return "Hello from secure!";
+    }
+
 }

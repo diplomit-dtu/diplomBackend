@@ -1,4 +1,4 @@
-package data;
+package auth;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,7 +22,7 @@ public class JWTHandler {
 
 		static Key key = MacProvider.generateKey(SignatureAlgorithm.HS512);
 		
-	public static String generateJwtToken(User user){
+	public static <T> String generateJwtToken(User user){
 		Calendar expiry = Calendar.getInstance();
 		expiry.add(Calendar.SECOND, TOKEN_EXPIRY);
 		return Jwts.builder()

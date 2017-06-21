@@ -4,7 +4,7 @@ import business.impl.UserControllerImpl;
 import business.interfaces.UserController;
 import config.Config;
 import config.DeployConfig;
-import data.JWTHandler;
+import auth.JWTHandler;
 import data.dbDTO.User;
 import data.interfaces.PersistenceException;
 import okhttp3.OkHttpClient;
