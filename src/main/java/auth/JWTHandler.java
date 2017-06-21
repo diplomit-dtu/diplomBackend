@@ -10,18 +10,22 @@ import java.security.Key;
 import java.util.Calendar;
 
 public class JWTHandler {
-		private static final int TOKEN_EXPIRY = 10;
+	private static final int TOKEN_EXPIRY = 10;
 
-		@SuppressWarnings("serial")
-		public static class AuthException extends Exception {
-			public AuthException(String string) {
-				super(string);
-			}
+	@SuppressWarnings("serial")
+	public static class AuthException extends Exception {
+		public AuthException(String string) {
+			super(string);
+		}
 
 	}
+	public static class ExpiredLoginException extends Exception {
+		public ExpiredLoginException(String string) { super(string);
+		}
+	}
 
-		static Key key = MacProvider.generateKey(SignatureAlgorithm.HS512);
-		
+	static Key key = MacProvider.generateKey(SignatureAlgorithm.HS512);
+
 	public static <T> String generateJwtToken(User user){
 		Calendar expiry = Calendar.getInstance();
 		expiry.add(Calendar.SECOND, TOKEN_EXPIRY);
@@ -32,30 +36,30 @@ public class JWTHandler {
 				.setExpiration(expiry.getTime())
 				.compact();
 	}
-	
-	public static Jws<Claims> validateToken(String tokenString) throws AuthException {
-		 Claims claims = null;
+
+	public static Jws<Claims> validateToken(String tokenString) throws AuthException, ExpiredLoginException {
+		Claims claims = null;
 		try {
 			claims = Jwts.parser().setSigningKey(key).parseClaimsJws(tokenString).getBody();
-			 ObjectMapper mapper = new ObjectMapper();
-			 User user = mapper.convertValue((claims.get("user")), User.class);
-			 System.out.println(user);
-			 return Jwts.parser().setSigningKey(key).parseClaimsJws(tokenString);
+			ObjectMapper mapper = new ObjectMapper();
+			User user = mapper.convertValue((claims.get("user")), User.class);
+			System.out.println(user);
+			return Jwts.parser().setSigningKey(key).parseClaimsJws(tokenString);
 		} catch (ExpiredJwtException e) {
-			throw new AuthException("Token too old!");
+			throw new ExpiredLoginException("Token too old!");
 		} catch (UnsupportedJwtException e) {
 			throw new AuthException("UnsupportedToken");
 		} catch (MalformedJwtException e) {
 			throw new AuthException("Malformed Token");
 		} catch (SignatureException e) {
-			throw new AuthException("Token invalid");
+			throw new AuthException("Token signature invalid");
 		} catch (IllegalArgumentException e) {
 			throw new AuthException("Illegal Argument");
 		}
-		
-			
+
+
 
 	}
-	
+
 
 }

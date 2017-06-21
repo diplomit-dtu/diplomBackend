@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
  * Created by Christian on 31-05-2017.
  */
 public class GoogleSheetParser {
-    protected static final int GOOGLE_EPOCH_OFFSET = 25569; //Days between 30/12 1899 and 1/1/1970
+    private static final int GOOGLE_EPOCH_OFFSET = 25569; //Days between 30/12 1899 and 1/1/1970
 
     protected static Date convertGoogleDate(Double numberValue) {
         numberValue-= GOOGLE_EPOCH_OFFSET; //Fix google offset 30/12 1899
