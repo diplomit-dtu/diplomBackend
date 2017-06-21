@@ -9,11 +9,13 @@ import data.interfaces.PersistenceException;
 import rest.ValidException;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Christian on 25-05-2017.
  */
 public class GoogleCoursePlanDAO implements CoursePlanDAO{
+    protected static final String ONLY_GET_IMPLEMENTED_FOR_GOOGLE_API = "Only GET implemented for Google API";
     GoogleSheetsDAO gDAO = new GoogleSheetsDAOImpl();
     @Override
     public CoursePlan save(CoursePlan element) throws PersistenceException {
@@ -41,12 +43,17 @@ public class GoogleCoursePlanDAO implements CoursePlanDAO{
     }
 
     @Override
+    public List<CoursePlan> findByFields(Map<String, Object> fields) throws PersistenceException {
+        throw new PersistenceException(ONLY_GET_IMPLEMENTED_FOR_GOOGLE_API);
+    }
+
+    @Override
     public List<CoursePlan> getAll() throws PersistenceException {
-        throw new PersistenceException("Only GET implemented for Google API");
+        throw new PersistenceException(ONLY_GET_IMPLEMENTED_FOR_GOOGLE_API);
     }
 
     @Override
     public Boolean delete(String oid) throws PersistenceException, ValidException {
-        throw new PersistenceException("Only GET implemented for Google API");
+        throw new PersistenceException(ONLY_GET_IMPLEMENTED_FOR_GOOGLE_API);
     }
 }

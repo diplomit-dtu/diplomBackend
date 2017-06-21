@@ -11,7 +11,7 @@ import java.util.List;
  * Created by Christian on 07-06-2017.
  */
 @Data
-class SubElementMetaData {
+public class SubElementMetaData {
     private String notes;
     private Double progression;
     private List<String> solutions = new ArrayList<>();

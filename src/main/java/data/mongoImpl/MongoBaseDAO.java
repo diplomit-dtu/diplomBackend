@@ -4,10 +4,13 @@ import data.MorphiaHandler;
 import data.interfaces.BaseDAO;
 import data.interfaces.PersistenceException;
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.query.Query;
 import rest.ValidException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /** Base Generic MongoDBImplementation
  * Created by Christian on 11-05-2017.
@@ -58,6 +61,16 @@ public class MongoBaseDAO<T> implements BaseDAO<T> {
         List<T> ts = MorphiaHandler.getDS().createQuery(type)
                 .field(fieldName).equal(value).asList();
         return ts;
+    }
+
+    @Override
+    public List<T> findByFields(Map<String, Object> fields) throws PersistenceException {
+        Query<T> query = MorphiaHandler.getDS().createQuery(type);
+        Set<Map.Entry<String, Object>> entries = fields.entrySet();
+        for (Map.Entry<String,Object> entry: entries) {
+            query.field(entry.getKey()).equals(entry.getValue());
+        }
+        return query.asList();
     }
 
     @Override

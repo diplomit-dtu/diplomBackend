@@ -9,17 +9,25 @@ import com.google.api.services.sheets.v4.model.RowData;
 import com.google.api.services.sheets.v4.model.Sheet;
 import com.google.api.services.sheets.v4.model.Spreadsheet;
 import config.DeployConfig;
+import util.FileLoader;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /** Testing class for
  * Created by Christian on 18-05-2017.
  */
 public class TestMain {
     public static void main(String[] args) throws IOException, GeneralSecurityException {
+        Map<String, Object> content = new HashMap<>();
+        content.put("redirectUrl", DeployConfig.PORTAL_FRONT_URL);
+        content.put("redirectName", DeployConfig.PORTAL_NAME);
+        System.out.println(FileLoader.loadMustache("/redirect.mustache",content));
+
         String spreadsheetId = "1Zj-1eLX67PQRzM7m1icq2vSXzbHn2iFvN4V9cUHTWQo"; // TODO: Update placeholder value.
 
         // The ranges to retrieve from the spreadsheet.

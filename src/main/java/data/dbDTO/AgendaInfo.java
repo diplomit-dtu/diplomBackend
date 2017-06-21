@@ -8,7 +8,7 @@ import org.mongodb.morphia.annotations.Embedded;
  */
 @Data
 @Embedded
-class AgendaInfo {
+public class AgendaInfo {
     private String courseName;
     private String courseId;
     private String AgendaId;

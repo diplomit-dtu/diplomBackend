@@ -6,6 +6,7 @@ package config;
 public class DeployConfig {
     //----Constants----
     private static final String DEFAULT_CN_REDIRECT_URL = "http://localhost:8080" + Config.BASE_API_PATH + "/" + Config.CN_SERVICE_PATH;
+    public static final String PORTAL_NAME = "DiplomPortal";
 
     //----Environment Variables----
     public static final String CN_REDIRECT_URL = (System.getenv("CAMPUSNET_REDIRECT_URL") != null) ?
@@ -16,6 +17,8 @@ public class DeployConfig {
     public static final String JWT_TOKEN_SECRET = System.getenv("JWT_TOKEN_SECRET");
     public static final String PORTAL_FRONT_URL = System.getenv("PORTAL_FRONT_URL");
     public static final String GOOGLE_API_KEY = System.getenv("GOOGLE_API_KEY");
+
+
 
     public static void main(String[] args) {
         System.out.println(CN_REDIRECT_URL);
