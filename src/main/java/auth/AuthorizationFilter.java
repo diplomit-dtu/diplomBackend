@@ -25,11 +25,10 @@ import java.util.List;
 
 import static config.Config.DEBUG;
 
-/**
+/** Authorizationfilter - intercepts jwtTokens and validates permissions
  * Created by Christian on 21-06-2017.
  */
 @Provider
-@SecureEndpoint
 public class AuthorizationFilter implements ContainerRequestFilter {
     @Context
     ResourceInfo resourceInfo;
