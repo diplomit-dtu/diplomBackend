@@ -37,7 +37,9 @@ public class GoogleCoursePlanParser extends GoogleSheetParser {
         CourseActivity activity = new CourseActivity();
         for (CellData cellD : cellDatas) {
             String formattedValue = cellD.getFormattedValue();
-            if (index == 0) { //First row is title
+            if (formattedValue == null){
+                //Do nothing
+            } else if (index == 0) { //First row is title
                 if (formattedValue.toLowerCase().contains("kladde")) {
                     activity.setStatus(CourseActivity.ActivityStatus.DRAFT);
                 } else {
