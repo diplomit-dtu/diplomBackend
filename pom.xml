@@ -123,14 +123,12 @@
                             <goal>copy</goal>
                         </goals>
                         <configuration>
+                            <failOnMissingWebXml>false</failOnMissingWebXml>
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>com.github.jsimone</groupId>
                                     <artifactId>webapp-runner</artifactId>
                                     <version>8.5.11.3</version>
-                                    <configuration>
-                                        <failOnMissingWebXml>false</failOnMissingWebXml>
-                                    </configuration>
                                     <destFileName>webapp-runner.jar</destFileName>
                                 </artifactItem>
                             </artifactItems>
