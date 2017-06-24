@@ -19,9 +19,13 @@ import javax.ws.rs.QueryParam;
 public class AgendaService {
     private AgendaController agendaController = new AgendaControllerImpl();
 
+    @Path("{id}")
+    public AgendaResource getAgendaResource(@PathParam("id") String id){
+        return new AgendaResource(id);
+    }
+
     @GET
     @Path("user/{id}")
-    @SecureEndpoint({Permission.OWN_ID})
     public Agenda getAgendaByUser(@PathParam("id") String id) throws ValidException, ElementNotFoundException, PersistenceException {
 
         return agendaController.getAgenda(id);
@@ -32,4 +36,18 @@ public class AgendaService {
         return null;
     }
 
+
+    //----
+    public class AgendaResource {
+
+        private final String id;
+        @GET
+        public Agenda getAgenda() throws ValidException, ElementNotFoundException, PersistenceException {
+            return agendaController.getAgenda(id);
+        }
+
+        public AgendaResource(String id) {
+            this.id=id;
+        }
+    }
 }
