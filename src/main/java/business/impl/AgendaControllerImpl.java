@@ -5,7 +5,7 @@ import data.interfaces.AgendaDAO;
 import business.interfaces.CourseController;
 import data.dbDTO.Course;
 import data.dbDTO.CoursePlan;
-import data.dbDTO.StudentAgenda;
+import data.dbDTO.Agenda;
 import data.interfaces.PersistenceException;
 import data.mongoImpl.MongoAgendaDAO;
 import rest.ElementNotFoundException;
@@ -19,10 +19,10 @@ public class AgendaControllerImpl implements AgendaController {
     private AgendaDAO agendaDAO = new MongoAgendaDAO();
 
     @Override
-    public StudentAgenda getAgenda(String agendaId) throws ValidException, PersistenceException, ElementNotFoundException {
-        StudentAgenda agenda = agendaDAO.get(agendaId);
+    public Agenda getAgenda(String agendaId) throws ValidException, PersistenceException, ElementNotFoundException {
+        Agenda agenda = agendaDAO.get(agendaId);
         if (agenda == null) throw new ElementNotFoundException("Agenda not found!");
-        String courseOId = agenda.getCourseOId();
+        String courseOId = agenda.getCourseId();
         if (courseOId == null) throw new PersistenceException("courseId missing on agenda!");
         Course course = courseController.getCourse(courseOId);
         if (course==null) throw new PersistenceException("Course doesn't exist! " + courseOId);
@@ -35,14 +35,15 @@ public class AgendaControllerImpl implements AgendaController {
         } else {
             throw new PersistenceException("Wrong type of CoursePlanSource: " + coursePlanSource); //Forgot to implent an enum!
         }
+
         agenda.setCoursePlan(coursePlan);
 
 
-        return agenda ;
+        return agenda;
     }
 
     @Override
-    public StudentAgenda saveAgenda(StudentAgenda agenda) throws PersistenceException {
+    public Agenda saveAgenda(Agenda agenda) throws PersistenceException {
         return agendaDAO.save(agenda);
     }
 

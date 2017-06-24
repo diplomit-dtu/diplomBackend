@@ -2,11 +2,10 @@ package data.googleImpl;
 
 import business.impl.GoogleActivityElementParser;
 import com.google.api.services.sheets.v4.model.Spreadsheet;
-import data.dbDTO.ActivityElement;
+import data.dbDTO.CourseActivityElement;
 import data.interfaces.ActivityElementDAO;
 import data.interfaces.GoogleSheetsDAO;
 import data.interfaces.PersistenceException;
-import data.mongoImpl.MongoBaseDAO;
 import rest.ValidException;
 
 import java.util.List;
@@ -20,29 +19,29 @@ public class GoogleActivityElementDAO implements ActivityElementDAO  {
     private GoogleSheetsDAO googleSheetsDAO = new GoogleSheetsDAOImpl();
 
     @Override
-    public ActivityElement save(ActivityElement element) throws PersistenceException {
+    public CourseActivityElement save(CourseActivityElement element) throws PersistenceException {
         throw new PersistenceException(NOT_IMPLEMENTED_FOR_GOOGLE_ACTIVITY_ELEMENT_DAO);
     }
 
     @Override
-    public List<ActivityElement> saveMultiple(List<ActivityElement> elements) throws PersistenceException {
+    public List<CourseActivityElement> saveMultiple(List<CourseActivityElement> elements) throws PersistenceException {
         throw new PersistenceException(NOT_IMPLEMENTED_FOR_GOOGLE_ACTIVITY_ELEMENT_DAO);
     }
 
     @Override
-    public ActivityElement get(String id) throws PersistenceException, ValidException {
+    public CourseActivityElement get(String id) throws PersistenceException, ValidException {
         Spreadsheet sheet = googleSheetsDAO.getSheet(id);
         return GoogleActivityElementParser.parseSheet(sheet);
 
     }
 
     @Override
-    public List<ActivityElement> findByField(String fieldName, String value) throws PersistenceException {
+    public List<CourseActivityElement> findByField(String fieldName, String value) throws PersistenceException {
         throw new PersistenceException(NOT_IMPLEMENTED_FOR_GOOGLE_ACTIVITY_ELEMENT_DAO);
     }
 
     @Override
-    public List<ActivityElement> findByFields(Map<String, Object> fields) throws PersistenceException {
+    public List<CourseActivityElement> findByFields(Map<String, Object> fields) throws PersistenceException {
         throw new PersistenceException(NOT_IMPLEMENTED_FOR_GOOGLE_ACTIVITY_ELEMENT_DAO);
     }
 
@@ -52,7 +51,7 @@ public class GoogleActivityElementDAO implements ActivityElementDAO  {
     }
 
     @Override
-    public List<ActivityElement> getAll() throws PersistenceException {
+    public List<CourseActivityElement> getAll() throws PersistenceException {
         throw new PersistenceException(NOT_IMPLEMENTED_FOR_GOOGLE_ACTIVITY_ELEMENT_DAO);
     }
 

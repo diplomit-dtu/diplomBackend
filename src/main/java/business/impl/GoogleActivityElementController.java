@@ -1,7 +1,7 @@
 package business.impl;
 
 import business.interfaces.ActivityElementController;
-import data.dbDTO.ActivityElement;
+import data.dbDTO.CourseActivityElement;
 import data.googleImpl.GoogleActivityElementDAO;
 import data.interfaces.ActivityElementDAO;
 import data.interfaces.PersistenceException;
@@ -13,7 +13,7 @@ import rest.ValidException;
 public class GoogleActivityElementController implements ActivityElementController {
     ActivityElementDAO activityElementDAO = new GoogleActivityElementDAO();
     @Override
-    public ActivityElement getGoogleActivityElement(String googleSheetId) throws ValidException, PersistenceException {
+    public CourseActivityElement getGoogleActivityElement(String googleSheetId) throws ValidException, PersistenceException {
         return activityElementDAO.get(googleSheetId);
     }
 }

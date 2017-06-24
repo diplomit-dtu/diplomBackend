@@ -2,6 +2,7 @@ package data.dbDTO;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -11,7 +12,8 @@ import java.util.Map;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class ActivitySubElement extends BaseDTO{
+@NoArgsConstructor
+public class CourseActivitySubElement extends BaseDTO{
     private String title;
 
     private String content;

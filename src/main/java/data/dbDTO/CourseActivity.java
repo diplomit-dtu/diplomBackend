@@ -1,6 +1,7 @@
 package data.dbDTO;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.mongodb.morphia.annotations.Embedded;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.List;
  */
 @Data
 @Embedded
+@NoArgsConstructor
 public class CourseActivity {
 
     private String title;
@@ -22,7 +24,7 @@ public class CourseActivity {
     private Date EndDate;
 
     @Embedded
-    private List<ActivityElement> activityElementList = new ArrayList<>();
+    private List<CourseActivityElement> activityElementList = new ArrayList<>();
 
     public enum ActivityStatus{
         INVISIBLE, DRAFT, VISIBLE

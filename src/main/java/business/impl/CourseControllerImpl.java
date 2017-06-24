@@ -3,7 +3,7 @@ package business.impl;
 import auth.AccessDeniedException;
 import auth.UserUtil;
 import business.interfaces.CourseController;
-import data.dbDTO.ActivityElement;
+import data.dbDTO.CourseActivityElement;
 import data.dbDTO.Course;
 import data.dbDTO.CourseActivity;
 import data.dbDTO.CoursePlan;
@@ -99,8 +99,8 @@ public class CourseControllerImpl implements CourseController {
         CourseActivity courseActivity = new CourseActivity();
         courseActivity.setDescription("Forberedelse");
         courseActivity.setStartDate(Calendar.getInstance().getTime());
-        List<ActivityElement> activityElementList = courseActivity.getActivityElementList();
-        ActivityElement activityElement = new ActivityElement();
+        List<CourseActivityElement> activityElementList = courseActivity.getActivityElementList();
+        CourseActivityElement activityElement = new CourseActivityElement();
         activityElement.setTitle("Lektion 1");
         activityElementList.add(activityElement);
 

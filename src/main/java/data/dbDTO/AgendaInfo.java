@@ -1,6 +1,7 @@
 package data.dbDTO;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.mongodb.morphia.annotations.Embedded;
 
 /**
@@ -8,6 +9,7 @@ import org.mongodb.morphia.annotations.Embedded;
  */
 @Data
 @Embedded
+@NoArgsConstructor
 public class AgendaInfo {
     private String courseName;
     private String courseId;

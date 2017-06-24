@@ -14,10 +14,10 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
-public class ActivityElement extends BaseDTO {
+public class CourseActivityElement extends BaseDTO {
 
     @Reference
-    private List<ActivitySubElement> subElements = new ArrayList<>();
+    private List<CourseActivitySubElement> subElements = new ArrayList<>();
     private String hyperLink;
     private String GoogleSheetId;
     private String title;

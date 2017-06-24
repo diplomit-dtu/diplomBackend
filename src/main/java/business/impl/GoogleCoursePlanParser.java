@@ -1,7 +1,7 @@
 package business.impl;
 
 import com.google.api.services.sheets.v4.model.*;
-import data.dbDTO.ActivityElement;
+import data.dbDTO.CourseActivityElement;
 import data.dbDTO.CourseActivity;
 import data.dbDTO.CoursePlan;
 
@@ -52,19 +52,19 @@ public class GoogleCoursePlanParser extends GoogleSheetParser {
                 Double numberValue = cellD.getEffectiveValue().getNumberValue();
                 activity.setEndDate(convertGoogleDate(numberValue));
             } else {
-                ActivityElement activityElement = new ActivityElement();
+                CourseActivityElement activityElement = new CourseActivityElement();
                 String link = cellD.getHyperlink();
                 if (link != null) {
                     try {
                         String googleSheetId = parseLinkForSheetId(link);
                         activityElement.setGoogleSheetId(googleSheetId);
-                        activityElement.setActivityElementType(ActivityElement.ActivityElementType.GoogleSheet);
+                        activityElement.setActivityElementType(CourseActivityElement.ActivityElementType.GoogleSheet);
                     } catch (IdNotFoundException e) {
-                        activityElement.setActivityElementType(ActivityElement.ActivityElementType.Link);
+                        activityElement.setActivityElementType(CourseActivityElement.ActivityElementType.Link);
                     }
                     activityElement.setHyperLink(link);
                 } else {
-                    activityElement.setActivityElementType(ActivityElement.ActivityElementType.Text);
+                    activityElement.setActivityElementType(CourseActivityElement.ActivityElementType.Text);
                 }
 
                 activityElement.setTitle(cellD.getFormattedValue());

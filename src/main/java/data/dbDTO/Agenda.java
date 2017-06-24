@@ -2,6 +2,7 @@ package data.dbDTO;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
@@ -17,9 +18,10 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-public class StudentAgenda extends BaseDTO {
+@NoArgsConstructor
+public class Agenda extends BaseDTO {
 
-    private String courseOId;
+    private String courseId;
     transient private CoursePlan coursePlan;
     private Map<String, SubElementMetaData> metaData = new HashMap<>();
     private List<Link> courseLinks;

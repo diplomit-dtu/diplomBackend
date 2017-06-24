@@ -2,7 +2,7 @@ package rest;
 
 import business.impl.GoogleActivityElementController;
 import business.interfaces.ActivityElementController;
-import data.dbDTO.ActivityElement;
+import data.dbDTO.CourseActivityElement;
 import data.interfaces.PersistenceException;
 
 import javax.ws.rs.*;
@@ -20,13 +20,13 @@ public class ActivityElementService {
 
     @GET
     @Path("id/{id}") //For native Elements
-    public ActivityElement getActivityElementById(@PathParam("id") String id){
+    public CourseActivityElement getActivityElementById(@PathParam("id") String id){
         return null;
     }
 
     @GET
     @Path("googleid/{id}")
-    public ActivityElement getActivityElementByGoogleID(@PathParam("id") String googleId) throws ValidException, PersistenceException {
+    public CourseActivityElement getActivityElementByGoogleID(@PathParam("id") String googleId) throws ValidException, PersistenceException {
         return activityElementController.getGoogleActivityElement(googleId);
     }
 

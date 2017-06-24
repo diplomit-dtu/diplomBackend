@@ -4,8 +4,8 @@ import com.google.api.services.sheets.v4.model.CellData;
 import com.google.api.services.sheets.v4.model.RowData;
 import com.google.api.services.sheets.v4.model.Sheet;
 import com.google.api.services.sheets.v4.model.Spreadsheet;
-import data.dbDTO.ActivityElement;
-import data.dbDTO.ActivitySubElement;
+import data.dbDTO.CourseActivityElement;
+import data.dbDTO.CourseActivitySubElement;
 import org.bson.types.ObjectId;
 
 import java.util.List;
@@ -15,16 +15,16 @@ import java.util.List;
  */
 public class GoogleActivityElementParser extends GoogleSheetParser {
 
-    public static ActivityElement parseSheet(Spreadsheet sheet) {
-        ActivityElement activityElement = new ActivityElement();
-        activityElement.setActivityElementType(ActivityElement.ActivityElementType.GoogleSheet);
+    public static CourseActivityElement parseSheet(Spreadsheet sheet) {
+        CourseActivityElement activityElement = new CourseActivityElement();
+        activityElement.setActivityElementType(CourseActivityElement.ActivityElementType.GoogleSheet);
 
         Sheet sheet1 = sheet.getSheets().get(0); //get first Sheet
         List<RowData> rowDatas = sheet1.getData().get(0).getRowData(); //Get rows
         boolean headerFound = false;
         if (rowDatas==null) {
-            ActivitySubElement activitySubElement = new ActivitySubElement();
-            activitySubElement.setSubElementType(ActivitySubElement.SubElementType.Text);
+            CourseActivitySubElement activitySubElement = new CourseActivitySubElement();
+            activitySubElement.setSubElementType(CourseActivitySubElement.SubElementType.Text);
             activitySubElement.setTitle("Google Sheet'et er tomt");
             activityElement.getSubElements().add(activitySubElement);
             return activityElement;
@@ -43,8 +43,8 @@ public class GoogleActivityElementParser extends GoogleSheetParser {
         return activityElement;
     }
 
-    private static ActivitySubElement parseRow(List<CellData> values) {
-        ActivitySubElement subElement = new ActivitySubElement();
+    private static CourseActivitySubElement parseRow(List<CellData> values) {
+        CourseActivitySubElement subElement = new CourseActivitySubElement();
         String Content = "";
         int index = 0;
         for (CellData cData : values) {
@@ -70,40 +70,40 @@ public class GoogleActivityElementParser extends GoogleSheetParser {
         return subElement;
     }
 
-    private static void parseTypeField(ActivitySubElement subElement, String formattedValue) {
+    private static void parseTypeField(CourseActivitySubElement subElement, String formattedValue) {
         String typeString = formattedValue.toLowerCase();
         if (subElement.getHyperLink() == null) { //Didn't Find a hyperLink Assume code assignment or free text.
             if (typeString.contains("code")) {
                 try {
                     ObjectId oid = new ObjectId(subElement.getContent());
 //                    subElement.setId(subElement.getContent()); //Assume that Content is an Id for Native
-                    subElement.setSubElementType(ActivitySubElement.SubElementType.Code);
+                    subElement.setSubElementType(CourseActivitySubElement.SubElementType.Code);
                 } catch (IllegalArgumentException e){
                     //Not a code element....
-                    subElement.setSubElementType(ActivitySubElement.SubElementType.Text);
+                    subElement.setSubElementType(CourseActivitySubElement.SubElementType.Text);
                 }
 
             } else {
-                subElement.setSubElementType(ActivitySubElement.SubElementType.Text);
+                subElement.setSubElementType(CourseActivitySubElement.SubElementType.Text);
             }
         } else if (typeString.contains("link")) { //of type link
             if (typeString.contains("embedded")) { //try to embed Contents - better not have too much styling ...
-                subElement.setSubElementType(ActivitySubElement.SubElementType.Embedded_Link);
+                subElement.setSubElementType(CourseActivitySubElement.SubElementType.Embedded_Link);
             } else { //Show as link
-                subElement.setSubElementType(ActivitySubElement.SubElementType.Pop_Out_Link);
+                subElement.setSubElementType(CourseActivitySubElement.SubElementType.Pop_Out_Link);
             }
         } else if (typeString.contains("code")) { //Reference to Code assignment
-            subElement.setSubElementType(ActivitySubElement.SubElementType.Code);
+            subElement.setSubElementType(CourseActivitySubElement.SubElementType.Code);
         } else if (typeString.contains("quiz")) { //
-            subElement.setSubElementType(ActivitySubElement.SubElementType.Quiz);
+            subElement.setSubElementType(CourseActivitySubElement.SubElementType.Quiz);
         } else if (typeString.contains("concept")){
-            subElement.setSubElementType(ActivitySubElement.SubElementType.Concept_Question);
+            subElement.setSubElementType(CourseActivitySubElement.SubElementType.Concept_Question);
         } else { //Assume link is external
-            subElement.setSubElementType(ActivitySubElement.SubElementType.Pop_Out_Link);
+            subElement.setSubElementType(CourseActivitySubElement.SubElementType.Pop_Out_Link);
         }
     }
 
-    private static void parseContentField(ActivitySubElement subElement, CellData cData, String formattedValue) {
+    private static void parseContentField(CourseActivitySubElement subElement, CellData cData, String formattedValue) {
         subElement.setContent(formattedValue);
         String hyperlink = cData.getHyperlink();
         if (hyperlink != null) {

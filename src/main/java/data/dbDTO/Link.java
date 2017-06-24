@@ -11,12 +11,17 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
-@RequiredArgsConstructor
 @Entity
 public class Link extends BaseDTO{
 
-    @NonNull private String text;
-    @NonNull private String href;
+    private String text;
+    private String href;
+
+    public Link(String text, String href) {
+        this.text = text;
+        this.href = href;
+    }
+
     private List<String> addData;
 
 }

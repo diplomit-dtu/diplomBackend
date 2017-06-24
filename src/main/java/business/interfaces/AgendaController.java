@@ -1,6 +1,6 @@
 package business.interfaces;
 
-import data.dbDTO.StudentAgenda;
+import data.dbDTO.Agenda;
 import data.interfaces.PersistenceException;
 import rest.ElementNotFoundException;
 import rest.ValidException;
@@ -9,6 +9,6 @@ import rest.ValidException;
  * Created by Christian on 25-05-2017.
  */
 public interface AgendaController {
-    StudentAgenda getAgenda(String agendaId) throws ValidException, PersistenceException, ElementNotFoundException;
-    StudentAgenda saveAgenda(StudentAgenda agenda) throws PersistenceException;
+    Agenda getAgenda(String agendaId) throws ValidException, PersistenceException, ElementNotFoundException;
+    Agenda saveAgenda(Agenda agenda) throws PersistenceException;
 }

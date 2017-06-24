@@ -3,6 +3,7 @@ package data.dbDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Id;
 
@@ -13,6 +14,7 @@ import java.util.Set;
  * Created by Christian on 15-05-2017.
  */
 @Data
+@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class BaseDTO {
 

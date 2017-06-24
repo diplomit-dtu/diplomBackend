@@ -2,6 +2,7 @@ package data.dbDTO;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.mongodb.morphia.annotations.Entity;
 
@@ -14,6 +15,7 @@ import java.util.*;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
+@NoArgsConstructor
 public class Course extends BaseDTO{
     public final static String COURSE_ID = "courseId"; //For Unique identification - used for seaching
     private String courseId; //ShortHandCode for Course ie. 02324F17
