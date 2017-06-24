@@ -1,5 +1,7 @@
 package rest;
 
+import auth.Permission;
+import auth.SecureEndpoint;
 import business.impl.AgendaControllerImpl;
 import business.interfaces.AgendaController;
 import data.dbDTO.StudentAgenda;
@@ -18,7 +20,8 @@ public class AgendaService {
     private AgendaController agendaController = new AgendaControllerImpl();
 
     @GET
-    @Path("id/{id}")
+    @Path("user/{id}")
+    @SecureEndpoint({Permission.OWN_ID})
     public StudentAgenda getAgendaByUser(@PathParam("id") String id) throws ValidException, ElementNotFoundException, PersistenceException {
 
         return agendaController.getAgenda(id);

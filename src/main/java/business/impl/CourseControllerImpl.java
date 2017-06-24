@@ -1,5 +1,7 @@
 package business.impl;
 
+import auth.AccessDeniedException;
+import auth.UserUtil;
 import business.interfaces.CourseController;
 import data.dbDTO.ActivityElement;
 import data.dbDTO.Course;
@@ -14,6 +16,8 @@ import data.mongoImpl.MongoCoursePlanDAO;
 import rest.ElementNotFoundException;
 import rest.ValidException;
 
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Context;
 import java.util.Calendar;
 import java.util.List;
 
@@ -25,6 +29,9 @@ public class CourseControllerImpl implements CourseController {
     private CourseDAO courseDAO = new MongoCourseDAO();
     private CoursePlanDAO mongoCoursePlanDAO = new MongoCoursePlanDAO();
     private CoursePlanDAO googleCoursePlanDAO = new GoogleCoursePlanDAO();
+
+    @Context
+    ContainerRequestContext requestContext;
 
     @Override
     public List<Course> getCourses(){
@@ -61,10 +68,13 @@ public class CourseControllerImpl implements CourseController {
     }
 
     @Override
-    public Course updateCourse(Course updatedCourse) throws PersistenceException{
+    public Course updateCourse(Course updatedCourse) throws PersistenceException, ValidException, AccessDeniedException {
+        UserUtil.checkAdmin(courseDAO, updatedCourse.getId(), requestContext);
         return courseDAO.save(updatedCourse);
 
     }
+
+
 
     @Override
     public String deleteCourse(String id) throws PersistenceException, ValidException {

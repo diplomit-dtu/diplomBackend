@@ -30,8 +30,8 @@ public class GoogleActivityElementDAO implements ActivityElementDAO  {
     }
 
     @Override
-    public ActivityElement get(String oid) throws PersistenceException, ValidException {
-        Spreadsheet sheet = googleSheetsDAO.getSheet(oid);
+    public ActivityElement get(String id) throws PersistenceException, ValidException {
+        Spreadsheet sheet = googleSheetsDAO.getSheet(id);
         return GoogleActivityElementParser.parseSheet(sheet);
 
     }
@@ -43,6 +43,11 @@ public class GoogleActivityElementDAO implements ActivityElementDAO  {
 
     @Override
     public List<ActivityElement> findByFields(Map<String, Object> fields) throws PersistenceException {
+        throw new PersistenceException(NOT_IMPLEMENTED_FOR_GOOGLE_ACTIVITY_ELEMENT_DAO);
+    }
+
+    @Override
+    public int findByFieldAndUpdateField(String findField, Object findFieldValue, String updateField, Object newValue) throws PersistenceException {
         throw new PersistenceException(NOT_IMPLEMENTED_FOR_GOOGLE_ACTIVITY_ELEMENT_DAO);
     }
 

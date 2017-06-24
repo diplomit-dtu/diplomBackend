@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.mongodb.morphia.annotations.Entity;
 
 import java.time.LocalDate;
+import java.util.*;
 
 /** CourseDTO
  * Created by Christian on 11-05-2017.
@@ -19,6 +20,9 @@ public class Course extends BaseDTO{
     private String courseName; //Course name - Advanced programming
     private LocalDate startingDate; //Start of course
     private LocalDate endingDate; //End of course
+    private Set<String> Admins = new HashSet<>();
+    private Set<String> TAs = new HashSet<>();
+    private Set<String> Students = new HashSet<>();
 
     //Referenced documents
     private String linkCollection;

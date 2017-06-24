@@ -15,4 +15,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface SecureEndpoint {
     Permission[] value() default {};
+    String group() default "";
 }

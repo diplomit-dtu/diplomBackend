@@ -1,10 +1,14 @@
 package data.mongoImpl;
 
 import data.MorphiaHandler;
+import data.dbDTO.BaseDTO;
 import data.interfaces.BaseDAO;
 import data.interfaces.PersistenceException;
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.UpdateOperations;
+import org.mongodb.morphia.query.UpdateResults;
 import rest.ValidException;
 
 import java.util.List;
@@ -15,7 +19,7 @@ import java.util.Set;
 /** Base Generic MongoDBImplementation
  * Created by Christian on 11-05-2017.
  */
-public class MongoBaseDAO<T> implements BaseDAO<T> {
+public class MongoBaseDAO<T extends BaseDTO> implements BaseDAO<T> {
     private final Class<T> type;
     //Needed for persistence
     public MongoBaseDAO(Class<T> type) {
@@ -46,13 +50,14 @@ public class MongoBaseDAO<T> implements BaseDAO<T> {
         return elements;
     }
 
+
     @Override
-    public T get(String oid) throws PersistenceException, ValidException {
+    public T get(String id) throws PersistenceException, ValidException {
         try {
-            ObjectId objectId = new ObjectId(oid);
+            ObjectId objectId = new ObjectId(id);
             return MorphiaHandler.getInstance().getById(objectId, type);
         } catch (IllegalArgumentException e){
-            throw new ValidException("ObjectID not Valid: " + oid);
+            throw new ValidException("ObjectID not Valid: " + id);
         }
     }
 
@@ -71,6 +76,15 @@ public class MongoBaseDAO<T> implements BaseDAO<T> {
             query.field(entry.getKey()).equals(entry.getValue());
         }
         return query.asList();
+    }
+
+    @Override
+    public int findByFieldAndUpdateField(String findField, Object findFieldValue, String updateField, Object newValue) throws PersistenceException {
+        Datastore datastore = MorphiaHandler.getDS();
+        Query<T> query = datastore.createQuery(type).field(findField).equal(findFieldValue);
+        UpdateOperations<T> updateOp = datastore.createUpdateOperations(type).set(updateField, newValue);
+        UpdateResults updateResults = datastore.update(query, updateOp);
+        return updateResults.getInsertedCount();
     }
 
     @Override

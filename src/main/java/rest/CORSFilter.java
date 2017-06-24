@@ -21,7 +21,7 @@ import java.io.IOException;
 import static config.Config.DEBUG;
 
 
-/**
+/** Filter that allows CORS - disable for non-CORS
  * Created by Christian on 04-05-2017.
  */
 @Provider

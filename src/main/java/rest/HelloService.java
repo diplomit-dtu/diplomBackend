@@ -18,7 +18,7 @@ public class HelloService {
 
     @GET
     @Path("secure")
-    @SecureEndpoint({Permission.ADMIN_USERS,Permission.USER_UPDATE_SELF})
+    @SecureEndpoint({Permission.ADMIN_ALLUSERS,Permission.USER_UPDATE_SELF})
     public String getSecureHello(){
         return "Hello from secure!";
     }

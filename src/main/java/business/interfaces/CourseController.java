@@ -6,6 +6,8 @@ import data.interfaces.PersistenceException;
 import rest.ElementNotFoundException;
 import rest.ValidException;
 
+import javax.ws.rs.container.ContainerRequestContext;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 /**
@@ -19,7 +21,7 @@ public interface CourseController {
 
     Course createCourse(Course newCourse) throws ValidException, PersistenceException;
 
-    Course updateCourse(Course updatedCourse) throws PersistenceException;
+    Course updateCourse(Course updatedCourse) throws PersistenceException, ValidException, AccessDeniedException, auth.AccessDeniedException;
 
     String deleteCourse(String id) throws PersistenceException, ValidException;
 
@@ -37,4 +39,7 @@ public interface CourseController {
 
     //GoogleCoursePlans
     CoursePlan getGoogleCoursePlan(String id) throws ValidException, PersistenceException;
+
+
+
 }

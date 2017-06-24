@@ -28,11 +28,11 @@ public class GoogleCoursePlanDAO implements CoursePlanDAO{
     }
 
     @Override
-    public CoursePlan get(String oid) throws PersistenceException, ValidException {
+    public CoursePlan get(String id) throws PersistenceException, ValidException {
         GoogleSheetsDAOImpl googleSheetsDAO = new GoogleSheetsDAOImpl();
-        Spreadsheet sheet = googleSheetsDAO.getSheet(oid);
+        Spreadsheet sheet = googleSheetsDAO.getSheet(id);
         CoursePlan coursePlan = GoogleCoursePlanParser.parseCoursePlanFromSheet(sheet);
-        coursePlan.setGoogleSheetId(oid);
+        coursePlan.setGoogleSheetId(id);
         return coursePlan;
     }
 
@@ -44,6 +44,11 @@ public class GoogleCoursePlanDAO implements CoursePlanDAO{
 
     @Override
     public List<CoursePlan> findByFields(Map<String, Object> fields) throws PersistenceException {
+        throw new PersistenceException(ONLY_GET_IMPLEMENTED_FOR_GOOGLE_API);
+    }
+
+    @Override
+    public int findByFieldAndUpdateField(String findField, Object findFieldValue, String updateField, Object newValue) throws PersistenceException {
         throw new PersistenceException(ONLY_GET_IMPLEMENTED_FOR_GOOGLE_API);
     }
 

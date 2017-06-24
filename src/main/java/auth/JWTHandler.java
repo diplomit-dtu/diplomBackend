@@ -10,7 +10,7 @@ import java.security.Key;
 import java.util.Calendar;
 
 public class JWTHandler {
-	private static final int TOKEN_EXPIRY = 10;
+	private static final int TOKEN_EXPIRY = 120;
 
 	@SuppressWarnings("serial")
 	public static class AuthException extends Exception {
@@ -28,7 +28,7 @@ public class JWTHandler {
 
 	public static <T> String generateJwtToken(User user){
 		Calendar expiry = Calendar.getInstance();
-		expiry.add(Calendar.SECOND, TOKEN_EXPIRY);
+		expiry.add(Calendar.MINUTE, TOKEN_EXPIRY);
 		return Jwts.builder()
 				.setIssuer("DiplomIt")
 				.claim("user", user)
@@ -40,8 +40,10 @@ public class JWTHandler {
 	public static Jws<Claims> validateToken(String tokenString) throws AuthException, ExpiredLoginException {
 		Claims claims = null;
 		try {
+			System.out.println(tokenString);
 			claims = Jwts.parser().setSigningKey(key).parseClaimsJws(tokenString).getBody();
 			ObjectMapper mapper = new ObjectMapper();
+			System.out.println(claims.get("user"));
 			User user = mapper.convertValue((claims.get("user")), User.class);
 			System.out.println(user);
 			return Jwts.parser().setSigningKey(key).parseClaimsJws(tokenString);
@@ -54,7 +56,7 @@ public class JWTHandler {
 		} catch (SignatureException e) {
 			throw new AuthException("Token signature invalid");
 		} catch (IllegalArgumentException e) {
-			throw new AuthException("Illegal Argument");
+			throw new AuthException("Illegal Argument: " + e.getMessage());
 		}
 
 

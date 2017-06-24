@@ -5,6 +5,11 @@ package auth;
  */
 public enum Permission {
     USER_UPDATE_SELF,
-    ADMIN_USERS,
+    OWN_ID, GET_COURSE,
+    PORTAL_ADMIN, PORTAL_ADMINCOURSES, ADMIN_ALLUSERS, ADMIN_ROLES,
+    ADMIN,EDITOR,READER
+
+    //Global privileges
+
 
 }
