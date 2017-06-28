@@ -121,7 +121,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             if (splitAuthHeader.length != 2) {
                 throw new MalformedAuthorizationHeaderException("Authorization header malformed: " + authHeader + ", Should be: 'Authorization: Bearer <JWTTOKEN>'");
             } else {
-                Jws<Claims> claimsJws = JWTHandler.validateToken(splitAuthHeader[1]);
+                Jws<Claims> claimsJws = new JWTHandler().validateToken(splitAuthHeader[1]);
                 ObjectMapper mapper = new ObjectMapper();
                 User user = mapper.convertValue(claimsJws.getBody().get("user"),User.class);
                 if (DEBUG) System.out.println("User found: " + user);

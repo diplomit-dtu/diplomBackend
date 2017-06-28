@@ -58,7 +58,7 @@ public class CampusNetService {
             if (validationArray.length == 2 && validationArray[0].toLowerCase().trim().equals("yes")) { //Login success
                 User user = resolveUser(validationArray[1]);
 
-                jwtToken = JWTHandler.generateJwtToken(user);
+                jwtToken = new JWTHandler().generateJwtToken(user);
                 String html = generateRedirectPage(jwtToken);
                 System.out.println(html);
                 return Response.ok().entity(html)

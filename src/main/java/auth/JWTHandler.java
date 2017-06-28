@@ -24,7 +24,7 @@ public class JWTHandler {
 		public ExpiredLoginException(String string) { super(string);
 		}
 	}
-	static {
+	public JWTHandler(){
 		if (DeployConfig.JWT_SECRET_KEY != null || DeployConfig.JWT_SECRET_KEY !="") {
 			String string = DeployConfig.JWT_SECRET_KEY;
 			key = new SecretKeySpec(string.getBytes(),0,string.length(),"HS512");
@@ -32,9 +32,9 @@ public class JWTHandler {
 			key = MacProvider.generateKey(SignatureAlgorithm.HS512);
 		}
 	}
-	static Key key;
+	private Key key;
 
-	public static <T> String generateJwtToken(User user){
+	public String generateJwtToken(User user){
 		Calendar expiry = Calendar.getInstance();
 		expiry.add(Calendar.MINUTE, TOKEN_EXPIRY);
 		return Jwts.builder()
@@ -45,7 +45,7 @@ public class JWTHandler {
 				.compact();
 	}
 
-	public static Jws<Claims> validateToken(String tokenString) throws AuthException, ExpiredLoginException {
+	public Jws<Claims> validateToken(String tokenString) throws AuthException, ExpiredLoginException {
 		Claims claims = null;
 		try {
 			System.out.println(tokenString);
