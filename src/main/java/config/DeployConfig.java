@@ -15,7 +15,8 @@ public class DeployConfig {
     public static final String DATABASE_URL = System.getenv("DATABASE_URL");
 
     public static final String JWT_SECRET_KEY = System.getenv("JWT_SECRET_KEY");
-    public static final String PORTAL_FRONT_URL = System.getenv("PORTAL_FRONT_URL");
+    public static final String PORTAL_FRONT_URL = (System.getenv("PORTAL_FRONT_URL") != null) ?
+            System.getenv("PORTAL_FRONT_URL"):"/";
     public static final String GOOGLE_API_KEY = System.getenv("GOOGLE_API_KEY");
 
     public static final Boolean NON_PROD = (System.getenv("NON_PROD") !=null);
