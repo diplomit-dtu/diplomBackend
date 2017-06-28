@@ -7,9 +7,11 @@ import data.dbDTO.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 
+import javax.annotation.Priority;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.Priorities;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -24,20 +26,14 @@ import static config.Config.DEBUG;
 /** Filter that allows CORS - disable for non-CORS
  * Created by Christian on 04-05-2017.
  */
+@Priority(500) //Before AuthorizationFilter (1000) to make sure that headers always get injected
 @Provider
 public class CORSFilter implements ContainerRequestFilter {
+     @Context
+    private HttpServletRequest request;
     @Context
-    private ResourceInfo resourceInfo;
-    @Context
-    HttpServletRequest request;
-    @Context
-    HttpServletResponse response;
+    private HttpServletResponse response;
     private UserController userController = new UserControllerImpl();
-
-
-    public void init(FilterConfig filterConfig) throws ServletException {
-
-    }
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -54,10 +50,5 @@ public class CORSFilter implements ContainerRequestFilter {
         response.setHeader("Access-Control-Allow-Credentials:", "true");
         response.setHeader("Access-Control-Expose-Headers","Authorization");
     }
-
-    public void destroy() {
-
-    }
-
 
 }

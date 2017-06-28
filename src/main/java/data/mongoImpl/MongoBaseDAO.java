@@ -29,6 +29,7 @@ public class MongoBaseDAO<T extends BaseDTO> implements BaseDAO<T> {
     @Override
     public T save(T element) throws PersistenceException {
         if(element!=null) element =  MorphiaHandler.getInstance().createOrUpdate(element);
+        System.out.println(this.getClass() + ": element:" + element);
         return element;
     }
 
@@ -59,6 +60,12 @@ public class MongoBaseDAO<T extends BaseDTO> implements BaseDAO<T> {
         } catch (IllegalArgumentException e){
             throw new ValidException("ObjectID not Valid: " + id);
         }
+    }
+
+    @Override
+    public List<T> multiGet(List<String> ids) throws PersistenceException {
+        Query<T> ts = MorphiaHandler.getDS().get(type, ids);
+        return ts.asList();
     }
 
     @Override

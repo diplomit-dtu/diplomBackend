@@ -23,6 +23,7 @@ import java.util.Map;
  */
 public class TestMain {
     public static void main(String[] args) throws IOException, GeneralSecurityException {
+
         Map<String, Object> content = new HashMap<>();
         content.put("redirectUrl", DeployConfig.PORTAL_FRONT_URL);
         content.put("redirectName", DeployConfig.PORTAL_NAME);

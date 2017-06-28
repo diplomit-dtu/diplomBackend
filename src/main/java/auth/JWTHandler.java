@@ -2,15 +2,17 @@ package auth;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import config.DeployConfig;
 import data.dbDTO.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.crypto.MacProvider;
 
+import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.util.Calendar;
 
 public class JWTHandler {
-	private static final int TOKEN_EXPIRY = 120;
+	private static final int TOKEN_EXPIRY = 960;
 
 	@SuppressWarnings("serial")
 	public static class AuthException extends Exception {
@@ -23,8 +25,15 @@ public class JWTHandler {
 		public ExpiredLoginException(String string) { super(string);
 		}
 	}
-
-	static Key key = MacProvider.generateKey(SignatureAlgorithm.HS512);
+	static {
+		if (DeployConfig.JWT_SECRET_KEY != null || DeployConfig.JWT_SECRET_KEY !="") {
+			String string = DeployConfig.JWT_SECRET_KEY;
+			key = new SecretKeySpec(string.getBytes(),0,string.length(),"HS512");
+		} else {
+			key = MacProvider.generateKey(SignatureAlgorithm.HS512);
+		}
+	}
+	static Key key;
 
 	public static <T> String generateJwtToken(User user){
 		Calendar expiry = Calendar.getInstance();

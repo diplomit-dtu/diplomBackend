@@ -23,7 +23,7 @@ public class Agenda extends BaseDTO {
 
     private String courseId;
     transient private CoursePlan coursePlan;
-    private Map<String, SubElementMetaData> metaData = new HashMap<>();
+    private Map<String, SubElementMetaData> metaData = new HashMap<>(); //SubelementID, data
     private List<Link> courseLinks;
 
 

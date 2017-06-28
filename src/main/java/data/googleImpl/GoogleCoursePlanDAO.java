@@ -37,6 +37,11 @@ public class GoogleCoursePlanDAO implements CoursePlanDAO{
     }
 
     @Override
+    public List<CoursePlan> multiGet(List<String> ids) throws PersistenceException {
+        throw new PersistenceException((ONLY_GET_IMPLEMENTED_FOR_GOOGLE_API));
+    }
+
+    @Override
     public List<CoursePlan> findByField(String fieldName, String value) throws PersistenceException {
         throw new PersistenceException("Not implemented for Google Courseplan");
 

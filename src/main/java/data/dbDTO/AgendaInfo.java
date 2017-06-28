@@ -12,6 +12,5 @@ import org.mongodb.morphia.annotations.Embedded;
 @NoArgsConstructor
 public class AgendaInfo {
     private String courseName;
-    private String courseId;
     private String AgendaId;
 }

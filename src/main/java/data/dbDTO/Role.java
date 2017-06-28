@@ -26,4 +26,7 @@ public class Role extends BaseDTO {
 
     private List<Role> inheritsPermissionsFromRoles = new ArrayList<>();
 
+    public Role(String roleName) {
+        this.roleName=roleName;
+    }
 }

@@ -8,6 +8,8 @@ import data.dbDTO.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 
+import javax.annotation.Priority;
+import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ResourceInfo;
@@ -24,6 +26,7 @@ import static config.Config.DEBUG;
 /** Authorizationfilter - intercepts jwtTokens and validates global permissions. Resourcelevel Permissions are evaluated af resource level.
  * Created by Christian on 21-06-2017.
  */
+@Priority(Priorities.AUTHENTICATION)
 @Provider
 public class AuthorizationFilter implements ContainerRequestFilter {
     protected static final String DELIMITER = " ";
@@ -42,6 +45,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             annotation = resourceInfo.getResourceClass().getAnnotation(SecureEndpoint.class);
         }
         if (annotation == null) { //No annotation on class level
+            setUserOnContext(requestContext);
             return; //No need to verify - EndPoint is not secured!
         }
         User user = null;
@@ -62,6 +66,20 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build());
         } catch (MalformedAuthorizationHeaderException | JWTHandler.AuthException e) {
             requestContext.abortWith(Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build());
+        }
+
+    }
+
+    private void setUserOnContext(ContainerRequestContext requestContext) {
+        try {
+            User user = resolveUser();
+            requestContext.setProperty(USER,user);
+        } catch (NotLoggedInException| JWTHandler.AuthException e) {
+            //No problem - proceed as anonymous
+        } catch (MalformedAuthorizationHeaderException e) {
+            requestContext.abortWith(Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build());
+        } catch (JWTHandler.ExpiredLoginException e) {
+            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build());
         }
 
     }

@@ -10,7 +10,7 @@ import org.mongodb.morphia.annotations.Id;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
+/** BaseDTO class to handle resourceRights and transform id's
  * Created by Christian on 15-05-2017.
  */
 @Data
@@ -22,7 +22,8 @@ public class BaseDTO {
     @JsonIgnore
     ObjectId objectId;
 
-    private Set<String> Admins = new HashSet<>();
+    private Set<String> Admins = new HashSet<>(); //TODO Possibly refactor to Map<Role,Set<String>> - Role, id's
+    private RightsGroups rightsGroups = new RightsGroups();
 
     public String getId(){
         return this.objectId==null?null:objectId.toHexString();

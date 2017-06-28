@@ -5,6 +5,7 @@ import com.mongodb.MongoClientURI;
 import com.mongodb.WriteResult;
 import config.Config;
 import config.DeployConfig;
+import data.dbDTO.BaseDTO;
 import data.interfaces.PersistenceException;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
@@ -55,8 +56,9 @@ public class MorphiaHandler {
     public static Datastore getDS() throws PersistenceException {
         return getInstance().getDatastore();
     }
-    public <T> T createOrUpdate(T dto) throws PersistenceException {
+    public <T extends BaseDTO> T createOrUpdate(T dto) throws PersistenceException {
         getDatastore().save(dto);
+        System.out.println(this.getClass() + ": dto :" + dto + dto.getId());
         return dto;
     }
 

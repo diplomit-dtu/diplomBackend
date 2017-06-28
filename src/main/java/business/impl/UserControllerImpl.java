@@ -7,6 +7,7 @@ import data.interfaces.PersistenceException;
 import data.interfaces.UserDAO;
 import data.mongoImpl.MongoUserDAO;
 import rest.ElementNotFoundException;
+import rest.ValidException;
 
 import java.util.List;
 
@@ -51,5 +52,10 @@ public class UserControllerImpl implements UserController {
         else {
             throw new PersistenceException("Multiple users with same ID found");
         }
+    }
+
+    @Override
+    public User get(String userId) throws ValidException, PersistenceException {
+        return userDAO.get(userId);
     }
 }

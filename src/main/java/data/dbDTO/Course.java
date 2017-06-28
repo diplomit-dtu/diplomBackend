@@ -18,11 +18,10 @@ import java.util.*;
 @NoArgsConstructor
 public class Course extends BaseDTO{
     public final static String COURSE_ID = "courseId"; //For Unique identification - used for seaching
-    private String courseId; //ShortHandCode for Course ie. 02324F17
+    private String courseShortHand; //ShortHandCode for Course ie. 02324F17
     private String courseName; //Course name - Advanced programming
     private LocalDate startingDate; //Start of course
     private LocalDate endingDate; //End of course
-    private Set<String> Admins = new HashSet<>();
     private Set<String> TAs = new HashSet<>();
     private Set<String> Students = new HashSet<>();
 

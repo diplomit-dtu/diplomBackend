@@ -2,8 +2,13 @@ package rest;
 
 import auth.Permission;
 import auth.SecureEndpoint;
+import auth.UserUtil;
+import business.impl.AgendaControllerImpl;
 import business.impl.UserControllerImpl;
+import business.interfaces.AgendaController;
 import business.interfaces.UserController;
+import config.Config;
+import data.dbDTO.AgendaInfo;
 import data.dbDTO.Role;
 import data.dbDTO.User;
 import data.interfaces.PersistenceException;
@@ -28,6 +33,12 @@ public class UserService {
     public List<User> getAllUsers() throws PersistenceException {
         return userController.getAllUsers();
     }
+
+    @Path("agendas")
+    public UserAgendaResource getUserAgendaResource(){
+        return new UserAgendaResource();
+    }
+
 
     @Path("{id}/roles")
     public RoleResource getRoleResource(@PathParam("id") String id){
@@ -54,5 +65,20 @@ public class UserService {
         }
 
 
+    }
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public class UserAgendaResource {
+        AgendaController agendaController = new AgendaControllerImpl();
+        @Context
+        ContainerRequestContext requestContext;
+
+        @Path("own")
+        @POST
+        public AgendaInfo addNewAgenda(AgendaInfo agendaInfo) throws ValidException, PersistenceException {
+            User user = UserUtil.getUserFromContext(requestContext);
+            AgendaInfo newAgenda = agendaController.createNewAgenda(agendaInfo, user.getId());
+            return newAgenda;
+        }
     }
 }

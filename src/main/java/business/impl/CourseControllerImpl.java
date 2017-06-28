@@ -1,25 +1,23 @@
 package business.impl;
 
-import auth.AccessDeniedException;
-import auth.UserUtil;
+import business.interfaces.AgendaController;
 import business.interfaces.CourseController;
-import data.dbDTO.CourseActivityElement;
-import data.dbDTO.Course;
-import data.dbDTO.CourseActivity;
-import data.dbDTO.CoursePlan;
+import business.interfaces.UserController;
+import data.ControllerRegistry;
+import data.dbDTO.*;
 import data.googleImpl.GoogleCoursePlanDAO;
 import data.interfaces.CourseDAO;
 import data.interfaces.CoursePlanDAO;
 import data.interfaces.PersistenceException;
 import data.mongoImpl.MongoCourseDAO;
 import data.mongoImpl.MongoCoursePlanDAO;
+import data.viewDTO.UserRoleInfo;
 import rest.ElementNotFoundException;
 import rest.ValidException;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 
 /** Business Logic layer for Courses.
  * Created by Christian on 15-05-2017.
@@ -54,24 +52,17 @@ public class CourseControllerImpl implements CourseController {
 
     @Override
     public Course createCourse(Course course) throws ValidException, PersistenceException {
-        try {
-            if (courseDAO.findCourseByCourseID(course.getCourseId())==null) {
-                return courseDAO.save(course);
-            } else {
-                throw new ValidException("CourseID already exists");
-            }
 
-        } catch (PersistenceException e) {
-            e.printStackTrace();
+        if (courseDAO.findCourseByCourseID(course.getCourseShortHand())==null) {
+            return courseDAO.save(course);
+        } else {
+            throw new ValidException("Course with same Shorthand code already exists");
         }
-        return null;
     }
 
     @Override
-    public Course updateCourse(Course updatedCourse) throws PersistenceException, ValidException, AccessDeniedException {
-        UserUtil.checkAdmin(courseDAO, updatedCourse.getId(), requestContext);
+    public Course updateCourse(Course updatedCourse) throws PersistenceException, ValidException {
         return courseDAO.save(updatedCourse);
-
     }
 
 
@@ -121,6 +112,75 @@ public class CourseControllerImpl implements CourseController {
     @Override
     public CoursePlan getGoogleCoursePlan(String id) throws ValidException, PersistenceException {
         return googleCoursePlanDAO.get(id);
+    }
+
+    @Override
+    public Map<Role, Set<String>> getUsers(String id) throws ValidException, PersistenceException {
+        Course course = getCourse(id);
+        Map<Role, Set<String>> userMap = new HashMap<>();
+        userMap.put(new Role("students"), course.getStudents());
+        userMap.put(new Role("admins"), course.getAdmins());
+        userMap.put(new Role("tas"), course.getTAs());
+        return userMap;
+    }
+
+    @Override
+    public void addUserToCourse(String id, UserRoleInfo userRoleInfo) throws ValidException, PersistenceException, ElementNotFoundException {
+        UserController userController = ControllerRegistry.getUserController();
+        Course course = getCourse(id);
+        User user = userController.get(userRoleInfo.getUserId());
+
+        if (user ==null) {
+            throw new ElementNotFoundException("user not found");
+        } else if (course==null){
+            throw new ElementNotFoundException("course not found");
+        }
+        String role = userRoleInfo.getRole().getRoleName().toLowerCase();
+        modifyCourse(userRoleInfo, course, role);
+        modifyUserAndCreateAgenda(userRoleInfo, course, user);
+        //TODO could rewrite for two phase commmit - but some orphan data doesn't matter
+        updateCourse(course);
+        userController.saveUser(user);
+
+    }
+
+    @Override
+    public void removeUserFromCourse(String id, UserRoleInfo userRoleInfo) throws ValidException, PersistenceException {
+        UserController userController = ControllerRegistry.getUserController();
+        Course course = getCourse(id);
+        User user = userController.get(userRoleInfo.getUserId());
+        course.getStudents().remove(userRoleInfo.getUserId());
+        Map<String, AgendaInfo> studentAgendaInfos = user.getAgendaInfoMap();
+        if (studentAgendaInfos!=null && studentAgendaInfos.get(id)!=null) {
+            if (studentAgendaInfos.get(id)!=null)ControllerRegistry.getAgendaController().deleteAgenda(studentAgendaInfos.get(id).getAgendaId());
+            studentAgendaInfos.remove(id);
+        }
+        userController.saveUser(user);
+        updateCourse(course);
+    }
+
+    private void modifyUserAndCreateAgenda(UserRoleInfo userRoleInfo, Course course, User user) throws ValidException, PersistenceException {
+        Map<String, AgendaInfo> studentAgendaInfos = user.getAgendaInfoMap();
+        if (!studentAgendaInfos.containsKey(course.getId())) {
+            AgendaInfo agendaInfo = new AgendaInfo();
+            agendaInfo.setCourseName(course.getCourseName());
+            AgendaController agendaController = ControllerRegistry.getAgendaController();
+            AgendaInfo newAgenda = agendaController.createNewAgenda(agendaInfo, userRoleInfo.getUserId());
+            studentAgendaInfos.put(course.getId(), newAgenda);
+        }
+    }
+
+    private void modifyCourse(UserRoleInfo userRoleInfo, Course course, String role) {
+        String id = userRoleInfo.getUserId();
+        if("admin".equals(role)){
+            course.getAdmins().add(id);
+        } else if ("student".equals(role)){
+            course.getStudents().add(id);
+        } else if ("ta".equals(role)){
+            course.getTAs().add(id);
+        } else {
+            course.getRightsGroups().addUser(userRoleInfo.getRole(),id);
+        }
     }
 
 

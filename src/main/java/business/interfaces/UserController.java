@@ -4,6 +4,7 @@ import data.dbDTO.Role;
 import data.dbDTO.User;
 import data.interfaces.PersistenceException;
 import rest.ElementNotFoundException;
+import rest.ValidException;
 
 import java.util.List;
 
@@ -21,4 +22,6 @@ public interface UserController {
     List<Role> getUserRoles(String userId) throws ElementNotFoundException, PersistenceException;
 
     List<Role> updateGlobalUserRoles(List<Role> roles, String userName) throws PersistenceException, ElementNotFoundException;
+
+    User get(String userId) throws ValidException, PersistenceException;
 }

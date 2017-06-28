@@ -1,11 +1,10 @@
 package business.impl;
 
 import business.interfaces.AgendaController;
+import data.ControllerRegistry;
+import data.dbDTO.*;
 import data.interfaces.AgendaDAO;
 import business.interfaces.CourseController;
-import data.dbDTO.Course;
-import data.dbDTO.CoursePlan;
-import data.dbDTO.Agenda;
 import data.interfaces.PersistenceException;
 import data.mongoImpl.MongoAgendaDAO;
 import rest.ElementNotFoundException;
@@ -15,11 +14,11 @@ import rest.ValidException;
  * Created by Christian on 25-05-2017.
  */
 public class AgendaControllerImpl implements AgendaController {
-    private CourseController courseController = new CourseControllerImpl();
     private AgendaDAO agendaDAO = new MongoAgendaDAO();
 
     @Override
     public Agenda getAgenda(String agendaId) throws ValidException, PersistenceException, ElementNotFoundException {
+        CourseController courseController = ControllerRegistry.getCourseController();
         Agenda agenda = agendaDAO.get(agendaId);
         if (agenda == null) throw new ElementNotFoundException("Agenda not found!");
         String courseOId = agenda.getCourseId();
@@ -33,7 +32,7 @@ public class AgendaControllerImpl implements AgendaController {
         } else if (Course.CoursePlanSource.Mongo.equals(coursePlanSource)){
             coursePlan = courseController.getCoursePlan(course.getCoursePlanId());
         } else {
-            throw new PersistenceException("Wrong type of CoursePlanSource: " + coursePlanSource); //Forgot to implent an enum!
+            throw new PersistenceException("Wrong type of CoursePlanSource: " + coursePlanSource); //Forgot to implement an enum!
         }
 
         agenda.setCoursePlan(coursePlan);
@@ -45,6 +44,21 @@ public class AgendaControllerImpl implements AgendaController {
     @Override
     public Agenda saveAgenda(Agenda agenda) throws PersistenceException {
         return agendaDAO.save(agenda);
+    }
+
+
+    @Override
+    public AgendaInfo createNewAgenda(AgendaInfo info, String userId) throws ValidException, PersistenceException {
+        Agenda agenda = new Agenda();
+        agenda.getAdmins().add(userId);
+        Agenda savedAgenda = agendaDAO.save(agenda);
+        info.setAgendaId(savedAgenda.getId());
+        return info;
+    }
+
+    @Override
+    public Boolean deleteAgenda(String agendaId) throws ValidException, PersistenceException {
+        return agendaDAO.delete(agendaId);
     }
 
 }
