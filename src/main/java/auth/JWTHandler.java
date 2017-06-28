@@ -25,7 +25,7 @@ public class JWTHandler {
 		}
 	}
 	public JWTHandler(){
-		if (DeployConfig.JWT_SECRET_KEY != null || DeployConfig.JWT_SECRET_KEY !="") {
+		if (DeployConfig.JWT_SECRET_KEY != null && DeployConfig.JWT_SECRET_KEY !="") {
 			String string = DeployConfig.JWT_SECRET_KEY;
 			key = new SecretKeySpec(string.getBytes(),0,string.length(),"HS512");
 		} else {
