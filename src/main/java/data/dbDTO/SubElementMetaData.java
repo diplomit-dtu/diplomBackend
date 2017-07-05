@@ -12,12 +12,12 @@ import java.util.List;
 /** MetaData for ActivitySubElements
  * Created by Christian on 07-06-2017.
  */
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode()
 @Data
 @Embedded
-public class SubElementMetaData extends BaseDTO{
+public class SubElementMetaData{
 
-    private String googleUniqueId;
+    private String googleUniqueId; //used to track progress and notes in Google CoursePlan based
     private String notes;
     private Double progression;
     private List<String> solutions = new ArrayList<>();
