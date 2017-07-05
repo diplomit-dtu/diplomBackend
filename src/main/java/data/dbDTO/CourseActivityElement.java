@@ -20,6 +20,7 @@ public class CourseActivityElement extends BaseDTO {
     private List<CourseActivitySubElement> subElements = new ArrayList<>();
     private String hyperLink;
     private String GoogleSheetId;
+    private String googleUniqueId;
     private String title;
 
 

@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Reference;
@@ -23,7 +24,8 @@ public class Agenda extends BaseDTO {
 
     private String courseId;
     transient private CoursePlan coursePlan;
-    private Map<String, SubElementMetaData> metaData = new HashMap<>(); //SubelementID, data
+    @Embedded
+    private Map<String, ElementMetaData> metaData = new HashMap<>(); //<ElementID>, "list of SubElements
     private List<Link> courseLinks;
 
 

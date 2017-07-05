@@ -3,8 +3,10 @@ package auth;
 import business.impl.UserControllerImpl;
 import business.interfaces.UserController;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import data.ControllerRegistry;
 import data.dbDTO.Role;
 import data.dbDTO.User;
+import data.dbDTO.UserData;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 

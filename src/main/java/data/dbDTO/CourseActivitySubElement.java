@@ -19,6 +19,7 @@ public class CourseActivitySubElement extends BaseDTO{
     private String content;
     private SubElementType subElementType;
     private String googleSheetId; //For elements in google sheets
+    private String googleUniqueId;
     private String hyperLink;
     private transient SubElementMetaData metaData;
 

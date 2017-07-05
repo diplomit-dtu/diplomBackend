@@ -3,6 +3,7 @@ package business.impl;
 import business.interfaces.AgendaController;
 import business.interfaces.CourseController;
 import business.interfaces.UserController;
+import business.interfaces.UserDataController;
 import data.ControllerRegistry;
 import data.dbDTO.*;
 import data.googleImpl.GoogleCoursePlanDAO;
@@ -127,20 +128,22 @@ public class CourseControllerImpl implements CourseController {
     @Override
     public void addUserToCourse(String id, UserRoleInfo userRoleInfo) throws ValidException, PersistenceException, ElementNotFoundException {
         UserController userController = ControllerRegistry.getUserController();
+        UserDataController userDataController = ControllerRegistry.getUserDataController();
         Course course = getCourse(id);
         User user = userController.get(userRoleInfo.getUserId());
-
         if (user ==null) {
             throw new ElementNotFoundException("user not found");
         } else if (course==null){
             throw new ElementNotFoundException("course not found");
         }
+        UserData userData = userDataController.getUserData(user.getUserDataId());
+
         String role = userRoleInfo.getRole().getRoleName().toLowerCase();
         modifyCourse(userRoleInfo, course, role);
+
         modifyUserAndCreateAgenda(userRoleInfo, course, user);
         //TODO could rewrite for two phase commmit - but some orphan data doesn't matter
         updateCourse(course);
-        userController.saveUser(user);
 
     }
 
@@ -150,7 +153,8 @@ public class CourseControllerImpl implements CourseController {
         Course course = getCourse(id);
         User user = userController.get(userRoleInfo.getUserId());
         course.getStudents().remove(userRoleInfo.getUserId());
-        Map<String, AgendaInfo> studentAgendaInfos = user.getAgendaInfoMap();
+        UserData userData = ControllerRegistry.getUserDataController().getUserData(user.getUserDataId());
+        Map<String, AgendaInfo> studentAgendaInfos = userData.getAgendaInfoMap();
         if (studentAgendaInfos!=null && studentAgendaInfos.get(id)!=null) {
             if (studentAgendaInfos.get(id)!=null)ControllerRegistry.getAgendaController().deleteAgenda(studentAgendaInfos.get(id).getAgendaId());
             studentAgendaInfos.remove(id);
@@ -160,7 +164,9 @@ public class CourseControllerImpl implements CourseController {
     }
 
     private void modifyUserAndCreateAgenda(UserRoleInfo userRoleInfo, Course course, User user) throws ValidException, PersistenceException {
-        Map<String, AgendaInfo> studentAgendaInfos = user.getAgendaInfoMap();
+        UserData userData = ControllerRegistry.getUserDataController().getUserData(user.getUserDataId());
+
+        Map<String, AgendaInfo> studentAgendaInfos = userData.getAgendaInfoMap();
         if (!studentAgendaInfos.containsKey(course.getId())) {
             AgendaInfo agendaInfo = new AgendaInfo();
             agendaInfo.setCourseName(course.getCourseName());

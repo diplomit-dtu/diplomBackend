@@ -17,6 +17,8 @@ import java.util.List;
 public class CoursePlan extends BaseDTO {
 
     private String googleSheetId;
+    @Embedded
+    List<String> headers = new ArrayList<>();
 
     @Embedded
     List<CourseActivity> courseActivityList = new ArrayList<>();

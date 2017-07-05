@@ -2,6 +2,7 @@ import auth.AuthorizationFilter;
 import auth.Permission;
 import data.dbDTO.Role;
 import data.dbDTO.User;
+import data.dbDTO.UserData;
 import org.junit.Before;
 import org.junit.Test;
 

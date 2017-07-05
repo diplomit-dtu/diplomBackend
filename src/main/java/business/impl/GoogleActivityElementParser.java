@@ -112,9 +112,11 @@ public class GoogleActivityElementParser extends GoogleSheetParser {
                 String googleId = parseLinkForSheetId(hyperlink);
                 subElement.setGoogleSheetId(googleId);
             } catch (IdNotFoundException e) {
-                //Not a google sheet - ignore...
+                subElement.setGoogleUniqueId(cData.getHyperlink());
             }
             subElement.setHyperLink(hyperlink);
+        } else {
+            subElement.setGoogleUniqueId(cData.getFormattedValue());
         }
     }
 }

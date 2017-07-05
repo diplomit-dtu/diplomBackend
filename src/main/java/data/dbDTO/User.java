@@ -20,21 +20,14 @@ import java.util.*;
 public class User extends BaseDTO{
 	public static final String userNameString="userName";
 	private String userName;
-	private String firstName;
-	private String lastName;
-	private List<Role> roles = new ArrayList<>();
-	private Map<String, Role> resourceSpecificRoles = new HashMap<>();
 	private Set<Permission> permissions = new HashSet<>();
-	private Map<String, Role> resourceSpecificPermissions = new HashMap<>();
-	@Embedded
-	private Map<String, AgendaInfo> agendaInfoMap = new HashMap<>(); //courseId,<AgendaId,CourseName>
-	private String activeAgenda;
+	private List<Role> roles = new ArrayList<>();
+
+	private String UserDataId; //non-permission data
 
 	public User(String userName){
 		this.userName=userName;
 	}
 
-	@Embedded
-	private LinkCollection generalLinks;
 
 }

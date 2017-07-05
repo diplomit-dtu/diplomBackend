@@ -14,21 +14,34 @@ public class GoogleCoursePlanParser extends GoogleSheetParser {
 
     public static CoursePlan parseCoursePlanFromSheet(Spreadsheet spreadsheet) {
         CoursePlan coursePlan = new CoursePlan();
+        coursePlan.setGoogleSheetId(spreadsheet.getSpreadsheetId());
         Sheet sheet = spreadsheet.getSheets().get(0);
         GridData gridData = sheet.getData().get(0);
         List<RowData> rowData = gridData.getRowData();
         boolean headerFound = false;
+        int rowNo = 0;
         for (RowData row : rowData) {
-            if (row.getValues() != null) { //discard empty rows
+            //Check if row contains anything interesting...
+            if (row.getValues() != null && row.getValues().get(0)!=null && row.getValues().get(0).getFormattedValue()!=null) { //discard empty rows
                 if (!headerFound) { // look for a header row
                     headerFound = true;
-                    //Skip header line
+                    parseHeader(coursePlan, row.getValues());
                 } else {
                     coursePlan.getCourseActivityList().add(parseActivityRow(row));
                 }
             } //else skip rows
+            rowNo++;
         }
         return coursePlan;
+    }
+
+    private static void parseHeader(CoursePlan coursePlan, List<CellData> cellDatas) {
+        for (CellData cellData: cellDatas){
+            String formattedValue = cellData.getFormattedValue();
+            if ((formattedValue != null && formattedValue != "")) {
+                coursePlan.getHeaders().add(formattedValue);
+            }
+        }
     }
 
     private static CourseActivity parseActivityRow(RowData row) {
@@ -46,25 +59,29 @@ public class GoogleCoursePlanParser extends GoogleSheetParser {
                     activity.setStatus(CourseActivity.ActivityStatus.VISIBLE);
                 }
                 activity.setTitle(formattedValue);
-            } else if (index == 1) { //Second Row description
+            } else if (index == 1) { //Second Row - description
                 activity.setDescription(formattedValue);
             } else if (index == 2 && cellD.getEffectiveValue() != null && cellD.getEffectiveFormat().getNumberFormat() != null) {
+                // Third Row - date
                 Double numberValue = cellD.getEffectiveValue().getNumberValue();
                 activity.setEndDate(convertGoogleDate(numberValue));
-            } else {
+            } else { //Following rows are elements in the activity
                 CourseActivityElement activityElement = new CourseActivityElement();
                 String link = cellD.getHyperlink();
-                if (link != null) {
+                if (link != null) { //Look for link
                     try {
+                        //Check to see if link contains a Google Sheet Id
                         String googleSheetId = parseLinkForSheetId(link);
                         activityElement.setGoogleSheetId(googleSheetId);
                         activityElement.setActivityElementType(CourseActivityElement.ActivityElementType.GoogleSheet);
                     } catch (IdNotFoundException e) {
                         activityElement.setActivityElementType(CourseActivityElement.ActivityElementType.Link);
+                        activityElement.setGoogleUniqueId(link);
                     }
                     activityElement.setHyperLink(link);
                 } else {
                     activityElement.setActivityElementType(CourseActivityElement.ActivityElementType.Text);
+                    activityElement.setGoogleUniqueId(cellD.getFormattedValue());
                 }
 
                 activityElement.setTitle(cellD.getFormattedValue());

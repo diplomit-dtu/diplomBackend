@@ -61,7 +61,7 @@ public class AgendaService {
         }
         @PUT
         @Path("metadata/{id}")
-        public void updateMetaData(@PathParam("id") String subElementId, SubElementMetaData metaData) throws ValidException, ElementNotFoundException, PersistenceException {
+        public void updateMetaData(@PathParam("id") String subElementId, ElementMetaData metaData) throws ValidException, ElementNotFoundException, PersistenceException {
             AgendaController agendaController= ControllerRegistry.getAgendaController();
             Agenda agenda = agendaController.getAgenda(id);
             if (agenda!=null) {
