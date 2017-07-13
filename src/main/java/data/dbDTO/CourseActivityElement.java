@@ -22,6 +22,7 @@ public class CourseActivityElement extends BaseDTO {
     private String GoogleSheetId;
     private String googleUniqueId;
     private String title;
+    private transient Double progression;
 
 
     private ActivityElementType activityElementType = ActivityElementType.Native; //Pr default native

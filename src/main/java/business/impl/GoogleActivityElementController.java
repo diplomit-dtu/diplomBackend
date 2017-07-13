@@ -14,6 +14,8 @@ public class GoogleActivityElementController implements ActivityElementControlle
     ActivityElementDAO activityElementDAO = new GoogleActivityElementDAO();
     @Override
     public CourseActivityElement getGoogleActivityElement(String googleSheetId) throws ValidException, PersistenceException {
-        return activityElementDAO.get(googleSheetId);
+        CourseActivityElement courseActivityElement = activityElementDAO.get(googleSheetId);
+        courseActivityElement.setGoogleUniqueId(googleSheetId);
+        return courseActivityElement;
     }
 }
