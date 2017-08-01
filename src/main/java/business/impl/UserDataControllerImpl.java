@@ -2,6 +2,7 @@ package business.impl;
 
 import business.interfaces.UserDataController;
 import data.dbDTO.UserData;
+import data.interfaces.PersistenceException;
 import data.interfaces.UserDataDAO;
 import data.mongoImpl.MongoUserDataDAO;
 
@@ -15,5 +16,10 @@ public class UserDataControllerImpl implements UserDataController {
     public UserData getUserData(String id) {
 
         return null;
+    }
+
+    @Override
+    public UserData create(UserData userData) throws PersistenceException {
+            return userDataDAO.save(userData);
     }
 }

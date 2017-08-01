@@ -14,7 +14,7 @@ import java.util.Set;
 @Data
 @Embedded
 public class RightsGroups {
-    private Map<String,Set<String>> roleSetMap = new HashMap<>();
+    private Map<String,HashSet<String>> roleSetMap = new HashMap<>();
 
     public Set<String> getUsersInRole(Role role){
         return roleSetMap.get(role);

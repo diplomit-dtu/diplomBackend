@@ -14,6 +14,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
 
 /**
  * Created by Christian on 31-05-2017.
@@ -24,13 +25,29 @@ import javax.ws.rs.core.MediaType;
 public class AgendaService {
     private AgendaController agendaController = new AgendaControllerImpl();
 
+
+    @Context
+    ContainerRequestContext requestContext;
+
+    @GET
+    @Path("template")
+    public Agenda getAgendaTemplate(){
+        Agenda agenda = new Agenda();
+        agenda.setCourseId("courseId");
+        agenda.setCoursePlan(new CoursePlan());
+        agenda.setCourseLinks(new ArrayList<>());
+        return agenda;
+    }
+    @POST
+    public Agenda createAgenda(Agenda agenda) throws PersistenceException {
+        return agendaController.saveAgenda(agenda);
+    }
+
+
     @Path("agendainfo")
     public AgendaInfoResource getAgendaInfo(){
         return new AgendaInfoResource();
     }
-
-    @Context
-    ContainerRequestContext requestContext;
 
     @Path("{id}")
     public AgendaResource getAgendaResource(@PathParam("id") String id){

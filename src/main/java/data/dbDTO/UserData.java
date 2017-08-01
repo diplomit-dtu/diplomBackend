@@ -13,6 +13,7 @@ import java.util.*;
 public class UserData extends BaseDTO {
     private String firstName;
     private String lastName;
+    //TODO: maybe managed the other way round...
     private Map<String, Role> resourceSpecificRoles = new HashMap<>();
 
     private Map<String, Role> resourceSpecificPermissions = new HashMap<>();
