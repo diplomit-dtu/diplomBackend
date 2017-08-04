@@ -11,10 +11,7 @@ import org.mongodb.morphia.query.UpdateOperations;
 import org.mongodb.morphia.query.UpdateResults;
 import rest.ValidException;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /** Base Generic MongoDBImplementation
  * Created by Christian on 11-05-2017.
@@ -63,8 +60,18 @@ public class MongoBaseDAO<T extends BaseDTO> implements BaseDAO<T> {
     }
 
     @Override
-    public List<T> multiGet(List<String> ids) throws PersistenceException {
-        Query<T> ts = MorphiaHandler.getDS().get(type, ids);
+    public List<T> multiGet(Collection<String> ids) throws PersistenceException, ValidException {
+        Collection<ObjectId> objectIds = new HashSet<>();
+
+        for (String id : ids){
+            try {
+                objectIds.add(new ObjectId(id));
+            } catch (IllegalArgumentException e){
+                throw new ValidException("ObjectID not Valid:" + id);
+            }
+        }
+
+        Query<T> ts = MorphiaHandler.getDS().get(type, objectIds);
         return ts.asList();
     }
 

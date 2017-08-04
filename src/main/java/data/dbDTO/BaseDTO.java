@@ -22,8 +22,9 @@ public class BaseDTO {
     @JsonIgnore
     ObjectId objectId;
 
-    private Set<String> Admins = new HashSet<>(); //TODO Possibly refactor to Map<Role,Set<String>> - Role, id's
-    private RightsGroups rightsGroups = new RightsGroups();
+    private Set<String> admins = new HashSet<>(); //UserIds that can CRUD
+    private Set<String> viewers = new HashSet<>(); //UserIds that can R
+    private RightsGroups rightsGroups = new RightsGroups(); //For future new rights
 
     public String getId(){
         return this.objectId==null?null:objectId.toHexString();

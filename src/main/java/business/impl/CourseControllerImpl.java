@@ -12,7 +12,7 @@ import data.interfaces.CoursePlanDAO;
 import data.interfaces.PersistenceException;
 import data.mongoImpl.MongoCourseDAO;
 import data.mongoImpl.MongoCoursePlanDAO;
-import data.viewDTO.UserRoleInfo;
+import data.viewDTO.CourseAddUserInfo;
 import rest.ElementNotFoundException;
 import rest.ValidException;
 
@@ -54,7 +54,7 @@ public class CourseControllerImpl implements CourseController {
     @Override
     public Course createCourse(Course course) throws ValidException, PersistenceException {
 
-        if (courseDAO.findCourseByCourseID(course.getCourseShortHand())==null) {
+        if (course.getCourseShortHand()==null || courseDAO.findCourseByCourseID(course.getCourseShortHand())==null) {
             return courseDAO.save(course);
         } else {
             throw new ValidException("Course with same Shorthand code already exists");
@@ -116,76 +116,121 @@ public class CourseControllerImpl implements CourseController {
     }
 
     @Override
-    public Map<Role, Set<String>> getUsers(String id) throws ValidException, PersistenceException {
-        Course course = getCourse(id);
-        Map<Role, Set<String>> userMap = new HashMap<>();
-        userMap.put(new Role("students"), course.getStudents());
-        userMap.put(new Role("admins"), course.getAdmins());
-        userMap.put(new Role("tas"), course.getTAs());
+    public Map<String, Collection<User>> getUsers(String courseId) throws ValidException, PersistenceException {
+        Course course = getCourse(courseId);
+        System.out.println("courseAdmins: " + course.getAdmins());
+        UserController userController = ControllerRegistry.getUserController();
+        Collection<User> admins = userController.getMultiple(course.getAdmins());
+        System.out.println(admins);
+        Collection<User> students = userController.getMultiple(course.getStudents());
+        Collection<User> tas = userController.getMultiple(course.getTAs());
+        Map<String, Collection<User>> userMap = new HashMap<>();
+        userMap.put("students", students);
+        userMap.put("admins", admins);
+        userMap.put("tas", tas);
         return userMap;
     }
 
     @Override
-    public void addUserToCourse(String id, UserRoleInfo userRoleInfo) throws ValidException, PersistenceException, ElementNotFoundException {
-        UserController userController = ControllerRegistry.getUserController();
-        UserDataController userDataController = ControllerRegistry.getUserDataController();
-        Course course = getCourse(id);
-        User user = userController.get(userRoleInfo.getUserId());
-        if (user ==null) {
-            throw new ElementNotFoundException("user not found");
-        } else if (course==null){
-            throw new ElementNotFoundException("course not found");
-        }
-        UserData userData = userDataController.getUserData(user.getUserDataId());
-
-        String role = userRoleInfo.getRole().getRoleName().toLowerCase();
-        modifyCourse(userRoleInfo, course, role);
-
-        modifyUserAndCreateAgenda(userRoleInfo, course, user);
-        //TODO could rewrite for two phase commmit - but some orphan data doesn't matter
-        updateCourse(course);
-
-    }
-
-    @Override
-    public void removeUserFromCourse(String id, UserRoleInfo userRoleInfo) throws ValidException, PersistenceException {
+    public void addUserToCourse(String id, CourseAddUserInfo userRoleInfo) throws ValidException, PersistenceException, ElementNotFoundException {
         UserController userController = ControllerRegistry.getUserController();
         Course course = getCourse(id);
-        User user = userController.get(userRoleInfo.getUserId());
-        course.getStudents().remove(userRoleInfo.getUserId());
-        UserData userData = ControllerRegistry.getUserDataController().getUserData(user.getUserDataId());
-        Map<String, AgendaInfo> studentAgendaInfos = userData.getAgendaInfoMap();
-        if (studentAgendaInfos!=null && studentAgendaInfos.get(id)!=null) {
-            if (studentAgendaInfos.get(id)!=null)ControllerRegistry.getAgendaController().deleteAgenda(studentAgendaInfos.get(id).getAgendaId());
-            studentAgendaInfos.remove(id);
+        User user = null;
+        if (userRoleInfo.getUserId()!=null) {
+            //user identified by objectId
+            user = userController.get(userRoleInfo.getUserId());
+            if (user == null) {
+                throw new ElementNotFoundException("user not found");
+            } else if (course == null) {
+                throw new ElementNotFoundException("course not found");
+            }
+        } else if (userRoleInfo.getUserName()!=null) {
+            // Add by userName
+            try {
+                user = userController.getUserByCampusNetId(userRoleInfo.getUserName());
+            } catch (ElementNotFoundException e){
+                //User is not in db
+                user = new User();
+                user.setUserName(userRoleInfo.getUserName());
+                user.setFirstName(userRoleInfo.getName());
+                userController.saveUser(user);
+            }
+
         }
-        userController.saveUser(user);
-        updateCourse(course);
-    }
 
-    private void modifyUserAndCreateAgenda(UserRoleInfo userRoleInfo, Course course, User user) throws ValidException, PersistenceException {
-        UserData userData = ControllerRegistry.getUserDataController().getUserData(user.getUserDataId());
+            String role = userRoleInfo.getRole().getRoleName().toLowerCase();
+            modifyCourse(user.getId(), course, role);
 
-        Map<String, AgendaInfo> studentAgendaInfos = userData.getAgendaInfoMap();
+            modifyUserAndCreateAgenda(course, user);
+            //TODO could rewrite for two phase commmit - but some orphan data doesn't matter
+            updateCourse(course);
+            userController.saveUser(user);
+
+        }
+
+        @Override
+        public void addUserToCourse(String id, User user) throws ValidException, PersistenceException {
+            UserController userController = ControllerRegistry.getUserController();
+            Course course = getCourse(id);
+            if (user.getId()!=null){
+                modifyUserAndCreateAgenda(course, user);
+                userController.saveUser(user);
+            } else if(user.getUserName()!=null){
+                User userByCampusNetId = null;
+                try {
+                    userByCampusNetId = userController.getUserByCampusNetId(user.getUserName());
+                } catch (ElementNotFoundException e) {
+                    user = userController.saveUser(user);
+                }
+                if (userByCampusNetId!=null){//User alreadyExists
+                    user = userByCampusNetId;
+                }
+                modifyUserAndCreateAgenda(course, user);
+            } else {
+                return;
+            }
+            modifyCourse(user.getId(), course, "student");
+            updateCourse(course);
+            userController.saveUser(user);
+
+
+        }
+
+        @Override
+        public void removeUserFromCourse(String id, CourseAddUserInfo userRoleInfo) throws ValidException, PersistenceException {
+            UserController userController = ControllerRegistry.getUserController();
+            Course course = getCourse(id);
+            User user = userController.get(userRoleInfo.getUserId());
+            course.getStudents().remove(userRoleInfo.getUserId());
+            Map<String, AgendaInfo> studentAgendaInfos = user.getAgendaInfoMap();
+            if (studentAgendaInfos!=null && studentAgendaInfos.get(id)!=null) {
+                if (studentAgendaInfos.get(id)!=null)ControllerRegistry.getAgendaController().deleteAgenda(studentAgendaInfos.get(id).getAgendaId());
+                studentAgendaInfos.remove(id);
+            }
+            userController.saveUser(user);
+            updateCourse(course);
+        }
+
+    private void modifyUserAndCreateAgenda(Course course, User user) throws ValidException, PersistenceException {
+        Map<String, AgendaInfo> studentAgendaInfos = user.getAgendaInfoMap();
         if (!studentAgendaInfos.containsKey(course.getId())) {
             AgendaInfo agendaInfo = new AgendaInfo();
             agendaInfo.setCourseName(course.getCourseName());
             AgendaController agendaController = ControllerRegistry.getAgendaController();
-            AgendaInfo newAgenda = agendaController.createNewAgenda(agendaInfo, userRoleInfo.getUserId());
+            AgendaInfo newAgenda = agendaController.createNewAgenda(agendaInfo, user.getId());
             studentAgendaInfos.put(course.getId(), newAgenda);
         }
     }
 
-    private void modifyCourse(UserRoleInfo userRoleInfo, Course course, String role) {
-        String id = userRoleInfo.getUserId();
+    private void modifyCourse(String userId, Course course, String role) {
         if("admin".equals(role)){
-            course.getAdmins().add(id);
+            course.getAdmins().add(userId);
         } else if ("student".equals(role)){
-            course.getStudents().add(id);
+            course.getStudents().add(userId);
         } else if ("ta".equals(role)){
-            course.getTAs().add(id);
+            course.getTAs().add(userId);
         } else {
-            course.getRightsGroups().addUser(userRoleInfo.getRole(),id);
+            course.getRightsGroups().addUser(new Role(role),userId);
         }
     }
 

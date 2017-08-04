@@ -3,6 +3,7 @@ package data.interfaces;
 import data.dbDTO.BaseDTO;
 import rest.ValidException;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +16,7 @@ public interface BaseDAO <T extends BaseDTO>{
 
     List<T> getAll() throws PersistenceException;
     T get(String id) throws PersistenceException, ValidException;
-    List<T> multiGet(List<String> ids) throws PersistenceException;
+    List<T> multiGet(Collection<String> ids) throws PersistenceException, ValidException;
 
     List<T> findByField(String fieldName, String value) throws PersistenceException;
     List<T> findByFields(Map<String, Object> fields) throws PersistenceException;

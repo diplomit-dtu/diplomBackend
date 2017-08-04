@@ -6,7 +6,9 @@ import data.interfaces.PersistenceException;
 import rest.ElementNotFoundException;
 import rest.ValidException;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Christian on 08-06-2017.
@@ -24,4 +26,6 @@ public interface UserController {
     List<Role> updateGlobalUserRoles(List<Role> roles, String userName) throws PersistenceException, ElementNotFoundException;
 
     User get(String userId) throws ValidException, PersistenceException;
+
+    Collection<User> getMultiple(Set<String> admins) throws PersistenceException, ValidException;
 }

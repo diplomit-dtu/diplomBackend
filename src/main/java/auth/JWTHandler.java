@@ -35,6 +35,12 @@ public class JWTHandler {
 	private Key key;
 
 	public String generateJwtToken(User user){
+		user.setActiveAgenda(null);
+		user.setAgendaInfoMap(null);
+		user.setAdmins(null);
+		user.setRightsGroups(null);
+		user.setGeneralLinks(null);
+		user.setViewers(null);
 		Calendar expiry = Calendar.getInstance();
 		expiry.add(Calendar.MINUTE, TOKEN_EXPIRY);
 		return Jwts.builder()

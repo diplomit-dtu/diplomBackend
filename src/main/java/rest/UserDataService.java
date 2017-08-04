@@ -28,8 +28,6 @@ public class UserDataService {
         AgendaInfo agendaInfo = new AgendaInfo();
         agendaInfo.setCourseName("VidereGående Programmering");
         agendaInfo.setAgendaId("agendaID");
-        Map<String, AgendaInfo> agendaInfoMap = new HashMap<>();
-        userData.setAgendaInfoMap(new HashMap<>());
         return userData;
     }
 

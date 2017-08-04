@@ -8,6 +8,7 @@ import data.interfaces.GoogleSheetsDAO;
 import data.interfaces.PersistenceException;
 import rest.ValidException;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +38,7 @@ public class GoogleCoursePlanDAO implements CoursePlanDAO{
     }
 
     @Override
-    public List<CoursePlan> multiGet(List<String> ids) throws PersistenceException {
+    public List<CoursePlan> multiGet(Collection<String> ids) throws PersistenceException {
         throw new PersistenceException((ONLY_GET_IMPLEMENTED_FOR_GOOGLE_API));
     }
 

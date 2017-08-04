@@ -17,13 +17,13 @@ import java.util.*;
 @Entity
 @NoArgsConstructor
 public class Course extends BaseDTO{
-    public final static String COURSE_ID = "courseId"; //For Unique identification - used for seaching
+    public final static String COURSE_ID = "courseShortHand"; //For Unique identification - used for seaching
     private String courseShortHand; //ShortHandCode for Course ie. 02324F17
     private String courseName; //Course name - Advanced programming
     private LocalDate startingDate; //Start of course
     private LocalDate endingDate; //End of course
-    private Set<String> TAs = new HashSet<>();
-    private Set<String> Students = new HashSet<>();
+    private Set<String> tAs = new HashSet<>();
+    private Set<String> students = new HashSet<>();
 
     //Referenced documents
     private String linkCollection;

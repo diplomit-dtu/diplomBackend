@@ -9,7 +9,9 @@ import data.mongoImpl.MongoUserDAO;
 import rest.ElementNotFoundException;
 import rest.ValidException;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Christian on 08-06-2017.
@@ -57,5 +59,11 @@ public class UserControllerImpl implements UserController {
     @Override
     public User get(String userId) throws ValidException, PersistenceException {
         return userDAO.get(userId);
+    }
+
+    @Override
+    public Collection<User> getMultiple(Set<String> userIds) throws PersistenceException, ValidException {
+        return userDAO.multiGet(userIds);
+
     }
 }

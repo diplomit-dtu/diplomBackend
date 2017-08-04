@@ -1,12 +1,16 @@
 package rest;
 
+import auth.AuthorizationFilter;
 import auth.Permission;
 import auth.SecureEndpoint;
 import business.interfaces.CourseController;
 import data.ControllerRegistry;
 import data.dbDTO.*;
 import data.interfaces.PersistenceException;
-import data.viewDTO.UserRoleInfo;
+import data.viewDTO.CSVUserString;
+import data.viewDTO.CourseAddUserInfo;
+import data.viewDTO.ViewUserItem;
+import util.CSVParser;
 
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -14,9 +18,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.nio.file.AccessDeniedException;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static javax.ws.rs.core.Response.ok;
 
@@ -40,30 +42,46 @@ public class CourseService {
 
 
     @Path("{id}")
-    public CourseResource getCourse(@PathParam("id") String id) throws PersistenceException, ValidException {
-        return new CourseResource(id);
+    public CourseIdResource getCourse(@PathParam("id") String id) throws PersistenceException, ValidException {
+        return new CourseIdResource(id);
     }
 
     @PUT
-    @SecureEndpoint(Permission.PORTAL_ADMIN) //Portal administrators can always fiddle
     public Course updateCourse(Course course) throws PersistenceException, ValidException, AccessDeniedException, auth.AccessDeniedException {
         return courseController.updateCourse(course);
     }
 
 
     @POST
-    @SecureEndpoint(Permission.PORTAL_ADMINCOURSES)
     public Course createCourse(Course newCourse) throws ValidException, PersistenceException {
+        if (newCourse ==null) {
+            newCourse = new Course();
+        }
+        if (newCourse.getCourseName()==null){
+            newCourse.setCourseName("Nyt Kursus");
+        }
+
+        User user = userFromContext();
+        newCourse.getAdmins().add(user.getId());
         if(newCourse.getObjectId()!=null) throw new ValidException("ObjectId must be null");
 
         return courseController.createCourse(newCourse);
     }
+
+    private User userFromContext() {
+        Object userProperty = requestContext.getProperty(AuthorizationFilter.USER);
+        if (userProperty instanceof User){
+            return (User) userProperty;
+        }
+        return null;
+    }
+
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public class CourseResource {
+    public class CourseIdResource {
         private final String id;
 
-        public CourseResource(String id) {
+        public CourseIdResource(String id) {
             this.id =id;
         }
 
@@ -88,22 +106,86 @@ public class CourseService {
             }
 
             @GET
-            public Map<Role, Set<String>> getUsersOnCourse() throws ValidException, PersistenceException {
+            public Map<String, Collection<User>> getUsersOnCourse() throws ValidException, PersistenceException {
                 return courseController.getUsers(id);
             }
 
+            @GET
+            @Path("list")
+            public Collection<ViewUserItem> getViewUserList() throws ValidException, PersistenceException {
+                Map<String,ViewUserItem> map = new HashMap<>();
+                Map<String, Collection<User>> users = courseController.getUsers(id);
+                Collection<User> admins = users.get("admins");
+                for (User user : admins){
+                    map.put(user.getId(),new ViewUserItem(user.getId(),user.getUserName(),user.getFirstName(),user.getLastName(),user.getEmail(),true,false,false));
+                }
+                for(User user : users.get("students")){
+                    ViewUserItem viewUserItem = map.get(user.getId());
+                    if (viewUserItem!=null){
+                        viewUserItem.setStudent(true);
+                    } else {
+                        map.put(user.getId(),new ViewUserItem(user.getId(),user.getUserName(),user.getFirstName(),user.getLastName(),user.getEmail(),false,true,false));
+                    }
+                }
+                for(User user : users.get("tas")){
+                    ViewUserItem viewUserItem = map.get(user.getId());
+                    if (viewUserItem!=null){
+                        viewUserItem.setTa(true);
+                    } else {
+                        map.put(user.getId(),new ViewUserItem(user.getId(),user.getUserName(),user.getFirstName(),user.getLastName(),user.getEmail(),false,false,true));
+                    }
+                }
+                return map.values();
+            }
+
             @POST
-            public Response addUserToCourse(UserRoleInfo userRoleInfo) throws ValidException, PersistenceException, ElementNotFoundException, AccessDeniedException, auth.AccessDeniedException {
-                //Add user to course
+            public Boolean addUserToCourse(CourseAddUserInfo userRoleInfo) throws ValidException, PersistenceException, ElementNotFoundException, AccessDeniedException, auth.AccessDeniedException {
                 courseController.addUserToCourse(id, userRoleInfo);
-                return ok().entity("User Added to Course").build();
+                return true;
+            }
+
+            @POST
+            @Path("csv")
+            public Boolean addCSVAddUsersToCourse(CSVUserString csv) throws ValidException, ElementNotFoundException, PersistenceException {
+                String csvString = csv.getUsersCsv();
+                List<User> usersFromCsv = CSVParser.getUsersFromCsv(csvString);
+                for (User u: usersFromCsv){
+                    courseController.addUserToCourse(id, u);
+                }
+                return true;
+            }
+
+            @PUT
+            @Path("{id}/{role}")
+            public boolean updateUserRole(@PathParam("id") String userId, @PathParam("role") String role, Boolean hasRole) throws ValidException, PersistenceException, AccessDeniedException, auth.AccessDeniedException {
+                Course course = courseController.getCourse(id);
+                Set<String> userSet;
+                if ("admin".equals(role)){
+                    userSet = course.getAdmins();
+                } else if ("student".equals(role)){
+                    userSet = course.getStudents();
+                } else if ("ta".equals(role)){
+                    userSet = course.getTAs();
+                } else {
+                    return false;
+                }
+                if (hasRole){
+                    userSet.add(userId);
+                } else {
+                    userSet.remove(userId);
+                }
+                courseController.updateCourse(course);
+                return true;
+
             }
 
             @DELETE
-            public Response removeUserFromCourse(UserRoleInfo userRoleInfo) throws ValidException, PersistenceException {
+            public Response removeUserFromCourse(CourseAddUserInfo userRoleInfo) throws ValidException, PersistenceException {
                 courseController.removeUserFromCourse(id,userRoleInfo);
                 return Response.ok().entity("User removed from course").build();
             }
+
+
 
 
         }

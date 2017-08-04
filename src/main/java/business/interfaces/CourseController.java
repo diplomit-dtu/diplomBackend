@@ -2,16 +2,16 @@ package business.interfaces;
 
 import data.dbDTO.Course;
 import data.dbDTO.CoursePlan;
-import data.dbDTO.Role;
+import data.dbDTO.User;
 import data.interfaces.PersistenceException;
-import data.viewDTO.UserRoleInfo;
+import data.viewDTO.CourseAddUserInfo;
 import rest.ElementNotFoundException;
 import rest.ValidException;
 
 import java.nio.file.AccessDeniedException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by Christian on 15-05-2017.
@@ -44,9 +44,11 @@ public interface CourseController {
     CoursePlan getGoogleCoursePlan(String id) throws ValidException, PersistenceException;
 
 
-    Map<Role, Set<String>> getUsers(String id) throws ValidException, PersistenceException;
+    Map<String, Collection<User>> getUsers(String courseId) throws ValidException, PersistenceException;
 
-    void addUserToCourse(String courseId, UserRoleInfo userRoleInfo) throws ValidException, PersistenceException, ElementNotFoundException;
+    void addUserToCourse(String courseId, CourseAddUserInfo userRoleInfo) throws ValidException, PersistenceException, ElementNotFoundException;
 
-    void removeUserFromCourse(String id, UserRoleInfo userRoleInfo) throws ValidException, PersistenceException;
+    void addUserToCourse(String courseId, User user) throws ValidException, PersistenceException, ElementNotFoundException;
+
+    void removeUserFromCourse(String id, CourseAddUserInfo userRoleInfo) throws ValidException, PersistenceException;
 }

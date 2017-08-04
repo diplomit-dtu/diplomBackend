@@ -54,7 +54,7 @@ public class CampusNetService {
             String[] validationArray = validationReply.split("\n");
             String frontUrl = (DeployConfig.PORTAL_FRONT_URL == null) ? "" : DeployConfig.PORTAL_FRONT_URL;
             String jwtToken = "";
-            //STEP 4: Issue Token and redicret to frontpage including token in url:
+            //STEP 4: Issue Token and redirect to frontpage including token in url:
             if (validationArray.length == 2 && validationArray[0].toLowerCase().trim().equals("yes")) { //Login success
                 User user = resolveUser(validationArray[1]);
 

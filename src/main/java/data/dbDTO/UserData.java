@@ -11,15 +11,6 @@ import java.util.*;
  */
 @Data
 public class UserData extends BaseDTO {
-    private String firstName;
-    private String lastName;
-    //TODO: maybe managed the other way round...
-    private Map<String, Role> resourceSpecificRoles = new HashMap<>();
 
-    private Map<String, Role> resourceSpecificPermissions = new HashMap<>();
-    @Embedded
-    private Map<String, AgendaInfo> agendaInfoMap = new HashMap<>(); //courseId,<AgendaId,CourseName>
-    private String activeAgenda;
-    @Embedded
-    private LinkCollection generalLinks;
+
 }

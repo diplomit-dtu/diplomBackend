@@ -9,6 +9,12 @@ import com.google.api.services.sheets.v4.model.RowData;
 import com.google.api.services.sheets.v4.model.Sheet;
 import com.google.api.services.sheets.v4.model.Spreadsheet;
 import config.DeployConfig;
+import data.dbDTO.User;
+import data.interfaces.PersistenceException;
+import data.mongoImpl.MongoBaseDAO;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import rest.ValidException;
 import util.FileLoader;
 
 import java.io.IOException;
@@ -22,49 +28,65 @@ import java.util.Map;
  * Created by Christian on 18-05-2017.
  */
 public class TestMain {
-    public static void main(String[] args) throws IOException, GeneralSecurityException {
+    public static void main(String[] args) throws IOException, GeneralSecurityException, ValidException, PersistenceException {
+//        MongoBaseDAO<User> userMongoBaseDAO = new MongoBaseDAO<>(User.class);
+//        System.out.println(userMongoBaseDAO.get("594cf90cd5d603084cae5577"));
+//        List<String> userIds = new ArrayList<>();
+//        userIds.add("594cf90cd5d603084cae5577");
+//        System.out.println(userMongoBaseDAO.multiGet(userIds));
+        CSVFormat format = CSVFormat.EXCEL.withDelimiter(';').withHeader();
+        CSVParser parse = CSVParser.parse("Fornavn;Efternavn;Email;Brugernavn;Sidst besøgt;Initialer;Studienummer;Uddannelse;\r\n" +
+                "Mehdi Akil;Al-Alak;s165225@student.dtu.dk;s165225;;s165225;s165225;diploming. Softwaretek.;", format);
 
-        Map<String, Object> content = new HashMap<>();
-        content.put("redirectUrl", DeployConfig.PORTAL_FRONT_URL);
-        content.put("redirectName", DeployConfig.PORTAL_NAME);
-        System.out.println(FileLoader.loadMustache("/redirect.mustache",content));
+        List<User> usersFromCsv = util.CSVParser.getUsersFromCsv("Fornavn;Efternavn;Email;Brugernavn;Sidst besøgt;Initialer;Studienummer;Uddannelse;\r\n" +
+                "Mehdi Akil;Al-Alak;s165225@student.dtu.dk;s165225;;s165225;s165225;diploming. Softwaretek.;");
+        for (User u : usersFromCsv) {
+            System.out.println(u);
 
-        String spreadsheetId = "1Zj-1eLX67PQRzM7m1icq2vSXzbHn2iFvN4V9cUHTWQo"; // TODO: Update placeholder value.
-
-        // The ranges to retrieve from the spreadsheet.
-        List<String> ranges = new ArrayList<>(); // TODO: Update placeholder value.
-//        ranges.add("Ark1!A1:C3");
-        // True if grid data should be returned.
-        // This parameter is ignored if a field mask was set in the request.
-        boolean includeGridData = true; // TODO: Update placeholder value.
-
-        Sheets sheetsService = createSheetsService();
-        Sheets.Spreadsheets.Get request = sheetsService.spreadsheets().get(spreadsheetId);
-
-        request.setRanges(ranges);
-        System.out.println(DeployConfig.GOOGLE_API_KEY);
-        request.setKey(DeployConfig.GOOGLE_API_KEY);
-        request.setIncludeGridData(includeGridData);
-
-        Spreadsheet response = request.execute();
-        Sheet sheet = response.getSheets().get(0);
-
-        // TODO: Change code below to process the `response` object:
-        System.out.println(response);
-        for (RowData data: sheet.getData().get(0).getRowData()){
-            System.out.println(data.getValues());
         }
-        CellData cellData = sheet.getData().get(0).getRowData().get(3).getValues().get(3);
-        System.out.println(cellData.getFormattedValue());
-        System.out.println(cellData.getEffectiveValue());
-        System.out.println(cellData.getUserEnteredValue());
-        System.out.println(cellData.getEffectiveFormat());
-        System.out.println(cellData.getHyperlink());
 
 
-//        Sheets.Spreadsheets.Values.Get valuesGet = sheetsService.spreadsheets().values().get(spreadsheetId,"");
-//        ValueRange execute = valuesGet.execute();
-//        System.out.println(execute);
+//        Map<String, Object> content = new HashMap<>();
+//        content.put("redirectUrl", DeployConfig.PORTAL_FRONT_URL);
+//        content.put("redirectName", DeployConfig.PORTAL_NAME);
+//        System.out.println(FileLoader.loadMustache("/redirect.mustache",content));
+//
+//        String spreadsheetId = "1Zj-1eLX67PQRzM7m1icq2vSXzbHn2iFvN4V9cUHTWQo"; // TODO: Update placeholder value.
+//
+//        // The ranges to retrieve from the spreadsheet.
+//        List<String> ranges = new ArrayList<>(); // TODO: Update placeholder value.
+////        ranges.add("Ark1!A1:C3");
+//        // True if grid data should be returned.
+//        // This parameter is ignored if a field mask was set in the request.
+//        boolean includeGridData = true; // TODO: Update placeholder value.
+//
+//        Sheets sheetsService = createSheetsService();
+//        Sheets.Spreadsheets.Get request = sheetsService.spreadsheets().get(spreadsheetId);
+//
+//        request.setRanges(ranges);
+//        System.out.println(DeployConfig.GOOGLE_API_KEY);
+//        request.setKey(DeployConfig.GOOGLE_API_KEY);
+//        request.setIncludeGridData(includeGridData);
+//
+//        Spreadsheet response = request.execute();
+//        Sheet sheet = response.getSheets().get(0);
+//
+//        // TODO: Change code below to process the `response` object:
+//        System.out.println(response);
+//        for (RowData data: sheet.getData().get(0).getRowData()){
+//            System.out.println(data.getValues());
+//        }
+//        CellData cellData = sheet.getData().get(0).getRowData().get(3).getValues().get(3);
+//        System.out.println(cellData.getFormattedValue());
+//        System.out.println(cellData.getEffectiveValue());
+//        System.out.println(cellData.getUserEnteredValue());
+//        System.out.println(cellData.getEffectiveFormat());
+//        System.out.println(cellData.getHyperlink());
+//
+//
+////        Sheets.Spreadsheets.Values.Get valuesGet = sheetsService.spreadsheets().values().get(spreadsheetId,"");
+////        ValueRange execute = valuesGet.execute();
+////        System.out.println(execute);
     }
 
     public static Sheets createSheetsService() throws IOException, GeneralSecurityException {
