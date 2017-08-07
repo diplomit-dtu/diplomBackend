@@ -1,6 +1,8 @@
 package business.impl;
 
 import business.interfaces.UserController;
+import business.ControllerRegistry;
+import data.dbDTO.AgendaInfo;
 import data.dbDTO.Role;
 import data.dbDTO.User;
 import data.interfaces.PersistenceException;
@@ -11,6 +13,7 @@ import rest.ValidException;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -65,5 +68,15 @@ public class UserControllerImpl implements UserController {
     public Collection<User> getMultiple(Set<String> userIds) throws PersistenceException, ValidException {
         return userDAO.multiGet(userIds);
 
+    }
+
+    @Override
+    public void removeAgenda(String userId, String courseId) throws ValidException, PersistenceException {
+        User user = get(userId);
+        Map<String, AgendaInfo> agendaInfoMap = user.getAgendaInfoMap();
+        AgendaInfo agendaInfo = agendaInfoMap.get(courseId);
+        ControllerRegistry.getAgendaController().deleteAgenda(agendaInfo.getAgendaId());
+        user.getAgendaInfoMap().remove(courseId);
+        saveUser(user);
     }
 }

@@ -28,4 +28,6 @@ public interface UserController {
     User get(String userId) throws ValidException, PersistenceException;
 
     Collection<User> getMultiple(Set<String> admins) throws PersistenceException, ValidException;
+
+    void removeAgenda(String userId, String id) throws ValidException, PersistenceException;
 }

@@ -2,9 +2,9 @@ package business.impl;
 
 import business.interfaces.AgendaController;
 import business.interfaces.CourseController;
+import business.interfaces.CoursePlanController;
 import business.interfaces.UserController;
-import business.interfaces.UserDataController;
-import data.ControllerRegistry;
+import business.ControllerRegistry;
 import data.dbDTO.*;
 import data.googleImpl.GoogleCoursePlanDAO;
 import data.interfaces.CourseDAO;
@@ -13,6 +13,7 @@ import data.interfaces.PersistenceException;
 import data.mongoImpl.MongoCourseDAO;
 import data.mongoImpl.MongoCoursePlanDAO;
 import data.viewDTO.CourseAddUserInfo;
+import data.viewDTO.CourseNameAndShort;
 import rest.ElementNotFoundException;
 import rest.ValidException;
 
@@ -168,31 +169,35 @@ public class CourseControllerImpl implements CourseController {
 
         }
 
-        @Override
-        public void addUserToCourse(String id, User user) throws ValidException, PersistenceException {
-            UserController userController = ControllerRegistry.getUserController();
-            Course course = getCourse(id);
-            if (user.getId()!=null){
-                modifyUserAndCreateAgenda(course, user);
-                userController.saveUser(user);
-            } else if(user.getUserName()!=null){
-                User userByCampusNetId = null;
-                try {
-                    userByCampusNetId = userController.getUserByCampusNetId(user.getUserName());
-                } catch (ElementNotFoundException e) {
-                    user = userController.saveUser(user);
-                }
-                if (userByCampusNetId!=null){//User alreadyExists
-                    user = userByCampusNetId;
-                }
-                modifyUserAndCreateAgenda(course, user);
-            } else {
-                return;
-            }
-            modifyCourse(user.getId(), course, "student");
-            updateCourse(course);
+    @Override
+    public void addUserToCourse(String courseID, User user, String role) throws PersistenceException, ValidException {
+        UserController userController = ControllerRegistry.getUserController();
+        Course course = getCourse(courseID);
+        if (user.getId()!=null){
+            modifyUserAndCreateAgenda(course, user);
             userController.saveUser(user);
+        } else if(user.getUserName()!=null){
+            User userByCampusNetId = null;
+            try {
+                userByCampusNetId = userController.getUserByCampusNetId(user.getUserName());
+            } catch (ElementNotFoundException e) {
+                user = userController.saveUser(user);
+            }
+            if (userByCampusNetId!=null){//User alreadyExists
+                user = userByCampusNetId;
+            }
+            modifyUserAndCreateAgenda(course, user);
+        } else {
+            return;
+        }
+        modifyCourse(user.getId(), course, role);
+        updateCourse(course);
+        userController.saveUser(user);
+    }
 
+    @Override
+        public void addUserToCourse(String id, User user) throws ValidException, PersistenceException {
+            addUserToCourse(id,user,"student");
 
         }
 
@@ -210,6 +215,46 @@ public class CourseControllerImpl implements CourseController {
             userController.saveUser(user);
             updateCourse(course);
         }
+
+    @Override
+    public void updateCourseNameAndShort(String id, CourseNameAndShort courseNameAndShort) throws ValidException, PersistenceException {
+        Course course = getCourse(id);
+        course.setCourseName(courseNameAndShort.getCourseName());
+        course.setCourseShortHand(courseNameAndShort.getShortHand());
+        updateCourse(course);
+    }
+
+    @Override
+    public void updateUsesGoogleSheet(String id, Boolean usesGoogleSheet) throws ValidException, PersistenceException {
+        Course course  = getCourse(id);
+        course.setCoursePlanSource(usesGoogleSheet ? Course.CoursePlanSource.GoogleSheet: Course.CoursePlanSource.Mongo);
+        updateCourse(course);
+    }
+
+    @Override
+    public void updateGoogleSheetId(String courseId, String sheetId) throws ValidException, PersistenceException {
+        Course course = getCourse(courseId);
+        course.setGoogleSheetPlanId(sheetId);
+        updateCourse(course);
+    }
+
+    @Override
+    public void syncCoursePlan(String id) throws ValidException, PersistenceException {
+        CoursePlanController coursePlanController = ControllerRegistry.getCoursePlanController();
+
+        Course course = getCourse(id);
+        String googleSheetPlanId = course.getGoogleSheetPlanId();
+        if (googleSheetPlanId ==null || googleSheetPlanId==""){
+            throw new ValidException("Course has no google Sheet ID");
+        }
+        if (course.getCourseplanId()==null){
+            CoursePlan coursePlan = coursePlanController.createCoursePlan();
+            course.setCourseplanId(coursePlan.getId());
+        }
+        updateCourse(course);
+
+        coursePlanController.syncCoursePlan(googleSheetPlanId, course.getCourseplanId());
+    }
 
     private void modifyUserAndCreateAgenda(Course course, User user) throws ValidException, PersistenceException {
         Map<String, AgendaInfo> studentAgendaInfos = user.getAgendaInfoMap();

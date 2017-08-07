@@ -3,6 +3,7 @@ package data.dbDTO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.mongodb.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Reference;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,9 +13,8 @@ import java.util.List;
  * Created by Christian on 11-05-2017.
  */
 @Data
-@Embedded
 @NoArgsConstructor
-public class CourseActivity {
+public class CourseActivity extends BaseDTO {
 
     private String title;
     private String Description;
@@ -22,8 +22,7 @@ public class CourseActivity {
 
     private Date startDate;
     private Date EndDate;
-
-    @Embedded
+    @Reference
     private List<CourseActivityElement> activityElementList = new ArrayList<>();
 
     public enum ActivityStatus{

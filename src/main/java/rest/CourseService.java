@@ -1,14 +1,13 @@
 package rest;
 
 import auth.AuthorizationFilter;
-import auth.Permission;
-import auth.SecureEndpoint;
 import business.interfaces.CourseController;
-import data.ControllerRegistry;
+import business.ControllerRegistry;
 import data.dbDTO.*;
 import data.interfaces.PersistenceException;
 import data.viewDTO.CSVUserString;
 import data.viewDTO.CourseAddUserInfo;
+import data.viewDTO.CourseNameAndShort;
 import data.viewDTO.ViewUserItem;
 import util.CSVParser;
 
@@ -65,7 +64,11 @@ public class CourseService {
         newCourse.getAdmins().add(user.getId());
         if(newCourse.getObjectId()!=null) throw new ValidException("ObjectId must be null");
 
-        return courseController.createCourse(newCourse);
+
+        Course course = courseController.createCourse(newCourse);
+        courseController.addUserToCourse(course.getId(),user, "admin");
+
+        return course;
     }
 
     private User userFromContext() {
@@ -88,6 +91,32 @@ public class CourseService {
         @GET
         public Course getCourse() throws ValidException, PersistenceException {
             return courseController.getCourse(id);
+        }
+
+        @POST
+        @Path("name")
+        public void updateCourseNameAndShortHand(CourseNameAndShort courseNameAndShort) throws ValidException, PersistenceException {
+            courseController.updateCourseNameAndShort(id, courseNameAndShort);
+
+        }
+        @POST
+        @Path("usesGoogleSheet")
+        public void updateUsesGoogleSheet(HashMap<String,Boolean> map) throws ValidException, PersistenceException {
+            Boolean usesGoogleSheet = map.get("usesGoogleSheet");
+            courseController.updateUsesGoogleSheet(id, usesGoogleSheet);
+        }
+
+        @POST
+        @Path("googleSheetId")
+        public void updateGoogleSheetId(HashMap<String, String> map) throws ValidException, PersistenceException {
+            String googleSheetId = map.get("googleSheetId");
+            courseController.updateGoogleSheetId(id,googleSheetId);
+        }
+
+        @POST
+        @Path("syncCoursePlan")
+        public void syncCoursePlan() throws ValidException, PersistenceException {
+            courseController.syncCoursePlan(id);
         }
 
         @Path("users")
@@ -173,6 +202,10 @@ public class CourseService {
                     userSet.add(userId);
                 } else {
                     userSet.remove(userId);
+                }
+                //Check if user still is in course
+                if (!(course.getAdmins().contains(userId) || course.getTAs().contains(userId) || course.getStudents().contains(userId))) {
+                    ControllerRegistry.getUserController().removeAgenda(userId, id);
                 }
                 courseController.updateCourse(course);
                 return true;

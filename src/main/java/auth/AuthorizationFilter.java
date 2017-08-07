@@ -3,10 +3,8 @@ package auth;
 import business.impl.UserControllerImpl;
 import business.interfaces.UserController;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import data.ControllerRegistry;
 import data.dbDTO.Role;
 import data.dbDTO.User;
-import data.dbDTO.UserData;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 
@@ -20,7 +18,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.List;
 
 import static config.Config.DEBUG;

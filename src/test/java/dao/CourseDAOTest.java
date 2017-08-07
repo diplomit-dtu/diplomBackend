@@ -24,7 +24,7 @@ public class CourseDAOTest {
         Course newCourse = new Course();
         newCourse.setCourseShortHand("TestCourse");
         newCourse.setCourseName("Videregående Programmering");
-        newCourse.setCoursePlanId(new ObjectId().toHexString());
+        newCourse.setGoogleSheetPlanId(new ObjectId().toHexString());
         newCourse.setCoursePlanSource(Course.CoursePlanSource.GoogleSheet);
         LocalDate localDate = LocalDate.parse("2017-02-01");
         newCourse.setStartingDate(localDate);

@@ -4,10 +4,8 @@ import auth.*;
 import business.impl.AgendaControllerImpl;
 import business.impl.CourseControllerImpl;
 import business.interfaces.AgendaController;
-import business.interfaces.CourseController;
-import data.ControllerRegistry;
+import business.ControllerRegistry;
 import data.dbDTO.*;
-import data.interfaces.AgendaDAO;
 import data.interfaces.PersistenceException;
 
 import javax.ws.rs.*;

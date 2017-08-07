@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.mongodb.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Reference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ public class CoursePlan extends BaseDTO {
     @Embedded
     List<String> headers = new ArrayList<>();
 
-    @Embedded
+    @Reference
     List<CourseActivity> courseActivityList = new ArrayList<>();
 
 

@@ -3,7 +3,9 @@ package rest;
 import business.impl.CourseControllerImpl;
 import business.interfaces.CourseController;
 import data.dbDTO.CoursePlan;
+import data.interfaces.CoursePlanDAO;
 import data.interfaces.PersistenceException;
+import data.mongoImpl.MongoCoursePlanDAO;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -16,6 +18,7 @@ import javax.ws.rs.core.MediaType;
 @Consumes(MediaType.APPLICATION_JSON)
 public class CoursePlanService {
     CourseController ctrl = new CourseControllerImpl();
+    CoursePlanDAO coursePlanDAO = new MongoCoursePlanDAO();
 
     @GET //Template
     @Path("template")
@@ -24,9 +27,11 @@ public class CoursePlanService {
     }
 
     @GET
-    @Path("id/{id}")
+    @Path("{id}")
     public CoursePlan getCoursePlan(@PathParam("id")String id) throws PersistenceException, ElementNotFoundException, ValidException {
-        return ctrl.getCoursePlan(id);
+        CoursePlan coursePlan = coursePlanDAO.get(id);
+        System.out.println(coursePlan);
+        return coursePlan;
     }
 
     @GET

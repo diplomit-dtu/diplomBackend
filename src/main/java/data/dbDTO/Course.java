@@ -30,7 +30,10 @@ public class Course extends BaseDTO{
 
     //Reference for fetching courseplan
     private CoursePlanSource coursePlanSource;
-    private String coursePlanId; //Could both be GoogleSheetId and MongoDbObjectId
+    private String googleSheetPlanId; // GoogleSheetID
+
+    private String CourseplanId; //MongoDBId
+
 
     //TODO add relevant ekstra information
     public enum CoursePlanSource {

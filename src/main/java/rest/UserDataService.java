@@ -1,15 +1,13 @@
 package rest;
 
 import business.interfaces.UserDataController;
-import data.ControllerRegistry;
+import business.ControllerRegistry;
 import data.dbDTO.AgendaInfo;
 import data.dbDTO.UserData;
 import data.interfaces.PersistenceException;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Christian on 05-07-2017.

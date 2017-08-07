@@ -1,7 +1,7 @@
 package business.impl;
 
 import business.interfaces.CourseController;
-import data.ControllerRegistry;
+import business.ControllerRegistry;
 import data.dbDTO.*;
 import data.interfaces.PersistenceException;
 import rest.ValidException;

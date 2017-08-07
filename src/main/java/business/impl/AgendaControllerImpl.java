@@ -1,7 +1,7 @@
 package business.impl;
 
 import business.interfaces.AgendaController;
-import data.ControllerRegistry;
+import business.ControllerRegistry;
 import data.dbDTO.*;
 import data.interfaces.AgendaDAO;
 import business.interfaces.CourseController;
@@ -28,9 +28,9 @@ public class AgendaControllerImpl implements AgendaController {
         Course.CoursePlanSource coursePlanSource = course.getCoursePlanSource();
         CoursePlan coursePlan;
         if (Course.CoursePlanSource.GoogleSheet.equals(coursePlanSource)){
-            coursePlan = courseController.getGoogleCoursePlan(course.getCoursePlanId());
+            coursePlan = courseController.getGoogleCoursePlan(course.getGoogleSheetPlanId());
         } else if (Course.CoursePlanSource.Mongo.equals(coursePlanSource)){
-            coursePlan = courseController.getCoursePlan(course.getCoursePlanId());
+            coursePlan = courseController.getCoursePlan(course.getGoogleSheetPlanId());
         } else {
             throw new PersistenceException("Wrong type of CoursePlanSource: " + coursePlanSource); //Forgot to implement an enum!
         }
