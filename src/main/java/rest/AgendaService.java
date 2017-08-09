@@ -12,6 +12,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.xml.bind.Element;
 import java.util.ArrayList;
 
 /**
@@ -31,8 +32,6 @@ public class AgendaService {
     @Path("template")
     public Agenda getAgendaTemplate(){
         Agenda agenda = new Agenda();
-        agenda.setCourseId("courseId");
-        agenda.setCoursePlan(new CoursePlan());
         agenda.setCourseLinks(new ArrayList<>());
         return agenda;
     }
@@ -48,8 +47,8 @@ public class AgendaService {
     }
 
     @Path("{id}")
-    public AgendaResource getAgendaResource(@PathParam("id") String id){
-        return new AgendaResource(id);
+    public AgendaIdResource getAgendaIdResource(@PathParam("id") String id){
+        return new AgendaIdResource(id);
     }
 
     @Path("own/{id}")
@@ -80,7 +79,7 @@ public class AgendaService {
             AgendaController agendaController= ControllerRegistry.getAgendaController();
             Agenda agenda = agendaController.getAgenda(id);
             if (agenda!=null) {
-                agenda.getMetaData().put(subElementId, metaData);
+                agenda.getElementMetaData().put(subElementId, metaData);
                 agendaController.saveAgenda(agenda);
             }else {
                 throw new ElementNotFoundException("Agenda not found");
@@ -94,16 +93,46 @@ public class AgendaService {
     //----
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public class AgendaResource {
-
+    public class AgendaIdResource {
         private final String id;
+        public AgendaIdResource(String id) {
+            this.id=id;
+        }
+
+
+        @PUT
+        public Agenda updateAgenda(Agenda agenda) throws PersistenceException {
+            agenda.setId(this.id);
+            return agendaController.saveAgenda(agenda);
+        }
+
+        @Path("metadatas/{id}")
+        public AgendaMetaDataIdResource getMetaDataResource(@PathParam("id") String id){
+            return new AgendaMetaDataIdResource(id, this.id);
+        }
+
+
         @GET
         public Agenda getAgenda() throws ValidException, ElementNotFoundException, PersistenceException {
             return agendaController.getAgenda(id);
         }
 
-        public AgendaResource(String id) {
-            this.id=id;
+
+
+        private class AgendaMetaDataIdResource {
+            private final String id;
+            private final String parentId;
+
+            public AgendaMetaDataIdResource(String id, String parentId) {
+                this.id = id;
+                this.parentId=parentId;
+            }
+
+            @POST
+            public void postProgress(ElementMetaData metaData){
+                //TODO for faster access
+            }
+
         }
     }
 

@@ -10,7 +10,9 @@ import com.google.api.services.sheets.v4.model.Sheet;
 import com.google.api.services.sheets.v4.model.Spreadsheet;
 import config.DeployConfig;
 import data.dbDTO.User;
+import data.interfaces.AgendaDAO;
 import data.interfaces.PersistenceException;
+import data.mongoImpl.MongoAgendaDAO;
 import data.mongoImpl.MongoBaseDAO;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -29,22 +31,24 @@ import java.util.Map;
  */
 public class TestMain {
     public static void main(String[] args) throws IOException, GeneralSecurityException, ValidException, PersistenceException {
+        AgendaDAO agendaDAO = new MongoAgendaDAO();
+
 //        MongoBaseDAO<User> userMongoBaseDAO = new MongoBaseDAO<>(User.class);
 //        System.out.println(userMongoBaseDAO.get("594cf90cd5d603084cae5577"));
 //        List<String> userIds = new ArrayList<>();
 //        userIds.add("594cf90cd5d603084cae5577");
 //        System.out.println(userMongoBaseDAO.multiGet(userIds));
-        CSVFormat format = CSVFormat.EXCEL.withDelimiter(';').withHeader();
-        CSVParser parse = CSVParser.parse("Fornavn;Efternavn;Email;Brugernavn;Sidst besøgt;Initialer;Studienummer;Uddannelse;\r\n" +
-                "Mehdi Akil;Al-Alak;s165225@student.dtu.dk;s165225;;s165225;s165225;diploming. Softwaretek.;", format);
-
-        List<User> usersFromCsv = util.CSVParser.getUsersFromCsv("Fornavn;Efternavn;Email;Brugernavn;Sidst besøgt;Initialer;Studienummer;Uddannelse;\r\n" +
-                "Mehdi Akil;Al-Alak;s165225@student.dtu.dk;s165225;;s165225;s165225;diploming. Softwaretek.;");
-        for (User u : usersFromCsv) {
-            System.out.println(u);
-
-        }
-
+//        CSVFormat format = CSVFormat.EXCEL.withDelimiter(';').withHeader();
+//        CSVParser parse = CSVParser.parse("Fornavn;Efternavn;Email;Brugernavn;Sidst besøgt;Initialer;Studienummer;Uddannelse;\r\n" +
+//                "Mehdi Akil;Al-Alak;s165225@student.dtu.dk;s165225;;s165225;s165225;diploming. Softwaretek.;", format);
+//
+//        List<User> usersFromCsv = util.CSVParser.getUsersFromCsv("Fornavn;Efternavn;Email;Brugernavn;Sidst besøgt;Initialer;Studienummer;Uddannelse;\r\n" +
+//                "Mehdi Akil;Al-Alak;s165225@student.dtu.dk;s165225;;s165225;s165225;diploming. Softwaretek.;");
+//        for (User u : usersFromCsv) {
+//            System.out.println(u);
+//
+//        }
+//
 
 //        Map<String, Object> content = new HashMap<>();
 //        content.put("redirectUrl", DeployConfig.PORTAL_FRONT_URL);

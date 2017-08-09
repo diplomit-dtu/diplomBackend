@@ -29,6 +29,7 @@ public class CourseControllerImpl implements CourseController {
     private CourseDAO courseDAO = new MongoCourseDAO();
     private CoursePlanDAO mongoCoursePlanDAO = new MongoCoursePlanDAO();
     private CoursePlanDAO googleCoursePlanDAO = new GoogleCoursePlanDAO();
+    public static Map<String, CoursePlan> cachedCoursePlans = new HashMap<>();
 
     @Context
     ContainerRequestContext requestContext;
@@ -81,9 +82,11 @@ public class CourseControllerImpl implements CourseController {
 
     @Override
     public CoursePlan getCoursePlan(String id) throws PersistenceException, ElementNotFoundException, ValidException {
-        CoursePlan coursePlan = mongoCoursePlanDAO.get(id);
-        if (coursePlan==null) throw new ElementNotFoundException("CoursePlan notFound: " + id);
-        return coursePlan;
+        if (cachedCoursePlans.get(id)==null) {
+            cachedCoursePlans.put(id, mongoCoursePlanDAO.get(id));
+        }
+        if (cachedCoursePlans.get(id)==null) throw new ElementNotFoundException("CoursePlan notFound: " + id);
+        return cachedCoursePlans.get(id);
     }
 
     @Override
@@ -252,8 +255,9 @@ public class CourseControllerImpl implements CourseController {
             course.setCourseplanId(coursePlan.getId());
         }
         updateCourse(course);
-
         coursePlanController.syncCoursePlan(googleSheetPlanId, course.getCourseplanId());
+        //Clear cache
+        cachedCoursePlans.remove(course.getCourseplanId());
     }
 
     private void modifyUserAndCreateAgenda(Course course, User user) throws ValidException, PersistenceException {

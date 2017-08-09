@@ -59,12 +59,14 @@ public class CoursePlanControllerImpl implements CoursePlanController {
             List<CourseActivityElement> activityElementList = courseActivity.getActivityElementList();
             List<CourseActivityElement> deepParsedCourseActivityElementList = new ArrayList<>();
             for (CourseActivityElement courseActivityElement: activityElementList){
+                String title =courseActivityElement.getTitle();
                 if (courseActivityElement.getGoogleSheetId()!=null) {
                     Spreadsheet activityElementSheet = googleSheetsDAO.getSheet(courseActivityElement.getGoogleSheetId());
                     CourseActivityElement fetchedGoogleCourseActivityElement = GoogleActivityElementParser.parseSheet(activityElementSheet);
                     courseActivityElement = fetchedGoogleCourseActivityElement;
                     System.out.println("-------------------------\r\n" + courseActivityElement);
                     System.out.println(courseActivityElement);
+                    courseActivityElement.setTitle(title);
 
                 }
                 deepParsedCourseActivityElementList.add(courseActivityElement);

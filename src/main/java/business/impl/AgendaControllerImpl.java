@@ -18,25 +18,8 @@ public class AgendaControllerImpl implements AgendaController {
 
     @Override
     public Agenda getAgenda(String agendaId) throws ValidException, PersistenceException, ElementNotFoundException {
-        CourseController courseController = ControllerRegistry.getCourseController();
         Agenda agenda = agendaDAO.get(agendaId);
         if (agenda == null) throw new ElementNotFoundException("Agenda not found!");
-        String courseOId = agenda.getCourseId();
-        if (courseOId == null) throw new PersistenceException("courseId missing on agenda!");
-        Course course = courseController.getCourse(courseOId);
-        if (course==null) throw new PersistenceException("Course doesn't exist! " + courseOId);
-        Course.CoursePlanSource coursePlanSource = course.getCoursePlanSource();
-        CoursePlan coursePlan;
-        if (Course.CoursePlanSource.GoogleSheet.equals(coursePlanSource)){
-            coursePlan = courseController.getGoogleCoursePlan(course.getGoogleSheetPlanId());
-        } else if (Course.CoursePlanSource.Mongo.equals(coursePlanSource)){
-            coursePlan = courseController.getCoursePlan(course.getGoogleSheetPlanId());
-        } else {
-            throw new PersistenceException("Wrong type of CoursePlanSource: " + coursePlanSource); //Forgot to implement an enum!
-        }
-
-        agenda.setCoursePlan(coursePlan);
-
 
         return agenda;
     }

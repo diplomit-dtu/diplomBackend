@@ -49,7 +49,8 @@ public class GoogleCoursePlanCrawler {
                         System.out.println("---" + element.getGoogleUniqueId());
                         subElementMetaData.setGoogleUniqueId(element.getGoogleUniqueId());
                     }
-                    elementMetaData.getMetaDataList().add(subElementMetaData);
+                    //FIXME: Outdated - discard or fix
+                    elementMetaData.getMetaDataList().put("subElementID",subElementMetaData);
                 }
                 googleTree.getMetaDataMap().put(googleSheetId, elementMetaData);
             }

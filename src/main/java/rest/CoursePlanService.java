@@ -29,8 +29,7 @@ public class CoursePlanService {
     @GET
     @Path("{id}")
     public CoursePlan getCoursePlan(@PathParam("id")String id) throws PersistenceException, ElementNotFoundException, ValidException {
-        CoursePlan coursePlan = coursePlanDAO.get(id);
-        System.out.println(coursePlan);
+        CoursePlan coursePlan = ctrl.getCoursePlan(id);
         return coursePlan;
     }
 

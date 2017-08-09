@@ -20,6 +20,10 @@ public class SubElementMetaData{
     private String googleUniqueId; //used to track progress and notes in Google CoursePlan based
     private String notes;
     private Double progression;
+    transient private Boolean checked;
     private List<String> solutions = new ArrayList<>();
 
+    public Boolean getChecked(){
+        return (progression!=null && progression >0.9);
+    }
 }

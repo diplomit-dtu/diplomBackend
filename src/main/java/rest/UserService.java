@@ -22,9 +22,11 @@ import java.util.List;
 /**
  * Created by Christian on 07-06-2017.
  */
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 @Path("users")
 public class UserService {
-    UserController userController = new UserControllerImpl();
+    private UserController userController = new UserControllerImpl();
     @Context
     ContainerRequestContext requestContext;
 
@@ -32,6 +34,13 @@ public class UserService {
     @SecureEndpoint(Permission.PORTAL_ADMIN)
     public List<User> getAllUsers() throws PersistenceException {
         return userController.getAllUsers();
+    }
+
+    @GET
+    @Path("self")
+    public User getSelf() throws ValidException, PersistenceException {
+        User userFromContext = UserUtil.getUserFromContext(requestContext);
+        return userController.get(userFromContext.getId());
     }
 
     @Path("agendas")

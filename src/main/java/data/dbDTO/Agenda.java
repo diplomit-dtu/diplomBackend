@@ -22,10 +22,8 @@ import java.util.Map;
 @NoArgsConstructor
 public class Agenda extends BaseDTO {
 
-    private String courseId;
-    transient private CoursePlan coursePlan;
     @Embedded
-    private Map<String, ElementMetaData> metaData = new HashMap<>(); //<ElementID>, "list of SubElements
+    private Map<String, ElementMetaData> elementMetaData = new HashMap<>(); //<ElementID>, "list of SubElements
     private List<Link> courseLinks;
 
 

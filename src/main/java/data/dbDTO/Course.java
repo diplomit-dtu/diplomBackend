@@ -32,7 +32,7 @@ public class Course extends BaseDTO{
     private CoursePlanSource coursePlanSource;
     private String googleSheetPlanId; // GoogleSheetID
 
-    private String CourseplanId; //MongoDBId
+    private String courseplanId; //MongoDBId
 
 
     //TODO add relevant ekstra information
