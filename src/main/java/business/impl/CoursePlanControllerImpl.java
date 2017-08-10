@@ -50,7 +50,7 @@ public class CoursePlanControllerImpl implements CoursePlanController {
 
     }
 
-    private CoursePlan deepParse(CoursePlan googleFetchedCoursePlan) {
+    private CoursePlan deepParse(CoursePlan googleFetchedCoursePlan) throws PersistenceException {
         System.out.println("---------------------\r\n DeepParse\r\n ---------------");
         System.out.println("activities Fetched: " + googleFetchedCoursePlan.getCourseActivityList().size());
         List<CourseActivity> courseActivityList = googleFetchedCoursePlan.getCourseActivityList();

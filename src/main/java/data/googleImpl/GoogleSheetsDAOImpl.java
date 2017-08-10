@@ -1,6 +1,7 @@
 package data.googleImpl;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -13,6 +14,7 @@ import config.DeployConfig;
 import data.googleDTO.GoogleCell;
 import data.googleDTO.GoogleRow;
 import data.interfaces.GoogleSheetsDAO;
+import data.interfaces.PersistenceException;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -26,7 +28,7 @@ public class GoogleSheetsDAOImpl implements GoogleSheetsDAO {
     private String apiKey = DeployConfig.GOOGLE_API_KEY;
 
     @Override
-    public Spreadsheet getSheet(String sheetId) {
+    public Spreadsheet getSheet(String sheetId) throws PersistenceException {
         try {
             Sheets sheetsService = createApiKeySheetService();
             Sheets.Spreadsheets.Get request = sheetsService.spreadsheets().get(sheetId);
@@ -36,6 +38,8 @@ public class GoogleSheetsDAOImpl implements GoogleSheetsDAO {
             return spreadSheet;
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
+        } catch (GoogleJsonResponseException e){
+            throw new PersistenceException("403 - Google sheet ikke delt!");
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -262,6 +262,10 @@ public class CourseControllerImpl implements CourseController {
 
     private void modifyUserAndCreateAgenda(Course course, User user) throws ValidException, PersistenceException {
         Map<String, AgendaInfo> studentAgendaInfos = user.getAgendaInfoMap();
+        if (studentAgendaInfos==null){
+            user.setAgendaInfoMap(new HashMap<>());
+            studentAgendaInfos = user.getAgendaInfoMap();
+        }
         if (!studentAgendaInfos.containsKey(course.getId())) {
             AgendaInfo agendaInfo = new AgendaInfo();
             agendaInfo.setCourseName(course.getCourseName());
