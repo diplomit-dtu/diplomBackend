@@ -37,6 +37,12 @@ public class UserService {
     }
 
     @GET
+    @Path("{id}")
+    public User getUserById(@PathParam("id") String id) throws ValidException, PersistenceException {
+        return userController.get(id);
+    }
+
+    @GET
     @Path("self")
     public User getSelf() throws ValidException, PersistenceException {
         User userFromContext = UserUtil.getUserFromContext(requestContext);
