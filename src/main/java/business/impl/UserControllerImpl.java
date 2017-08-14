@@ -3,6 +3,7 @@ package business.impl;
 import business.interfaces.UserController;
 import business.ControllerRegistry;
 import data.dbDTO.AgendaInfo;
+import data.dbDTO.Course;
 import data.dbDTO.Role;
 import data.dbDTO.User;
 import data.interfaces.PersistenceException;
@@ -11,10 +12,7 @@ import data.mongoImpl.MongoUserDAO;
 import rest.ElementNotFoundException;
 import rest.ValidException;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Christian on 08-06-2017.
@@ -61,7 +59,19 @@ public class UserControllerImpl implements UserController {
 
     @Override
     public User get(String userId) throws ValidException, PersistenceException {
-        return userDAO.get(userId);
+        User user = userDAO.get(userId);
+        Set<String> courseIds = user.getAgendaInfoMap().keySet();
+        List<Course> multiCourses = ControllerRegistry.getCourseController().getMultiCourses(courseIds);
+        Map<String, AgendaInfo> fetchedAgendaInfoMap = new HashMap<>();
+        for (Course c : multiCourses) {
+            AgendaInfo agendaInfo = new AgendaInfo();
+            agendaInfo.setCourseName(c.getCourseShortHand() + " " + c.getCourseName());
+            agendaInfo.setAgendaId(user.getAgendaInfoMap().get(c.getId()).getAgendaId());
+            fetchedAgendaInfoMap.put(c.getId(),agendaInfo);
+        }
+        user.setAgendaInfoMap(fetchedAgendaInfoMap);
+        return user;
+
     }
 
     @Override
@@ -77,6 +87,7 @@ public class UserControllerImpl implements UserController {
         AgendaInfo agendaInfo = agendaInfoMap.get(courseId);
         ControllerRegistry.getAgendaController().deleteAgenda(agendaInfo.getAgendaId());
         user.getAgendaInfoMap().remove(courseId);
+        user.setActiveAgenda(null);
         saveUser(user);
     }
 }

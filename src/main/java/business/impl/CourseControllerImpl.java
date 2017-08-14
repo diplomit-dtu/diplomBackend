@@ -260,6 +260,12 @@ public class CourseControllerImpl implements CourseController {
         cachedCoursePlans.remove(course.getCourseplanId());
     }
 
+    @Override
+    public List<Course> getMultiCourses(Collection<String> courseIds) throws ValidException, PersistenceException {
+        List<Course> courses = courseDAO.multiGet(courseIds);
+        return courses;
+    }
+
     private void modifyUserAndCreateAgenda(Course course, User user) throws ValidException, PersistenceException {
         Map<String, AgendaInfo> studentAgendaInfos = user.getAgendaInfoMap();
         if (studentAgendaInfos==null){

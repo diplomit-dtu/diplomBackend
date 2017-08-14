@@ -206,6 +206,7 @@ public class CourseService {
                 //Check if user still is in course
                 if (!(course.getAdmins().contains(userId) || course.getTAs().contains(userId) || course.getStudents().contains(userId))) {
                     ControllerRegistry.getUserController().removeAgenda(userId, id);
+
                 }
                 courseController.updateCourse(course);
                 return true;

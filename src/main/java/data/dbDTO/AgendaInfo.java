@@ -11,6 +11,7 @@ import org.mongodb.morphia.annotations.Embedded;
 @Embedded
 @NoArgsConstructor
 public class AgendaInfo {
-    private String courseName;
+    //Loaded via Morphia
+    private transient String courseName;
     private String AgendaId;
 }

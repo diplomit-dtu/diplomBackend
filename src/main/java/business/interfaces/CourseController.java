@@ -62,4 +62,6 @@ public interface CourseController {
     void updateGoogleSheetId(String courseId, String SheetId) throws ValidException, PersistenceException;
 
     void syncCoursePlan(String id) throws ValidException, PersistenceException;
+
+    List<Course> getMultiCourses(Collection<String> courseIds) throws ValidException, PersistenceException;
 }
