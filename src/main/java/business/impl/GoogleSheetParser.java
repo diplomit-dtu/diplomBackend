@@ -18,7 +18,7 @@ public class GoogleSheetParser {
         return new Date(millisSince1970);
     }
 
-    protected static String parseLinkForSheetId(String link) throws IdNotFoundException {
+    public static String parseLinkForSheetId(String link) throws IdNotFoundException {
         if (link != null) {
             String[] urlParts = link.split("/");
             if ((urlParts.length >= 4 && "spreadsheets".equals(urlParts[3])) || (link.toLowerCase().contains("google") && link.toLowerCase().contains("spreadsheets"))) {
@@ -37,6 +37,6 @@ public class GoogleSheetParser {
         }
     }
 
-    protected static class IdNotFoundException extends Exception {
+    public static class IdNotFoundException extends Exception {
     }
 }

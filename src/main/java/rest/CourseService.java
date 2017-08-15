@@ -1,6 +1,7 @@
 package rest;
 
 import auth.AuthorizationFilter;
+import business.impl.GoogleSheetParser;
 import business.interfaces.CourseController;
 import business.ControllerRegistry;
 import data.dbDTO.*;
@@ -110,6 +111,11 @@ public class CourseService {
         @Path("googleSheetId")
         public void updateGoogleSheetId(HashMap<String, String> map) throws ValidException, PersistenceException {
             String googleSheetId = map.get("googleSheetId");
+            try {
+                googleSheetId = GoogleSheetParser.parseLinkForSheetId(googleSheetId);
+            } catch (GoogleSheetParser.IdNotFoundException e) {
+                //Assume that an ID was posted
+            }
             courseController.updateGoogleSheetId(id,googleSheetId);
         }
 
