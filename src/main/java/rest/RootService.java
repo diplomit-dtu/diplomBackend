@@ -13,7 +13,7 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-import java.util.Collection;
+import javax.ws.rs.core.MultivaluedMap;
 
 /** Root Servlet
  * Created by Christian on 28-04-2017.
@@ -40,7 +40,7 @@ public class RootService {
 
     @Path("contextTest")
     @GET
-    public Collection<String> getContext(){
-        return context.getPropertyNames();
+    public MultivaluedMap<String, String> getContext(){
+        return headers.getRequestHeaders();
     }
 }
