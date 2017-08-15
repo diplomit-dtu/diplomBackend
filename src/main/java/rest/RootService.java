@@ -1,5 +1,8 @@
 package rest;
 
+import auth.JWTHandler;
+import auth.MalformedAuthorizationHeaderException;
+import auth.NotLoggedInException;
 import auth.UserUtil;
 import data.dbDTO.User;
 
@@ -8,6 +11,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import java.util.Collection;
 
@@ -19,6 +23,9 @@ import java.util.Collection;
 public class RootService {
     @Context
     ContainerRequestContext context;
+    @Context
+    HttpHeaders headers;
+
 
     @GET
     public String getRoot(){
@@ -27,9 +34,8 @@ public class RootService {
 
     @Path("userTest")
     @GET
-    public User getUserFromContext(){
-        System.out.println(context);
-        return UserUtil.getUserFromContext(context);
+    public User getUserFromHeaders() throws NotLoggedInException, JWTHandler.ExpiredLoginException, JWTHandler.AuthException, MalformedAuthorizationHeaderException {
+        return UserUtil.resolveUser(headers);
     }
 
     @Path("contextTest")
