@@ -24,15 +24,20 @@ public class JWTHandler {
 		public ExpiredLoginException(String string) { super(string);
 		}
 	}
-	public JWTHandler(){
-		if (DeployConfig.JWT_SECRET_KEY != null && DeployConfig.JWT_SECRET_KEY !="") {
-			String string = DeployConfig.JWT_SECRET_KEY;
-			key = new SecretKeySpec(string.getBytes(),0,string.length(),"HS512");
-		} else {
-			key = MacProvider.generateKey(SignatureAlgorithm.HS512);
+
+	private static Key key;
+
+	private static Key getKey(){
+		if (key==null) {
+			if (DeployConfig.JWT_SECRET_KEY != null && DeployConfig.JWT_SECRET_KEY != "") {
+				String string = DeployConfig.JWT_SECRET_KEY;
+				key = new SecretKeySpec(string.getBytes(), 0, string.length(), "HS512");
+			} else {
+				key = MacProvider.generateKey(SignatureAlgorithm.HS512);
+			}
 		}
+		return key;
 	}
-	private Key key;
 
 	public String generateJwtToken(User user){
 		user.setActiveAgenda(null);
@@ -46,7 +51,7 @@ public class JWTHandler {
 		return Jwts.builder()
 				.setIssuer("DiplomIt")
 				.claim("user", user)
-				.signWith(SignatureAlgorithm.HS512, key)
+				.signWith(SignatureAlgorithm.HS512, getKey())
 				.setExpiration(expiry.getTime())
 				.compact();
 	}
@@ -55,12 +60,12 @@ public class JWTHandler {
 		Claims claims = null;
 		try {
 			System.out.println(tokenString);
-			claims = Jwts.parser().setSigningKey(key).parseClaimsJws(tokenString).getBody();
+			claims = Jwts.parser().setSigningKey(getKey()).parseClaimsJws(tokenString).getBody();
 			ObjectMapper mapper = new ObjectMapper();
 			System.out.println(claims.get("user"));
 			User user = mapper.convertValue((claims.get("user")), User.class);
 			System.out.println(user);
-			return Jwts.parser().setSigningKey(key).parseClaimsJws(tokenString);
+			return Jwts.parser().setSigningKey(getKey()).parseClaimsJws(tokenString);
 		} catch (ExpiredJwtException e) {
 			throw new ExpiredLoginException("Token too old!");
 		} catch (UnsupportedJwtException e) {
