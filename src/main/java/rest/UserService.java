@@ -1,5 +1,6 @@
 package rest;
 
+import auth.AccessDeniedException;
 import auth.Permission;
 import auth.SecureEndpoint;
 import auth.UserUtil;
@@ -18,6 +19,7 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Christian on 07-06-2017.
@@ -47,6 +49,23 @@ public class UserService {
     public User getSelf() throws ValidException, PersistenceException {
         User userFromContext = UserUtil.getUserFromContext(requestContext);
         return userController.get(userFromContext.getId());
+    }
+
+    @POST
+    @Path("self")
+    public User updateSelf(User user) throws AccessDeniedException, PersistenceException, ValidException {
+        User userFromContext = UserUtil.getUserFromContext(requestContext);
+        if (!Objects.equals(user.getId(), userFromContext.getId())){
+            throw new AccessDeniedException("Can only modify self");
+        } else {
+            //Only update fields that user have control over - no injection here, please!
+            User loadedUser = userController.get(user.getId());
+            loadedUser.setActiveAgenda(user.getActiveAgenda());
+            loadedUser.setEmail(user.getEmail());
+            loadedUser.setFirstName(user.getFirstName());
+            loadedUser.setLastName(user.getLastName());
+            return userController.saveUser(loadedUser);
+        }
     }
 
     @Path("agendas")
