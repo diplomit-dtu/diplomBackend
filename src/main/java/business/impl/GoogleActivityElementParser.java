@@ -32,7 +32,7 @@ public class GoogleActivityElementParser extends GoogleSheetParser {
         }
         for (RowData rowData : rowDatas) {
             if (rowData.getValues() != null && rowData.getValues().get(0)!=null && rowData.getValues().get(0).getFormattedValue()!=null) {
-                if (!headerFound == true) {
+                if (!headerFound) {
                     headerFound = true;
                 } else {
                     activityElement.getSubElements().add(parseRow(rowData.getValues()));

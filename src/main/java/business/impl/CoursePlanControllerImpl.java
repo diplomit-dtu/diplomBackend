@@ -104,7 +104,7 @@ public class CoursePlanControllerImpl implements CoursePlanController {
                     used = true;
                 }
             }
-            if (used==false){
+            if (!used){
                 //Cascade Delete - sigh!
                 List<CourseActivityElement> activityElementList = oldActivity.getActivityElementList();
                 for (CourseActivityElement courseActivityElement: activityElementList ){
@@ -129,7 +129,9 @@ public class CoursePlanControllerImpl implements CoursePlanController {
         //Loop through both lists looking for identical id's //TODO refactor to map
         for(CourseActivityElement newCourseActivityElement: newActivityElementList){
             for(CourseActivityElement oldCourseActivityElement: oldActiviyElementList){
-             if (Objects.equals(newCourseActivityElement.getGoogleSheetId(), oldCourseActivityElement.getGoogleSheetId())){
+             if (newCourseActivityElement.getSubElements()!=null && newCourseActivityElement.getSubElements().size()>0 &&
+                     newCourseActivityElement.getGoogleSheetId()!=null &&
+                     Objects.equals(newCourseActivityElement.getGoogleSheetId(), oldCourseActivityElement.getGoogleSheetId()) ){
                  //SubElement is the same
                  newCourseActivityElement.setId(oldCourseActivityElement.getId());
                  compareSubElements(newCourseActivityElement, oldCourseActivityElement);
