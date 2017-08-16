@@ -4,6 +4,7 @@ import com.google.api.services.sheets.v4.model.CellData;
 import com.google.api.services.sheets.v4.model.RowData;
 import com.google.api.services.sheets.v4.model.Sheet;
 import com.google.api.services.sheets.v4.model.Spreadsheet;
+import data.dbDTO.CourseActivity;
 import data.dbDTO.CourseActivityElement;
 import data.dbDTO.CourseActivitySubElement;
 import org.bson.types.ObjectId;
@@ -74,13 +75,12 @@ public class GoogleActivityElementParser extends GoogleSheetParser {
         String typeString = formattedValue.toLowerCase();
         if (subElement.getHyperLink() == null) { //Didn't Find a hyperLink Assume code assignment or free text.
             if (typeString.contains("code")) {
+                subElement.setSubElementType(CourseActivitySubElement.SubElementType.Code);
                 try {
                     ObjectId oid = new ObjectId(subElement.getContent());
 //                    subElement.setId(subElement.getContent()); //Assume that Content is an Id for Native
-                    subElement.setSubElementType(CourseActivitySubElement.SubElementType.Code);
                 } catch (IllegalArgumentException e){
-                    //Not a code element....
-                    subElement.setSubElementType(CourseActivitySubElement.SubElementType.Text);
+                    //Not a native code element....
                 }
 
             } else {

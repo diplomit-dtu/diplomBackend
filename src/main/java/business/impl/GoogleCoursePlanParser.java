@@ -74,6 +74,8 @@ public class GoogleCoursePlanParser extends GoogleSheetParser {
                         String googleSheetId = parseLinkForSheetId(link);
                         activityElement.setGoogleSheetId(googleSheetId);
                         activityElement.setActivityElementType(CourseActivityElement.ActivityElementType.GoogleSheet);
+                        activityElement.setHyperLink(link);
+                        activityElement.setGoogleSheetId(googleSheetId);
                     } catch (IdNotFoundException e) {
                         activityElement.setActivityElementType(CourseActivityElement.ActivityElementType.Link);
                         activityElement.setGoogleUniqueId(link);

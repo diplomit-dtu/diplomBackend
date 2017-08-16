@@ -16,6 +16,7 @@ import rest.ValidException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Christian on 06-08-2017.
@@ -58,18 +59,19 @@ public class CoursePlanControllerImpl implements CoursePlanController {
         for (CourseActivity courseActivity: courseActivityList) {
             List<CourseActivityElement> activityElementList = courseActivity.getActivityElementList();
             List<CourseActivityElement> deepParsedCourseActivityElementList = new ArrayList<>();
-            for (CourseActivityElement courseActivityElement: activityElementList){
-                String title =courseActivityElement.getTitle();
-                if (courseActivityElement.getGoogleSheetId()!=null) {
-                    Spreadsheet activityElementSheet = googleSheetsDAO.getSheet(courseActivityElement.getGoogleSheetId());
+            for (CourseActivityElement templateCourseActivityElement: activityElementList){
+                String title =templateCourseActivityElement.getTitle();
+                if (templateCourseActivityElement.getGoogleSheetId()!=null) {
+                    Spreadsheet activityElementSheet = googleSheetsDAO.getSheet(templateCourseActivityElement.getGoogleSheetId());
                     CourseActivityElement fetchedGoogleCourseActivityElement = GoogleActivityElementParser.parseSheet(activityElementSheet);
-                    courseActivityElement = fetchedGoogleCourseActivityElement;
-                    System.out.println("-------------------------\r\n" + courseActivityElement);
-                    System.out.println(courseActivityElement);
-                    courseActivityElement.setTitle(title);
+                    fetchedGoogleCourseActivityElement.setGoogleSheetId(templateCourseActivityElement.getGoogleSheetId());
+                    templateCourseActivityElement = fetchedGoogleCourseActivityElement;
+                    System.out.println("-------------------------\r\n" + templateCourseActivityElement);
+                    System.out.println(templateCourseActivityElement);
+                    templateCourseActivityElement.setTitle(title);
 
                 }
-                deepParsedCourseActivityElementList.add(courseActivityElement);
+                deepParsedCourseActivityElementList.add(templateCourseActivityElement);
             }
             courseActivity.setActivityElementList(deepParsedCourseActivityElementList);
             deepParsedCourseActivityList.add(courseActivity);
@@ -86,6 +88,9 @@ public class CoursePlanControllerImpl implements CoursePlanController {
                 if (oldCourseActivity.getDescription().equals(activity.getDescription()) ||
                         oldCourseActivity.getTitle().equals(activity.getTitle())){
                     activity.setId(oldCourseActivity.getId());
+                    //Compare Elements
+                    compareElements(activity, oldCourseActivity);
+
                 }
             }
             saveActivity(activity);
@@ -110,14 +115,45 @@ public class CoursePlanControllerImpl implements CoursePlanController {
                 }
 
                 courseActivityDAO.delete(oldActivity.getId());
+            } else {
+                //TODO cleanup Elements - sigh! (elements are leaked - not a big problem (few kb)- but should be fixed
             }
 
         }
 
     }
 
+    private void compareElements(CourseActivity activity, CourseActivity oldCourseActivity) {
+        List<CourseActivityElement> newActivityElementList = activity.getActivityElementList();
+        List<CourseActivityElement> oldActiviyElementList = oldCourseActivity.getActivityElementList();
+        //Loop through both lists looking for identical id's //TODO refactor to map
+        for(CourseActivityElement newCourseActivityElement: newActivityElementList){
+            for(CourseActivityElement oldCourseActivityElement: oldActiviyElementList){
+             if (Objects.equals(newCourseActivityElement.getGoogleSheetId(), oldCourseActivityElement.getGoogleSheetId())){
+                 //SubElement is the same
+                 newCourseActivityElement.setId(oldCourseActivityElement.getId());
+                 compareSubElements(newCourseActivityElement, oldCourseActivityElement);
+             }
+            }
+        }
+    }
+
+    private void compareSubElements(CourseActivityElement newCourseActivityElement, CourseActivityElement oldCourseActivityElement) {
+        List<CourseActivitySubElement> newSubElements = newCourseActivityElement.getSubElements();
+        List<CourseActivitySubElement> oldSubElements = oldCourseActivityElement.getSubElements();
+        for (CourseActivitySubElement newSubElement : newSubElements){
+            for(CourseActivitySubElement oldSubElement : oldSubElements){
+                if (Objects.equals(newSubElement.getContent(), oldSubElement.getContent()) || Objects.equals(newSubElement.getTitle(), oldSubElement.getTitle())){
+                    //Subelements are assumed to be the same - reuse id
+                    newSubElement.setId(oldSubElement.getId());
+                }
+            }
+        }
+    }
+
     private void saveActivity(CourseActivity courseActivity) throws PersistenceException {
         List<CourseActivityElement> activityElementList = courseActivity.getActivityElementList();
+        //Cascade Save... sigh!
         for (CourseActivityElement courseActivityElement: activityElementList) {
             for (CourseActivitySubElement subElement: courseActivityElement.getSubElements()){
                 subElement = courseActivitySubElementDAO.save(subElement);
