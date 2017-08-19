@@ -1,6 +1,8 @@
 package data.dbDTO;
 
+import data.interfaces.BaseDAO;
 import lombok.*;
+import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 
 import java.util.List;

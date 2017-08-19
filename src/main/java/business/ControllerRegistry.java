@@ -13,6 +13,7 @@ public class ControllerRegistry {
     private static AgendaController agendaController;
     private static UserController userController;
     private static UserDataController userDataController;
+    private static RoleController roleController;
 
     public static CourseController getCourseController(){
         if (courseController==null) courseController=new CourseControllerImpl();
@@ -37,6 +38,12 @@ public class ControllerRegistry {
     public static UserDataController getUserDataController() {
         if (userDataController == null) userDataController = new UserDataControllerImpl();
         return userDataController;
+
+    }
+
+    public static RoleController getRoleController() {
+        if (roleController == null) roleController = new RoleControllerImpl();
+        return roleController;
 
     }
 }

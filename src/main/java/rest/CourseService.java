@@ -1,6 +1,7 @@
 package rest;
 
 import auth.AuthorizationFilter;
+import auth.UserUtil;
 import business.impl.GoogleSheetParser;
 import business.interfaces.CourseController;
 import business.ControllerRegistry;
@@ -97,9 +98,30 @@ public class CourseService {
         @POST
         @Path("name")
         public void updateCourseNameAndShortHand(CourseNameAndShort courseNameAndShort) throws ValidException, PersistenceException {
+
             courseController.updateCourseNameAndShort(id, courseNameAndShort);
 
         }
+
+        @POST
+        @Path("addlink")
+        public Course addLinkToCourse(EmbeddedLink link) throws ValidException, PersistenceException, AccessDeniedException, auth.AccessDeniedException {
+            System.out.println(requestContext.getProperty(AuthorizationFilter.USER));
+            return courseController.adminAddLink(id, link, requestContext);
+        }
+
+        @POST
+        @Path("removelink")
+        public Course removeLinkFromCourse (EmbeddedLink link) throws ValidException, auth.AccessDeniedException, PersistenceException {
+            return courseController.adminRemoveLink(id, link, requestContext);
+        }
+
+        @PUT
+        @Path("links")
+        public Course updateLinks(List<EmbeddedLink> links) throws ValidException, auth.AccessDeniedException, PersistenceException {
+            return courseController.adminUpdateLinks(id,links,requestContext);
+        }
+
         @POST
         @Path("usesGoogleSheet")
         public void updateUsesGoogleSheet(HashMap<String,Boolean> map) throws ValidException, PersistenceException {

@@ -25,6 +25,9 @@ public class User extends BaseDTO{
 	private String lastName;
 	private Set<Permission> permissions = new HashSet<>();
 	private List<Role> roles = new ArrayList<>();
+	private transient boolean isAdminOfCourses = false;
+
+
 	@Embedded
 	private Map<String, AgendaInfo> agendaInfoMap = new HashMap<>(); //courseId,<AgendaId,CourseName>
 	private String activeAgenda;

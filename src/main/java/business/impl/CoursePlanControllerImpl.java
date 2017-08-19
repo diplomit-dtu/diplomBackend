@@ -123,7 +123,7 @@ public class CoursePlanControllerImpl implements CoursePlanController {
 
     }
 
-    private void compareElements(CourseActivity activity, CourseActivity oldCourseActivity) {
+    private void compareElements(CourseActivity activity, CourseActivity oldCourseActivity) throws PersistenceException {
         List<CourseActivityElement> newActivityElementList = activity.getActivityElementList();
         List<CourseActivityElement> oldActiviyElementList = oldCourseActivity.getActivityElementList();
         //Loop through both lists looking for identical id's //TODO refactor to map
@@ -137,10 +137,14 @@ public class CoursePlanControllerImpl implements CoursePlanController {
                  compareSubElements(newCourseActivityElement, oldCourseActivityElement);
              }
             }
+            for(CourseActivitySubElement subElement: newCourseActivityElement.getSubElements()){
+                courseActivitySubElementDAO.save(subElement);
+            }
+            courseActivityElementDAO.save(newCourseActivityElement);
         }
     }
 
-    private void compareSubElements(CourseActivityElement newCourseActivityElement, CourseActivityElement oldCourseActivityElement) {
+    private void compareSubElements(CourseActivityElement newCourseActivityElement, CourseActivityElement oldCourseActivityElement) throws PersistenceException {
         List<CourseActivitySubElement> newSubElements = newCourseActivityElement.getSubElements();
         List<CourseActivitySubElement> oldSubElements = oldCourseActivityElement.getSubElements();
         for (CourseActivitySubElement newSubElement : newSubElements){

@@ -4,9 +4,11 @@ import auth.AccessDeniedException;
 import auth.Permission;
 import auth.SecureEndpoint;
 import auth.UserUtil;
+import business.ControllerRegistry;
 import business.impl.AgendaControllerImpl;
 import business.impl.UserControllerImpl;
 import business.interfaces.AgendaController;
+import business.interfaces.RoleController;
 import business.interfaces.UserController;
 import config.Config;
 import data.dbDTO.AgendaInfo;
@@ -20,6 +22,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Created by Christian on 07-06-2017.
@@ -38,10 +41,10 @@ public class UserService {
         return userController.getAllUsers();
     }
 
-    @GET
+
     @Path("{id}")
-    public User getUserById(@PathParam("id") String id) throws ValidException, PersistenceException {
-        return userController.get(id);
+    public UserIdResource getUserById(@PathParam("id") String id) throws ValidException, PersistenceException {
+        return new UserIdResource(id);
     }
 
     @GET
@@ -114,5 +117,93 @@ public class UserService {
             AgendaInfo newAgenda = agendaController.createNewAgenda(agendaInfo, user.getId());
             return newAgenda;
         }
+    }
+
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public class UserIdResource {
+        private final String id;
+
+        public UserIdResource(String id) {
+            this.id = id;
+        }
+
+        @GET
+        @SecureEndpoint(Permission.PORTAL_ADMIN)
+        public User getUser() throws ValidException, PersistenceException {
+            return userController.get(id);
+        }
+
+        @Path("makePortalAdmin")
+        @POST
+        @SecureEndpoint(Permission.PORTAL_ADMIN)
+        public User makePortalAdmin() throws ValidException, PersistenceException {
+
+            RoleController roleController = ControllerRegistry.getRoleController();
+            Role portalAdmin = roleController.getPortalAdmin();
+            return addRole(id,portalAdmin);
+
+
+        }
+
+        @Path("removePortalAdmin")
+        @POST
+        @SecureEndpoint(Permission.PORTAL_ADMIN)
+        public User removePortalAdmin() throws ValidException, AccessDeniedException, PersistenceException {
+            RoleController roleController = ControllerRegistry.getRoleController();
+            Role portalAdmin = roleController.getPortalAdmin();
+            return removeRole(id,portalAdmin);
+        }
+
+
+
+        @Path("makeCourseAdmin")
+        @POST
+        @SecureEndpoint(Permission.PORTAL_ADMIN)
+        public User makeCourseAdmin() throws ValidException, PersistenceException {
+            RoleController roleController = ControllerRegistry.getRoleController();
+            Role courseAdmin = roleController.getCourseAdmin();
+            return addRole(id,courseAdmin);
+        }
+
+        @Path("removeCourseAdmin")
+        @POST
+        @SecureEndpoint(Permission.PORTAL_ADMIN)
+        public User removeCourseAdmin() throws ValidException, AccessDeniedException, PersistenceException {
+            RoleController roleController = ControllerRegistry.getRoleController();
+            Role courseAdmin = roleController.getCourseAdmin();
+            return removeRole(id,courseAdmin);
+        }
+
+        private User addRole(String id, Role newrole) throws ValidException, PersistenceException {
+            User user = userController.get(id);
+            newrole.getAdmins().add(UserUtil.getUserFromContext(requestContext).getId());
+            Role removeRole=null;
+            for(Role role: user.getRoles()){
+                if (Objects.equals(role.getRoleName(), newrole.getRoleName())){
+                    removeRole=role;
+                }
+            }
+            if (removeRole!=null) user.getRoles().remove(removeRole);
+            user.getRoles().add(newrole);
+            return userController.saveUser(user);
+        }
+
+        private User removeRole(String id, Role roleToRemove) throws AccessDeniedException, ValidException, PersistenceException {
+            User user = userController.get(id);
+
+            Role removeRole=null;
+            for(Role role: user.getRoles()){
+                if (Objects.equals(role.getRoleName(), roleToRemove.getRoleName())){
+                    UserUtil.checkAdmin(role,requestContext);
+
+                    removeRole=role;
+                }
+            }
+            if (removeRole!=null) user.getRoles().remove(removeRole);
+            return userController.saveUser(user);
+        }
+
+
     }
 }

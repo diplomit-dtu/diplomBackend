@@ -29,7 +29,6 @@ public class CourseDAOTest {
         LocalDate localDate = LocalDate.parse("2017-02-01");
         newCourse.setStartingDate(localDate);
         newCourse.setEndingDate(LocalDate.parse("2017-07-01"));
-        newCourse.setLinkCollection("59241045cff47e08c4c277a3");
         try {
             Course savedCourse = courseController.createCourse(newCourse);
             System.out.println(savedCourse.getId());

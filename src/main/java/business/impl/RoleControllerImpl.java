@@ -27,12 +27,25 @@ public class RoleControllerImpl implements RoleController {
     }
 
     @Override
+    public Role getPortalAdmin() {
+        Role role = new Role();
+        role.setRoleName("PortalAdmin");
+        role.getPermissions().add(Permission.PORTAL_ADMIN);
+        return role;
+    }
+
+    @Override
+    public Role getCourseAdmin() {
+        Role role = new Role();
+        role.setRoleName("CourseAdmin");
+        role.getPermissions().add(Permission.CREATE_COURSE);
+        return role;
+    }
+
+
+    @Override
     @SecureEndpoint(Permission.ADMIN_ROLES)
     public Role createRole(Role role) throws PersistenceException, DBValidationException {
-        List<Role> rolesWithSameName = roleDAO.findByField(Role.ROLE_NAME, role.getRoleName());
-        if (rolesWithSameName!=null || rolesWithSameName.size()>0){
-            throw new DBValidationException("Role with same name already exists");
-        }
         return roleDAO.save(role);
     }
 }

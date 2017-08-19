@@ -37,6 +37,14 @@ public class UserUtil {
         }
     }
 
+    public static <T extends BaseDTO> void checkAdmin(T baseDTO, ContainerRequestContext requestContext) throws AccessDeniedException {
+        User userFromContext = getUserFromContext(requestContext);
+        if(!baseDTO.getAdmins().contains(userFromContext.getId())){
+            throw new AccessDeniedException("User does not have permissions to alter resource: + id");
+        }
+
+    }
+
     public static User resolveUser(HttpHeaders headers) throws NotLoggedInException, MalformedAuthorizationHeaderException, JWTHandler.AuthException, JWTHandler.ExpiredLoginException {
         String authHeader = headers.getHeaderString(HttpHeaders.AUTHORIZATION);
         if (authHeader == null) {

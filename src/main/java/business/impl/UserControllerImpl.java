@@ -67,6 +67,11 @@ public class UserControllerImpl implements UserController {
             AgendaInfo agendaInfo = new AgendaInfo();
             agendaInfo.setCourseName(c.getCourseShortHand() + " " + c.getCourseName());
             agendaInfo.setAgendaId(user.getAgendaInfoMap().get(c.getId()).getAgendaId());
+            boolean containsAdmin = c.getAdmins().contains(userId);
+            if(containsAdmin) {
+                user.setAdminOfCourses(true);
+                agendaInfo.setAdmin(true);
+            }
             fetchedAgendaInfoMap.put(c.getId(),agendaInfo);
         }
         user.setAgendaInfoMap(fetchedAgendaInfoMap);

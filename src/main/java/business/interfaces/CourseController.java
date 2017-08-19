@@ -1,18 +1,18 @@
 package business.interfaces;
 
-import data.dbDTO.Course;
-import data.dbDTO.CoursePlan;
-import data.dbDTO.User;
+import data.dbDTO.*;
 import data.interfaces.PersistenceException;
 import data.viewDTO.CourseAddUserInfo;
 import data.viewDTO.CourseNameAndShort;
 import rest.ElementNotFoundException;
 import rest.ValidException;
 
+import javax.ws.rs.container.ContainerRequestContext;
 import java.nio.file.AccessDeniedException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Christian on 15-05-2017.
@@ -64,4 +64,10 @@ public interface CourseController {
     void syncCoursePlan(String id) throws ValidException, PersistenceException;
 
     List<Course> getMultiCourses(Collection<String> courseIds) throws ValidException, PersistenceException;
+
+    Course adminAddLink(String id, EmbeddedLink link, ContainerRequestContext userFromContext) throws ValidException, PersistenceException, auth.AccessDeniedException;
+
+    Course adminRemoveLink(String id, EmbeddedLink link, ContainerRequestContext requestContext) throws ValidException, PersistenceException, auth.AccessDeniedException;
+
+    Course adminUpdateLinks(String id, List<EmbeddedLink> links, ContainerRequestContext requestContext) throws ValidException, PersistenceException, auth.AccessDeniedException;
 }

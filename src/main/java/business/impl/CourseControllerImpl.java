@@ -1,5 +1,7 @@
 package business.impl;
 
+import auth.AccessDeniedException;
+import auth.UserUtil;
 import business.interfaces.AgendaController;
 import business.interfaces.CourseController;
 import business.interfaces.CoursePlanController;
@@ -18,7 +20,6 @@ import rest.ElementNotFoundException;
 import rest.ValidException;
 
 import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.core.Context;
 import java.util.*;
 
 /** Business Logic layer for Courses.
@@ -30,9 +31,6 @@ public class CourseControllerImpl implements CourseController {
     private CoursePlanDAO mongoCoursePlanDAO = new MongoCoursePlanDAO();
     private CoursePlanDAO googleCoursePlanDAO = new GoogleCoursePlanDAO();
     public static Map<String, CoursePlan> cachedCoursePlans = new HashMap<>();
-
-    @Context
-    ContainerRequestContext requestContext;
 
     @Override
     public List<Course> getCourses(){
@@ -264,6 +262,30 @@ public class CourseControllerImpl implements CourseController {
     public List<Course> getMultiCourses(Collection<String> courseIds) throws ValidException, PersistenceException {
         List<Course> courses = courseDAO.multiGet(courseIds);
         return courses;
+    }
+
+    @Override
+    public Course adminAddLink(String id, EmbeddedLink link, ContainerRequestContext requestContext) throws ValidException, PersistenceException, AccessDeniedException {
+        Course course = getCourse(id);
+        UserUtil.checkAdmin(course,requestContext);
+        course.getCourseLinks().add(link);
+        return updateCourse(course);
+    }
+
+    @Override
+    public Course adminRemoveLink(String id, EmbeddedLink link, ContainerRequestContext requestContext) throws ValidException, PersistenceException, AccessDeniedException {
+        Course course = getCourse(id);
+        UserUtil.checkAdmin(course, requestContext  );
+        course.getCourseLinks().remove(link);
+        return updateCourse(course);
+    }
+
+    @Override
+    public Course adminUpdateLinks(String id, List<EmbeddedLink> links, ContainerRequestContext requestContext) throws ValidException, PersistenceException, AccessDeniedException {
+        Course course = getCourse(id);
+        UserUtil.checkAdmin(course,requestContext);
+        course.setCourseLinks(links);
+        return updateCourse(course);
     }
 
     private void modifyUserAndCreateAgenda(Course course, User user) throws ValidException, PersistenceException {

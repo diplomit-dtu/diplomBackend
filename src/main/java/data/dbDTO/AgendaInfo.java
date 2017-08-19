@@ -13,5 +13,6 @@ import org.mongodb.morphia.annotations.Embedded;
 public class AgendaInfo {
     //Loaded via Morphia
     private transient String courseName;
+    private transient boolean admin=false;
     private String AgendaId;
 }

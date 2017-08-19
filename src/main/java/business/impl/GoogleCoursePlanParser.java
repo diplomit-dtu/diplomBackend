@@ -29,7 +29,10 @@ public class GoogleCoursePlanParser extends GoogleSheetParser {
                 } else {
                     coursePlan.getCourseActivityList().add(parseActivityRow(row));
                 }
-            } //else skip rows
+            } else {
+                //else skip rows
+                if (headerFound) break; // If there is empty rows after  header line - stop parsing
+            }
             rowNo++;
         }
         return coursePlan;

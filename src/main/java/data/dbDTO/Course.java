@@ -3,7 +3,7 @@ package data.dbDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 
 import java.time.LocalDate;
@@ -25,8 +25,11 @@ public class Course extends BaseDTO{
     private Set<String> tAs = new HashSet<>();
     private Set<String> students = new HashSet<>();
 
-    //Referenced documents
-    private String linkCollection;
+    private Boolean archived = false;
+    private LocalDate archiveDate;
+
+    @Embedded
+    private List<EmbeddedLink> courseLinks = new ArrayList<>();
 
     //Reference for fetching courseplan
     private CoursePlanSource coursePlanSource;

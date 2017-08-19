@@ -14,5 +14,7 @@ public interface RoleController {
     Role getRole(String roleId) throws ValidException, PersistenceException;
     List<Role> getAllRoles() throws PersistenceException;
 
+    Role getPortalAdmin();
+    Role getCourseAdmin();
     Role createRole(Role role) throws PersistenceException, DBValidationException;
 }
