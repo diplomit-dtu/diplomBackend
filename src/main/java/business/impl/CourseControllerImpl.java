@@ -175,6 +175,7 @@ public class CourseControllerImpl implements CourseController {
         UserController userController = ControllerRegistry.getUserController();
         Course course = getCourse(courseID);
         if (user.getId()!=null){
+            user = userController.get(user.getId());
             modifyUserAndCreateAgenda(course, user);
             userController.saveUser(user);
         } else if(user.getUserName()!=null){
@@ -290,6 +291,7 @@ public class CourseControllerImpl implements CourseController {
 
     private void modifyUserAndCreateAgenda(Course course, User user) throws ValidException, PersistenceException {
         Map<String, AgendaInfo> studentAgendaInfos = user.getAgendaInfoMap();
+        System.out.println("Student AgendaInforMap:/r/n" + studentAgendaInfos);
         if (studentAgendaInfos==null){
             user.setAgendaInfoMap(new HashMap<>());
             studentAgendaInfos = user.getAgendaInfoMap();
