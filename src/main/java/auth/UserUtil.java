@@ -40,7 +40,7 @@ public class UserUtil {
     public static <T extends BaseDTO> void checkAdmin(T baseDTO, ContainerRequestContext requestContext) throws AccessDeniedException {
         User userFromContext = getUserFromContext(requestContext);
         if(!baseDTO.getAdmins().contains(userFromContext.getId())){
-            throw new AccessDeniedException("User does not have permissions to alter resource: + id");
+            throw new AccessDeniedException("User does not have permissions to alter resource: "+ baseDTO.getId());
         }
 
     }

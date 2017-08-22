@@ -20,6 +20,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URI;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,7 +45,7 @@ public class CampusNetService {
     //STEP 2: Getting redirectURL from Campusnet:
     @GET
     @Produces(MediaType.TEXT_HTML)
-    public Response getToken(@QueryParam("ticket") String ticket) {
+    public Response getToken(@QueryParam("ticket") String ticket) throws PersistenceException {
         // STEP 3: Exchange Ticket for Login Details:
         OkHttpClient client = new OkHttpClient();
         String url = Config.CAMPUSNET_VALIDATE_URL + "?service=" + DeployConfig.CN_REDIRECT_URL + "&ticket=" + ticket;
@@ -56,11 +58,12 @@ public class CampusNetService {
             String jwtToken = "";
             //STEP 4: Issue Token and redirect to frontpage including token in url:
             if (validationArray.length == 2 && validationArray[0].toLowerCase().trim().equals("yes")) { //Login success
-                User user = resolveUser(validationArray[1]);
-
+                User user = resolveUser(validationArray[1]); //validationArray[1] contains campusnet username.
+//                user.setLastLoggedIn(LocalDateTime.now());
+//                userController.saveUser(user);
                 jwtToken = new JWTHandler().generateJwtToken(user);
+                //Generating redirection page and returning it.
                 String html = generateRedirectPage(jwtToken);
-                System.out.println(html);
                 return Response.ok().entity(html)
                         .header("Authorization", "Bearer " + jwtToken)
                         .build();

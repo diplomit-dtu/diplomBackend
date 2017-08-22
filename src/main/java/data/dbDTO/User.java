@@ -9,6 +9,8 @@ import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Indexed;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @EqualsAndHashCode(callSuper = true)
@@ -26,7 +28,6 @@ public class User extends BaseDTO{
 	private Set<Permission> permissions = new HashSet<>();
 	private List<Role> roles = new ArrayList<>();
 	private transient boolean isAdminOfCourses = false;
-
 
 	@Embedded
 	private Map<String, AgendaInfo> agendaInfoMap = new HashMap<>(); //courseId,<AgendaId,CourseName>

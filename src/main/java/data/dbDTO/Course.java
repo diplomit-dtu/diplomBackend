@@ -31,6 +31,8 @@ public class Course extends BaseDTO{
     @Embedded
     private List<EmbeddedLink> courseLinks = new ArrayList<>();
 
+    @Embedded List<CourseInfoLine> courseInfoLines = new ArrayList<>();
+
     //Reference for fetching courseplan
     private CoursePlanSource coursePlanSource;
     private String googleSheetPlanId; // GoogleSheetID

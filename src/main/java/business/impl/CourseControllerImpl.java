@@ -62,7 +62,10 @@ public class CourseControllerImpl implements CourseController {
     }
 
     @Override
-    public Course updateCourse(Course updatedCourse) throws PersistenceException, ValidException {
+    public Course updateCourse(Course updatedCourse, ContainerRequestContext requestContext) throws PersistenceException, ValidException, AccessDeniedException {
+        //retrieve original course to make certain noOne fiddled with it
+        Course course = getCourse(updatedCourse.getId());
+        UserUtil.checkAdmin(course,requestContext);
         return courseDAO.save(updatedCourse);
     }
 
@@ -134,7 +137,7 @@ public class CourseControllerImpl implements CourseController {
     }
 
     @Override
-    public void addUserToCourse(String id, CourseAddUserInfo userRoleInfo) throws ValidException, PersistenceException, ElementNotFoundException {
+    public void addUserToCourse(String id, CourseAddUserInfo userRoleInfo, ContainerRequestContext requestContext) throws ValidException, PersistenceException, ElementNotFoundException, AccessDeniedException {
         UserController userController = ControllerRegistry.getUserController();
         Course course = getCourse(id);
         User user = null;
@@ -160,18 +163,18 @@ public class CourseControllerImpl implements CourseController {
 
         }
 
-            String role = userRoleInfo.getRole().getRoleName().toLowerCase();
-            modifyCourse(user.getId(), course, role);
+        String role = userRoleInfo.getRole().getRoleName().toLowerCase();
+        modifyCourse(user.getId(), course, role);
 
-            modifyUserAndCreateAgenda(course, user);
-            //TODO could rewrite for two phase commmit - but some orphan data doesn't matter
-            updateCourse(course);
-            userController.saveUser(user);
+        modifyUserAndCreateAgenda(course, user);
+        //TODO could rewrite for two phase commmit - but some orphan data doesn't matter
+        updateCourse(course, requestContext);
+        userController.saveUser(user);
 
-        }
+    }
 
     @Override
-    public void addUserToCourse(String courseID, User user, String role) throws PersistenceException, ValidException {
+    public void addUserToCourse(String courseID, User user, String role, ContainerRequestContext requestContext) throws PersistenceException, ValidException, AccessDeniedException {
         UserController userController = ControllerRegistry.getUserController();
         Course course = getCourse(courseID);
         if (user.getId()!=null){
@@ -193,55 +196,57 @@ public class CourseControllerImpl implements CourseController {
             return;
         }
         modifyCourse(user.getId(), course, role);
-        updateCourse(course);
+        updateCourse(course, requestContext);
         userController.saveUser(user);
     }
 
     @Override
-        public void addUserToCourse(String id, User user) throws ValidException, PersistenceException {
-            addUserToCourse(id,user,"student");
+    public void addUserToCourse(String id, User user, ContainerRequestContext requestContext) throws ValidException, PersistenceException, AccessDeniedException {
+        addUserToCourse(id,user,"student", requestContext);
 
-        }
-
-        @Override
-        public void removeUserFromCourse(String id, CourseAddUserInfo userRoleInfo) throws ValidException, PersistenceException {
-            UserController userController = ControllerRegistry.getUserController();
-            Course course = getCourse(id);
-            User user = userController.get(userRoleInfo.getUserId());
-            course.getStudents().remove(userRoleInfo.getUserId());
-            Map<String, AgendaInfo> studentAgendaInfos = user.getAgendaInfoMap();
-            if (studentAgendaInfos!=null && studentAgendaInfos.get(id)!=null) {
-                if (studentAgendaInfos.get(id)!=null)ControllerRegistry.getAgendaController().deleteAgenda(studentAgendaInfos.get(id).getAgendaId());
-                studentAgendaInfos.remove(id);
-            }
-            userController.saveUser(user);
-            updateCourse(course);
-        }
+    }
 
     @Override
-    public void updateCourseNameAndShort(String id, CourseNameAndShort courseNameAndShort) throws ValidException, PersistenceException {
+    public void removeUserFromCourse(String id, CourseAddUserInfo userRoleInfo, ContainerRequestContext requestContext) throws ValidException, PersistenceException, AccessDeniedException {
+        UserController userController = ControllerRegistry.getUserController();
         Course course = getCourse(id);
+        User user = userController.get(userRoleInfo.getUserId());
+        course.getStudents().remove(userRoleInfo.getUserId());
+        Map<String, AgendaInfo> studentAgendaInfos = user.getAgendaInfoMap();
+        if (studentAgendaInfos!=null && studentAgendaInfos.get(id)!=null) {
+            if (studentAgendaInfos.get(id)!=null)ControllerRegistry.getAgendaController().deleteAgenda(studentAgendaInfos.get(id).getAgendaId());
+            studentAgendaInfos.remove(id);
+        }
+        userController.saveUser(user);
+        updateCourse(course, requestContext);
+    }
+
+    @Override
+    public void updateCourseNameAndShort(String id, CourseNameAndShort courseNameAndShort, ContainerRequestContext requestContext) throws ValidException, PersistenceException, AccessDeniedException {
+        Course course = getCourse(id);
+        UserUtil.checkAdmin(course,requestContext);
         course.setCourseName(courseNameAndShort.getCourseName());
         course.setCourseShortHand(courseNameAndShort.getShortHand());
-        updateCourse(course);
+        updateCourse(course, requestContext);
     }
 
     @Override
-    public void updateUsesGoogleSheet(String id, Boolean usesGoogleSheet) throws ValidException, PersistenceException {
+    public void updateUsesGoogleSheet(String id, Boolean usesGoogleSheet, ContainerRequestContext requestContext) throws ValidException, PersistenceException, AccessDeniedException {
         Course course  = getCourse(id);
+        UserUtil.checkAdmin(course,requestContext);
         course.setCoursePlanSource(usesGoogleSheet ? Course.CoursePlanSource.GoogleSheet: Course.CoursePlanSource.Mongo);
-        updateCourse(course);
+        updateCourse(course, requestContext);
     }
 
     @Override
-    public void updateGoogleSheetId(String courseId, String sheetId) throws ValidException, PersistenceException {
+    public void updateGoogleSheetId(String courseId, String sheetId, ContainerRequestContext requestContext) throws ValidException, PersistenceException, AccessDeniedException {
         Course course = getCourse(courseId);
         course.setGoogleSheetPlanId(sheetId);
-        updateCourse(course);
+        updateCourse(course, requestContext);
     }
 
     @Override
-    public void syncCoursePlan(String id) throws ValidException, PersistenceException {
+    public void syncCoursePlan(String id, ContainerRequestContext requestContext) throws ValidException, PersistenceException, AccessDeniedException {
         CoursePlanController coursePlanController = ControllerRegistry.getCoursePlanController();
 
         Course course = getCourse(id);
@@ -253,7 +258,7 @@ public class CourseControllerImpl implements CourseController {
             CoursePlan coursePlan = coursePlanController.createCoursePlan();
             course.setCourseplanId(coursePlan.getId());
         }
-        updateCourse(course);
+        updateCourse(course, requestContext);
         coursePlanController.syncCoursePlan(googleSheetPlanId, course.getCourseplanId());
         //Clear cache
         cachedCoursePlans.remove(course.getCourseplanId());
@@ -270,7 +275,7 @@ public class CourseControllerImpl implements CourseController {
         Course course = getCourse(id);
         UserUtil.checkAdmin(course,requestContext);
         course.getCourseLinks().add(link);
-        return updateCourse(course);
+        return updateCourse(course, requestContext);
     }
 
     @Override
@@ -278,7 +283,7 @@ public class CourseControllerImpl implements CourseController {
         Course course = getCourse(id);
         UserUtil.checkAdmin(course, requestContext  );
         course.getCourseLinks().remove(link);
-        return updateCourse(course);
+        return updateCourse(course, requestContext);
     }
 
     @Override
@@ -286,7 +291,32 @@ public class CourseControllerImpl implements CourseController {
         Course course = getCourse(id);
         UserUtil.checkAdmin(course,requestContext);
         course.setCourseLinks(links);
-        return updateCourse(course);
+        return updateCourse(course, requestContext);
+    }
+
+    @Override
+    public List<Course> getAdminsCourses(ContainerRequestContext requestContext) {
+        List<Course> courses = getCourses();
+        List<Course> adminsCourses = new ArrayList<>();
+
+        for (Course course: courses){
+            try {
+                UserUtil.checkAdmin(course,requestContext);
+                adminsCourses.add(course);
+            } catch (AccessDeniedException e) {
+                //User doesn't have the rights
+            }
+        }
+        return adminsCourses;
+
+    }
+
+    @Override
+    public Course adminUpdateCourseContentLines(String id, List<CourseInfoLine> courseInfos, ContainerRequestContext requestContext) throws ValidException, PersistenceException, AccessDeniedException {
+        Course course = getCourse(id);
+        UserUtil.checkAdmin(course,requestContext);
+        course.setCourseInfoLines(courseInfos);
+        return updateCourse(course,requestContext);
     }
 
     private void modifyUserAndCreateAgenda(Course course, User user) throws ValidException, PersistenceException {

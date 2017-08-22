@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response;
 /** StubService for later implementation
  * Created by Christian on 29-04-2017.
  */
+@Deprecated
 @Path("login")
 public class LoginService {
 

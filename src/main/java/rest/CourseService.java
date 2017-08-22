@@ -1,11 +1,16 @@
 package rest;
 
+import auth.AccessDeniedException;
 import auth.AuthorizationFilter;
-import auth.UserUtil;
+import auth.Permission;
+import auth.SecureEndpoint;
+import business.ControllerRegistry;
 import business.impl.GoogleSheetParser;
 import business.interfaces.CourseController;
-import business.ControllerRegistry;
-import data.dbDTO.*;
+import data.dbDTO.Course;
+import data.dbDTO.CourseInfoLine;
+import data.dbDTO.EmbeddedLink;
+import data.dbDTO.User;
 import data.interfaces.PersistenceException;
 import data.viewDTO.CSVUserString;
 import data.viewDTO.CourseAddUserInfo;
@@ -18,10 +23,7 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.nio.file.AccessDeniedException;
 import java.util.*;
-
-import static javax.ws.rs.core.Response.ok;
 
 /**
  * Created by Christian on 15-05-2017.
@@ -36,11 +38,19 @@ public class CourseService {
     ContainerRequestContext requestContext;
 
 
-    @GET //ALL
+    @GET //ALL //No secrects here - could be a secure endpoint
     public List<Course> getCourses(){
         return courseController.getCourses();
     }
 
+    @GET
+    @Path("owned")
+    public List<Course> getCoursesUserAdmins(){
+        return courseController.getAdminsCourses(requestContext);
+    }
+    {
+
+    }
 
     @Path("{id}")
     public CourseIdResource getCourse(@PathParam("id") String id) throws PersistenceException, ValidException {
@@ -48,13 +58,13 @@ public class CourseService {
     }
 
     @PUT
-    public Course updateCourse(Course course) throws PersistenceException, ValidException, AccessDeniedException, auth.AccessDeniedException {
-        return courseController.updateCourse(course);
+    public Course updateCourse(Course course) throws PersistenceException, ValidException, AccessDeniedException {
+        return courseController.updateCourse(course, requestContext);
     }
 
 
     @POST
-    public Course createCourse(Course newCourse) throws ValidException, PersistenceException {
+    public Course createCourse(Course newCourse) throws ValidException, PersistenceException, AccessDeniedException {
         if (newCourse ==null) {
             newCourse = new Course();
         }
@@ -68,7 +78,7 @@ public class CourseService {
 
 
         Course course = courseController.createCourse(newCourse);
-        courseController.addUserToCourse(course.getId(),user, "admin");
+        courseController.addUserToCourse(course.getId(),user, "admin", requestContext);
 
         return course;
     }
@@ -97,54 +107,59 @@ public class CourseService {
 
         @POST
         @Path("name")
-        public void updateCourseNameAndShortHand(CourseNameAndShort courseNameAndShort) throws ValidException, PersistenceException {
-
-            courseController.updateCourseNameAndShort(id, courseNameAndShort);
+        public void updateCourseNameAndShortHand(CourseNameAndShort courseNameAndShort) throws ValidException, PersistenceException, AccessDeniedException {
+            courseController.updateCourseNameAndShort(id, courseNameAndShort, requestContext);
 
         }
 
         @POST
         @Path("addlink")
-        public Course addLinkToCourse(EmbeddedLink link) throws ValidException, PersistenceException, AccessDeniedException, auth.AccessDeniedException {
-            System.out.println(requestContext.getProperty(AuthorizationFilter.USER));
+        public Course addLinkToCourse(EmbeddedLink link) throws ValidException, PersistenceException, AccessDeniedException {
+
             return courseController.adminAddLink(id, link, requestContext);
         }
 
         @POST
         @Path("removelink")
-        public Course removeLinkFromCourse (EmbeddedLink link) throws ValidException, auth.AccessDeniedException, PersistenceException {
+        public Course removeLinkFromCourse (EmbeddedLink link) throws ValidException, AccessDeniedException, PersistenceException {
             return courseController.adminRemoveLink(id, link, requestContext);
         }
 
         @PUT
         @Path("links")
-        public Course updateLinks(List<EmbeddedLink> links) throws ValidException, auth.AccessDeniedException, PersistenceException {
+        public Course updateLinks(List<EmbeddedLink> links) throws ValidException, AccessDeniedException, PersistenceException {
             return courseController.adminUpdateLinks(id,links,requestContext);
+        }
+
+        @PUT
+        @Path("courseinfo")
+        public Course updateCourseInfo(List<CourseInfoLine> courseInfos) throws ValidException, AccessDeniedException, PersistenceException {
+            return courseController.adminUpdateCourseContentLines(id,courseInfos,requestContext);
         }
 
         @POST
         @Path("usesGoogleSheet")
-        public void updateUsesGoogleSheet(HashMap<String,Boolean> map) throws ValidException, PersistenceException {
+        public void updateUsesGoogleSheet(HashMap<String,Boolean> map) throws ValidException, PersistenceException, AccessDeniedException {
             Boolean usesGoogleSheet = map.get("usesGoogleSheet");
-            courseController.updateUsesGoogleSheet(id, usesGoogleSheet);
+            courseController.updateUsesGoogleSheet(id, usesGoogleSheet, requestContext);
         }
 
         @POST
         @Path("googleSheetId")
-        public void updateGoogleSheetId(HashMap<String, String> map) throws ValidException, PersistenceException {
+        public void updateGoogleSheetId(HashMap<String, String> map) throws ValidException, PersistenceException, AccessDeniedException {
             String googleSheetId = map.get("googleSheetId");
             try {
                 googleSheetId = GoogleSheetParser.parseLinkForSheetId(googleSheetId);
             } catch (GoogleSheetParser.IdNotFoundException e) {
                 //Assume that an ID was posted
             }
-            courseController.updateGoogleSheetId(id,googleSheetId);
+            courseController.updateGoogleSheetId(id,googleSheetId, requestContext);
         }
 
         @POST
         @Path("syncCoursePlan")
-        public void syncCoursePlan() throws ValidException, PersistenceException {
-            courseController.syncCoursePlan(id);
+        public void syncCoursePlan() throws ValidException, PersistenceException, AccessDeniedException {
+            courseController.syncCoursePlan(id, requestContext);
         }
 
         @Path("users")
@@ -196,25 +211,25 @@ public class CourseService {
             }
 
             @POST
-            public Boolean addUserToCourse(CourseAddUserInfo userRoleInfo) throws ValidException, PersistenceException, ElementNotFoundException, AccessDeniedException, auth.AccessDeniedException {
-                courseController.addUserToCourse(id, userRoleInfo);
+            public Boolean addUserToCourse(CourseAddUserInfo userRoleInfo) throws ValidException, PersistenceException, ElementNotFoundException, AccessDeniedException, AccessDeniedException {
+                courseController.addUserToCourse(id, userRoleInfo, requestContext);
                 return true;
             }
 
             @POST
             @Path("csv")
-            public Boolean addCSVAddUsersToCourse(CSVUserString csv) throws ValidException, ElementNotFoundException, PersistenceException {
+            public Boolean addCSVAddUsersToCourse(CSVUserString csv) throws ValidException, ElementNotFoundException, PersistenceException, AccessDeniedException {
                 String csvString = csv.getUsersCsv();
                 List<User> usersFromCsv = CSVParser.getUsersFromCsv(csvString);
                 for (User u: usersFromCsv){
-                    courseController.addUserToCourse(id, u);
+                    courseController.addUserToCourse(id, u, requestContext);
                 }
                 return true;
             }
 
             @PUT
             @Path("{id}/{role}")
-            public boolean updateUserRole(@PathParam("id") String userId, @PathParam("role") String role, Boolean hasRole) throws ValidException, PersistenceException, AccessDeniedException, auth.AccessDeniedException {
+            public boolean updateUserRole(@PathParam("id") String userId, @PathParam("role") String role, Boolean hasRole) throws ValidException, PersistenceException, AccessDeniedException, AccessDeniedException {
                 Course course = courseController.getCourse(id);
                 Set<String> userSet;
                 if ("admin".equals(role)){
@@ -236,14 +251,14 @@ public class CourseService {
                     ControllerRegistry.getUserController().removeAgenda(userId, id);
 
                 }
-                courseController.updateCourse(course);
+                courseController.updateCourse(course, requestContext);
                 return true;
 
             }
 
             @DELETE
-            public Response removeUserFromCourse(CourseAddUserInfo userRoleInfo) throws ValidException, PersistenceException {
-                courseController.removeUserFromCourse(id,userRoleInfo);
+            public Response removeUserFromCourse(CourseAddUserInfo userRoleInfo) throws ValidException, PersistenceException, AccessDeniedException {
+                courseController.removeUserFromCourse(id,userRoleInfo , requestContext);
                 return Response.ok().entity("User removed from course").build();
             }
 
