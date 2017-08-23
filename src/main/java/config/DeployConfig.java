@@ -21,6 +21,7 @@ public class DeployConfig {
     public static final String GOOGLE_API_KEY = System.getenv("GOOGLE_API_KEY");
 
     public static final Boolean NON_PROD = (System.getenv("NON_PROD") !=null);
+    public static final String PORTAL_SUPER_USER = (System.getenv("PORTAL_SUPER_USER"));
 
 
 

@@ -12,7 +12,7 @@ import java.security.Key;
 import java.util.Calendar;
 
 public class JWTHandler {
-	private static final int TOKEN_EXPIRY = 960;
+	private static final int TOKEN_EXPIRY = 1;
 
 	public static class AuthException extends Exception {
 		public AuthException(String string) {
