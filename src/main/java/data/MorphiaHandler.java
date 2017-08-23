@@ -42,11 +42,17 @@ public class MorphiaHandler {
         client = new MongoClient(uri);
         morphia = new Morphia();
         morphia.mapPackage(Config.DATA_DB_DTO);
-        datastore = morphia.createDatastore(client,"heroku_x9sh8t01");
+        datastore = morphia.createDatastore(client,getDbName(DeployConfig.MONGODB_URI));
         datastore.ensureIndexes();
         ensureSuperUser();
         //For nice cleanup of MongoDB connection - make sure that morphiaHandler get garbage collected.
         Runtime.getRuntime().addShutdownHook(new Thread(() -> morphiaHandler=null));
+    }
+
+    private String getDbName(String mongodbUri) {
+        String dbname = mongodbUri.split(":")[1];
+        return dbname.substring(2);
+
     }
 
     private void ensureSuperUser() throws PersistenceException {
