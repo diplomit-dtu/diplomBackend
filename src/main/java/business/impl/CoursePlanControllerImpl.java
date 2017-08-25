@@ -85,8 +85,9 @@ public class CoursePlanControllerImpl implements CoursePlanController {
         for (CourseActivity activity : courseActivityList) {
             for (CourseActivity oldCourseActivity : oldActivityList) {
                 //If either title or description is the same as one from last syncronization assume that they are the same
-                if (oldCourseActivity.getDescription().equals(activity.getDescription()) ||
-                        oldCourseActivity.getTitle().equals(activity.getTitle())){
+                if ((oldCourseActivity.getDescription()!=null && oldCourseActivity.getTitle()!=null) &&
+                        (Objects.equals(oldCourseActivity.getDescription(), activity.getDescription()) ||
+                                Objects.equals(oldCourseActivity.getTitle(), activity.getTitle()))){
                     activity.setId(oldCourseActivity.getId());
                     //Compare Elements
                     compareElements(activity, oldCourseActivity);

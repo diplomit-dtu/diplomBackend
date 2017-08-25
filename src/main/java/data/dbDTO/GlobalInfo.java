@@ -15,6 +15,7 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
+@Deprecated
 public class GlobalInfo extends BaseDTO{
     String defaultLinkCollectionId;
     List<String> courseIds = new ArrayList<>();
