@@ -1,5 +1,6 @@
 package data;
 
+import business.ControllerRegistry;
 import business.impl.RoleControllerImpl;
 import business.interfaces.RoleController;
 import com.mongodb.MongoClient;
@@ -8,6 +9,7 @@ import com.mongodb.WriteResult;
 import config.Config;
 import config.DeployConfig;
 import data.dbDTO.BaseDTO;
+import data.dbDTO.Role;
 import data.dbDTO.User;
 import data.interfaces.PersistenceException;
 import data.interfaces.UserDAO;
@@ -59,15 +61,24 @@ public class MorphiaHandler {
         String userString = DeployConfig.PORTAL_SUPER_USER;
         List<User> userList = datastore.createQuery(User.class)
                 .field("userName").equal(userString).asList();
+        RoleController roleController = ControllerRegistry.getRoleController();
         if (userList.size()<1){
             System.out.println("MorphiaHandle found no SuperUser - creating one");
             User portalAdmin = new User(userString);
-            RoleController roleController = new RoleControllerImpl();
+
             portalAdmin.getRoles().add(roleController.getPortalAdmin());
             createOrUpdate(portalAdmin);
         } else if (userList.size()>=1){
-            if (userString !=null) {
-                System.out.println("MorphiaHandler found superUser: " + userList);
+            User user = userList.get(0);
+            boolean isSuperUser = false;
+            for (Role role: user.getRoles()){
+                if (role.getRoleName()==Config.PORTAL_ADMIN){
+                    isSuperUser=true;
+                }
+            }
+            if (!isSuperUser){
+                user.getRoles().add(roleController.getPortalAdmin());
+                createOrUpdate(user);
             }
         }
     }
