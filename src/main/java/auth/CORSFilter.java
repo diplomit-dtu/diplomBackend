@@ -1,4 +1,4 @@
-package rest;
+package auth;
 
 import auth.JWTHandler;
 import business.impl.UserControllerImpl;
