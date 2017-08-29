@@ -1,7 +1,7 @@
 package business.impl;
 
 import auth.AccessDeniedException;
-import auth.UserUtil;
+import util.UserUtil;
 import business.interfaces.AgendaController;
 import business.interfaces.CourseController;
 import business.interfaces.CoursePlanController;

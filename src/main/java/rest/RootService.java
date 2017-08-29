@@ -3,7 +3,7 @@ package rest;
 import auth.JWTHandler;
 import auth.MalformedAuthorizationHeaderException;
 import auth.NotLoggedInException;
-import auth.UserUtil;
+import util.UserUtil;
 import data.dbDTO.User;
 
 import javax.ws.rs.GET;

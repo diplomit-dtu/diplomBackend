@@ -7,12 +7,12 @@ import business.interfaces.AgendaController;
 import business.ControllerRegistry;
 import data.dbDTO.*;
 import data.interfaces.PersistenceException;
+import util.UserUtil;
 
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.xml.bind.Element;
 import java.util.ArrayList;
 
 /**
