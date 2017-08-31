@@ -5,7 +5,9 @@ import business.impl.AgendaControllerImpl;
 import business.impl.CourseControllerImpl;
 import business.interfaces.AgendaController;
 import business.ControllerRegistry;
+import business.interfaces.ValidException;
 import data.dbDTO.*;
+import data.interfaces.ElementNotFoundException;
 import data.interfaces.PersistenceException;
 import util.UserUtil;
 

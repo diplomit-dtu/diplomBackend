@@ -4,11 +4,8 @@ import auth.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import data.dbDTO.BaseDTO;
 import data.dbDTO.User;
-import data.interfaces.BaseDAO;
-import data.interfaces.PersistenceException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
-import rest.ValidException;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.HttpHeaders;

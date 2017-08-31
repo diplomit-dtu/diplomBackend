@@ -11,7 +11,7 @@ import data.interfaces.PersistenceException;
 import data.mongoImpl.MongoGlobalInfoDAO;
 import data.mongoImpl.MongoLinkCollectionDAO;
 import data.mongoImpl.MongoLinkDAO;
-import rest.ValidException;
+import business.interfaces.ValidException;
 
 import java.util.Iterator;
 import java.util.List;

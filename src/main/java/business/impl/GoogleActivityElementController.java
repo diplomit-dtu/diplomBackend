@@ -5,7 +5,7 @@ import data.dbDTO.CourseActivityElement;
 import data.googleImpl.GoogleActivityElementDAO;
 import data.interfaces.ActivityElementDAO;
 import data.interfaces.PersistenceException;
-import rest.ValidException;
+import business.interfaces.ValidException;
 
 /**
  * Created by Christian on 31-05-2017.

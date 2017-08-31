@@ -2,7 +2,6 @@ package business.interfaces;
 
 import data.dbDTO.CoursePlan;
 import data.interfaces.PersistenceException;
-import rest.ValidException;
 
 /**
  * Created by Christian on 06-08-2017.

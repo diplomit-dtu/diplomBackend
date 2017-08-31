@@ -12,7 +12,7 @@ import data.mongoImpl.MongoCourseActivityDAO;
 import data.mongoImpl.MongoCourseActivityElementDAO;
 import data.mongoImpl.MongoCourseActivitySubElementDAO;
 import data.mongoImpl.MongoCoursePlanDAO;
-import rest.ValidException;
+import business.interfaces.ValidException;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,6 +3,8 @@ package rest;
 import auth.AccessDeniedException;
 import auth.Permission;
 import auth.SecureEndpoint;
+import business.interfaces.ValidException;
+import data.interfaces.ElementNotFoundException;
 import util.UserUtil;
 import business.ControllerRegistry;
 import business.impl.AgendaControllerImpl;

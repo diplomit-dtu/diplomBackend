@@ -2,6 +2,7 @@ package rest;
 
 import business.impl.GlobalInfoControllerImpl;
 import business.interfaces.GlobalInfoController;
+import business.interfaces.ValidException;
 import data.dbDTO.Link;
 import data.interfaces.PersistenceException;
 

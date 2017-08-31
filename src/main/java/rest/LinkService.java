@@ -2,6 +2,7 @@ package rest;
 
 import business.impl.LinkControllerImpl;
 import business.interfaces.LinkController;
+import business.interfaces.ValidException;
 import data.dbDTO.Link;
 import data.dbDTO.LinkCollection;
 import data.interfaces.PersistenceException;

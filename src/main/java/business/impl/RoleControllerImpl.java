@@ -2,13 +2,14 @@ package business.impl;
 
 import auth.Permission;
 import auth.SecureEndpoint;
+import business.interfaces.DBValidationException;
 import business.interfaces.RoleController;
 import config.Config;
 import data.dbDTO.Role;
 import data.interfaces.PersistenceException;
 import data.interfaces.RoleDAO;
 import data.mongoImpl.MongoRoleDAO;
-import rest.ValidException;
+import business.interfaces.ValidException;
 
 import java.util.List;
 

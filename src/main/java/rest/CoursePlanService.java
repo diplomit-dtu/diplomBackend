@@ -2,8 +2,10 @@ package rest;
 
 import business.impl.CourseControllerImpl;
 import business.interfaces.CourseController;
+import business.interfaces.ValidException;
 import data.dbDTO.CoursePlan;
 import data.interfaces.CoursePlanDAO;
+import data.interfaces.ElementNotFoundException;
 import data.interfaces.PersistenceException;
 import data.mongoImpl.MongoCoursePlanDAO;
 

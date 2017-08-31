@@ -7,7 +7,7 @@ import data.interfaces.LinkDAO;
 import data.interfaces.PersistenceException;
 import data.mongoImpl.MongoGlobalInfoDAO;
 import data.mongoImpl.MongoLinkDAO;
-import rest.ValidException;
+import business.interfaces.ValidException;
 
 /**
  * Created by Christian on 18-05-2017.

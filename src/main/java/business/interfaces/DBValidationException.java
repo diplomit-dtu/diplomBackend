@@ -1,4 +1,4 @@
-package business.impl;
+package business.interfaces;
 
 /**
  * Created by Christian on 24-06-2017.

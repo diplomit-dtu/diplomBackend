@@ -2,6 +2,7 @@ package rest;
 
 import business.impl.GoogleActivityElementController;
 import business.interfaces.ActivityElementController;
+import business.interfaces.ValidException;
 import data.dbDTO.CourseActivityElement;
 import data.interfaces.PersistenceException;
 

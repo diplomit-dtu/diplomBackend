@@ -3,8 +3,7 @@ package business.interfaces;
 import data.dbDTO.Agenda;
 import data.dbDTO.AgendaInfo;
 import data.interfaces.PersistenceException;
-import rest.ElementNotFoundException;
-import rest.ValidException;
+import data.interfaces.ElementNotFoundException;
 
 /**
  * Created by Christian on 25-05-2017.

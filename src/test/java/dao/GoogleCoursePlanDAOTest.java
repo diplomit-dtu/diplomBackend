@@ -4,7 +4,7 @@ import data.dbDTO.CoursePlan;
 import data.googleImpl.GoogleCoursePlanDAO;
 import data.interfaces.PersistenceException;
 import org.junit.Test;
-import rest.ValidException;
+import business.interfaces.ValidException;
 
 /** Test Unit Test
  * Created by Christian on 02-05-2017.

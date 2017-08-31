@@ -9,7 +9,7 @@ import data.dbDTO.User;
 import data.interfaces.PersistenceException;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import rest.ElementNotFoundException;
+import data.interfaces.ElementNotFoundException;
 import util.FileLoader;
 
 import javax.ws.rs.GET;
@@ -20,8 +20,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URI;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 

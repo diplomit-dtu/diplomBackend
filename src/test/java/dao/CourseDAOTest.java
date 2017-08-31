@@ -6,7 +6,7 @@ import data.dbDTO.Course;
 import data.interfaces.PersistenceException;
 import org.bson.types.ObjectId;
 import org.junit.Test;
-import rest.ValidException;
+import business.interfaces.ValidException;
 
 import java.time.LocalDate;
 

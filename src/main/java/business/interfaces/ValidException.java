@@ -1,4 +1,4 @@
-package rest;
+package business.interfaces;
 
 /**
  * Created by Christian on 15-05-2017.

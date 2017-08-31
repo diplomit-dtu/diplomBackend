@@ -1,7 +1,6 @@
 package data;
 
 import business.ControllerRegistry;
-import business.impl.RoleControllerImpl;
 import business.interfaces.RoleController;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
@@ -12,13 +11,9 @@ import data.dbDTO.BaseDTO;
 import data.dbDTO.Role;
 import data.dbDTO.User;
 import data.interfaces.PersistenceException;
-import data.interfaces.UserDAO;
-import data.mongoImpl.MongoUserDAO;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
-import rest.ElementNotFoundException;
-import rest.ValidException;
 
 import java.util.List;
 

@@ -6,7 +6,7 @@ import data.dbDTO.CourseActivityElement;
 import data.interfaces.ActivityElementDAO;
 import data.interfaces.GoogleSheetsDAO;
 import data.interfaces.PersistenceException;
-import rest.ValidException;
+import business.interfaces.ValidException;
 
 import java.util.Collection;
 import java.util.List;

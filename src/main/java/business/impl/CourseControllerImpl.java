@@ -16,8 +16,8 @@ import data.mongoImpl.MongoCourseDAO;
 import data.mongoImpl.MongoCoursePlanDAO;
 import data.viewDTO.CourseAddUserInfo;
 import data.viewDTO.CourseNameAndShort;
-import rest.ElementNotFoundException;
-import rest.ValidException;
+import data.interfaces.ElementNotFoundException;
+import business.interfaces.ValidException;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import java.util.*;

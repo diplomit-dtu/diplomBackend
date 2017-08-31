@@ -4,27 +4,13 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sheets.v4.Sheets;
-import com.google.api.services.sheets.v4.model.CellData;
-import com.google.api.services.sheets.v4.model.RowData;
-import com.google.api.services.sheets.v4.model.Sheet;
-import com.google.api.services.sheets.v4.model.Spreadsheet;
-import config.DeployConfig;
-import data.dbDTO.User;
 import data.interfaces.AgendaDAO;
 import data.interfaces.PersistenceException;
 import data.mongoImpl.MongoAgendaDAO;
-import data.mongoImpl.MongoBaseDAO;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import rest.ValidException;
-import util.FileLoader;
+import business.interfaces.ValidException;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /** Testing class for
  * Created by Christian on 18-05-2017.

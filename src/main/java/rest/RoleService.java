@@ -1,7 +1,7 @@
 package rest;
 
 import auth.Permission;
-import business.impl.DBValidationException;
+import business.interfaces.DBValidationException;
 import business.impl.RoleControllerImpl;
 import business.interfaces.RoleController;
 import config.Config;

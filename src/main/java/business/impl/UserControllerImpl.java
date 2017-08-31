@@ -9,8 +9,8 @@ import data.dbDTO.User;
 import data.interfaces.PersistenceException;
 import data.interfaces.UserDAO;
 import data.mongoImpl.MongoUserDAO;
-import rest.ElementNotFoundException;
-import rest.ValidException;
+import data.interfaces.ElementNotFoundException;
+import business.interfaces.ValidException;
 
 import java.util.*;
 

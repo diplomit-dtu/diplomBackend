@@ -1,4 +1,4 @@
-package rest;
+package data.interfaces;
 
 /**
  * Created by Christian on 16-05-2017.
