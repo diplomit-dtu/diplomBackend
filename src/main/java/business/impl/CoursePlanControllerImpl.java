@@ -51,27 +51,45 @@ public class CoursePlanControllerImpl implements CoursePlanController {
 
     }
 
-    private CoursePlan deepParse(CoursePlan googleFetchedCoursePlan) throws PersistenceException {
+    private CoursePlan deepParse(CoursePlan googleFetchedCoursePlan) {
         System.out.println("---------------------\r\n DeepParse\r\n ---------------");
         System.out.println("activities Fetched: " + googleFetchedCoursePlan.getCourseActivityList().size());
         List<CourseActivity> courseActivityList = googleFetchedCoursePlan.getCourseActivityList();
+        //New courseActivityList for fetched CourseActivities
         List<CourseActivity> deepParsedCourseActivityList = new ArrayList<>();
+        //Iterate over Activities in original plan
         for (CourseActivity courseActivity: courseActivityList) {
+            //Get ActivityElements from original activities
             List<CourseActivityElement> activityElementList = courseActivity.getActivityElementList();
+            //New CourseActivityElementList for fetched ActivityElements
             List<CourseActivityElement> deepParsedCourseActivityElementList = new ArrayList<>();
+            //Iterate over ActivityElements in original plan
             for (CourseActivityElement templateCourseActivityElement: activityElementList){
+                //Set title to title from main sheet.
                 String title =templateCourseActivityElement.getTitle();
+                //Check if ActivityElement has a sheetId - meaning it has a subsheet
                 if (templateCourseActivityElement.getGoogleSheetId()!=null) {
-                    Spreadsheet activityElementSheet = googleSheetsDAO.getSheet(templateCourseActivityElement.getGoogleSheetId());
-                    CourseActivityElement fetchedGoogleCourseActivityElement = GoogleActivityElementParser.parseSheet(activityElementSheet);
-                    fetchedGoogleCourseActivityElement.setGoogleSheetId(templateCourseActivityElement.getGoogleSheetId());
-                    templateCourseActivityElement = fetchedGoogleCourseActivityElement;
-                    System.out.println("-------------------------\r\n" + templateCourseActivityElement);
-                    System.out.println(templateCourseActivityElement);
-                    templateCourseActivityElement.setTitle(title);
-
+                    Spreadsheet activityElementSheet = null;
+                    //try to fetch SubSheet
+                    try {
+                        activityElementSheet = googleSheetsDAO.getSheet(templateCourseActivityElement.getGoogleSheetId());
+                        CourseActivityElement fetchedGoogleCourseActivityElement = GoogleActivityElementParser.parseSheet(activityElementSheet);
+                        fetchedGoogleCourseActivityElement.setGoogleSheetId(templateCourseActivityElement.getGoogleSheetId());
+                        templateCourseActivityElement = fetchedGoogleCourseActivityElement;
+                        //Write the title back...
+                        fetchedGoogleCourseActivityElement.setTitle(title);
+                        deepParsedCourseActivityElementList.add(fetchedGoogleCourseActivityElement);
+                        System.out.println("-------------------------\r\n" + templateCourseActivityElement);
+                        System.out.println(templateCourseActivityElement);
+                    } catch (PersistenceException e) {
+                        //SubSheetUnavailable!
+                        CourseActivityElement unavailableElement = templateCourseActivityElement;
+                        unavailableElement.setActivityElementType(CourseActivityElement.ActivityElementType.Unavailable);
+                        deepParsedCourseActivityElementList.add(unavailableElement);
+                    }
+                } else {
+                    deepParsedCourseActivityElementList.add(templateCourseActivityElement);
                 }
-                deepParsedCourseActivityElementList.add(templateCourseActivityElement);
             }
             courseActivity.setActivityElementList(deepParsedCourseActivityElementList);
             deepParsedCourseActivityList.add(courseActivity);

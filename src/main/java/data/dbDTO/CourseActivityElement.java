@@ -29,7 +29,7 @@ public class CourseActivityElement extends BaseDTO {
     private ActivityElementType activityElementType = ActivityElementType.Native; //Pr default native
 
     public enum ActivityElementType{
-        Native, Link, GoogleSheet, Text
+        Native, Link, GoogleSheet, Text,Unavailable
     }
 
 }
