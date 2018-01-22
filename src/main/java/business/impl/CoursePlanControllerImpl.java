@@ -57,22 +57,72 @@ public class CoursePlanControllerImpl implements CoursePlanController {
         List<CourseActivity> courseActivityList = googleFetchedCoursePlan.getCourseActivityList();
         List<CourseActivity> deepParsedCourseActivityList = new ArrayList<>();
         for (CourseActivity courseActivity: courseActivityList) {
+            System.out.println("courseActivity: " + courseActivity.getTitle());
             List<CourseActivityElement> activityElementList = courseActivity.getActivityElementList();
             List<CourseActivityElement> deepParsedCourseActivityElementList = new ArrayList<>();
-            for (CourseActivityElement templateCourseActivityElement: activityElementList){
-                String title =templateCourseActivityElement.getTitle();
-                if (templateCourseActivityElement.getGoogleSheetId()!=null) {
-                    Spreadsheet activityElementSheet = googleSheetsDAO.getSheet(templateCourseActivityElement.getGoogleSheetId());
-                    CourseActivityElement fetchedGoogleCourseActivityElement = GoogleActivityElementParser.parseSheet(activityElementSheet);
-                    fetchedGoogleCourseActivityElement.setGoogleSheetId(templateCourseActivityElement.getGoogleSheetId());
-                    templateCourseActivityElement = fetchedGoogleCourseActivityElement;
-                    System.out.println("-------------------------\r\n" + templateCourseActivityElement);
-                    System.out.println(templateCourseActivityElement);
-                    templateCourseActivityElement.setTitle(title);
 
+            //Allocate space in list for right number of elements
+            for (int i = 0; i < activityElementList.size(); i++)
+                deepParsedCourseActivityElementList.add(null);
+
+            List<Thread> threadList = new ArrayList<>();
+            int index = 0;
+            for (CourseActivityElement templateCourseActivityElement: activityElementList){
+                class GoogleSheetFetch extends Thread {
+                    private CourseActivityElement courseActivityElement;
+                    private CourseActivityElement fetchedCourseActivityElement;
+                    private final int index;
+
+                    @Override
+                    public void run() {
+                        System.out.println("Thread " + index + " started");
+
+                        if (courseActivityElement.getGoogleSheetId() != null) {
+                            Spreadsheet activityElementSheet;
+                            try {
+                                activityElementSheet = googleSheetsDAO.getSheet(courseActivityElement.getGoogleSheetId());
+                            } catch (PersistenceException e) {
+                                e.printStackTrace();
+                                return;
+                            }
+                            fetchedCourseActivityElement = GoogleActivityElementParser.parseSheet(activityElementSheet);
+                            fetchedCourseActivityElement.setGoogleSheetId(courseActivityElement.getGoogleSheetId());
+                            fetchedCourseActivityElement.setTitle(courseActivityElement.getTitle());
+
+                            //Add element to list at right index
+                            deepParsedCourseActivityElementList.add(index,fetchedCourseActivityElement);
+                        } else {
+                            //Add element to list at right index
+                            deepParsedCourseActivityElementList.add(index,courseActivityElement);
+                        }
+
+                        System.out.println("Thread " + index + " finished");
+                    }
+
+                    private GoogleSheetFetch(int index, CourseActivityElement courseActivityElement) {
+                        this.index = index;
+                        this.courseActivityElement = courseActivityElement;
+                    }
                 }
-                deepParsedCourseActivityElementList.add(templateCourseActivityElement);
+
+                threadList.add(new GoogleSheetFetch(index, templateCourseActivityElement)); //Create new thread
+                index++;
             }
+
+            //Start all threads
+            for (Thread t : threadList)
+                t.start();
+
+            //Wait for all threads to finish
+            for (Thread t : threadList) {
+                try {
+                    t.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            System.out.println("Threads joined!");
+
             courseActivity.setActivityElementList(deepParsedCourseActivityElementList);
             deepParsedCourseActivityList.add(courseActivity);
         }
