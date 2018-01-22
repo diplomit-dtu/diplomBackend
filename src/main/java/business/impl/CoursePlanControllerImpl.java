@@ -90,10 +90,10 @@ public class CoursePlanControllerImpl implements CoursePlanController {
                             fetchedCourseActivityElement.setTitle(courseActivityElement.getTitle());
 
                             //Add element to list at right index
-                            deepParsedCourseActivityElementList.add(index,fetchedCourseActivityElement);
+                            deepParsedCourseActivityElementList.set(index,fetchedCourseActivityElement);
                         } else {
                             //Add element to list at right index
-                            deepParsedCourseActivityElementList.add(index,courseActivityElement);
+                            deepParsedCourseActivityElementList.set(index,courseActivityElement);
                         }
 
                         System.out.println("Thread " + index + " finished");
