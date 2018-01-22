@@ -56,76 +56,113 @@ public class CoursePlanControllerImpl implements CoursePlanController {
         System.out.println("activities Fetched: " + googleFetchedCoursePlan.getCourseActivityList().size());
         List<CourseActivity> courseActivityList = googleFetchedCoursePlan.getCourseActivityList();
         List<CourseActivity> deepParsedCourseActivityList = new ArrayList<>();
+
+        //Allocate space in list for right number of elements
+        for (int i = 0; i < courseActivityList.size(); i++)
+            deepParsedCourseActivityList.add(null);
+
+        List<Thread> threadList = new ArrayList<>();
+        int activityIndex = 0;
         for (CourseActivity courseActivity: courseActivityList) {
-            System.out.println("courseActivity: " + courseActivity.getTitle());
-            List<CourseActivityElement> activityElementList = courseActivity.getActivityElementList();
-            List<CourseActivityElement> deepParsedCourseActivityElementList = new ArrayList<>();
+            class ActivityFetch extends Thread {
+                private final int activityIndex;
+                private final CourseActivity courseActivity;
 
-            //Allocate space in list for right number of elements
-            for (int i = 0; i < activityElementList.size(); i++)
-                deepParsedCourseActivityElementList.add(null);
+                @Override
+                public void run() {
+                    System.out.println("courseActivity started: " + courseActivity.getTitle());
+                    List<CourseActivityElement> activityElementList = courseActivity.getActivityElementList();
+                    List<CourseActivityElement> deepParsedCourseActivityElementList = new ArrayList<>();
 
-            List<Thread> threadList = new ArrayList<>();
-            int index = 0;
-            for (CourseActivityElement templateCourseActivityElement: activityElementList){
-                class GoogleSheetFetch extends Thread {
-                    private CourseActivityElement courseActivityElement;
-                    private CourseActivityElement fetchedCourseActivityElement;
-                    private final int index;
+                    //Allocate space in list for right number of elements
+                    for (int i = 0; i < activityElementList.size(); i++)
+                        deepParsedCourseActivityElementList.add(null);
 
-                    @Override
-                    public void run() {
-                        System.out.println("Thread " + index + " started");
+                    List<Thread> threadList = new ArrayList<>();
+                    int elementIndex = 0;
+                    for (CourseActivityElement templateCourseActivityElement : activityElementList) {
+                        class GoogleSheetFetch extends Thread {
+                            private CourseActivityElement courseActivityElement;
+                            private CourseActivityElement fetchedCourseActivityElement;
+                            private final int index;
 
-                        if (courseActivityElement.getGoogleSheetId() != null) {
-                            Spreadsheet activityElementSheet;
-                            try {
-                                activityElementSheet = googleSheetsDAO.getSheet(courseActivityElement.getGoogleSheetId());
-                            } catch (PersistenceException e) {
-                                e.printStackTrace();
-                                return;
+                            @Override
+                            public void run() {
+                                System.out.println("Thread " + index + " started");
+
+                                if (courseActivityElement.getGoogleSheetId() != null) {
+                                    Spreadsheet activityElementSheet;
+                                    try {
+                                        activityElementSheet = googleSheetsDAO.getSheet(courseActivityElement.getGoogleSheetId());
+                                    } catch (PersistenceException e) {
+                                        e.printStackTrace();
+                                        return;
+                                    }
+                                    fetchedCourseActivityElement = GoogleActivityElementParser.parseSheet(activityElementSheet);
+                                    fetchedCourseActivityElement.setGoogleSheetId(courseActivityElement.getGoogleSheetId());
+                                    fetchedCourseActivityElement.setTitle(courseActivityElement.getTitle());
+
+                                    //Add element to list at right index
+                                    deepParsedCourseActivityElementList.set(index,fetchedCourseActivityElement);
+                                } else {
+                                    //Add element to list at right index
+                                    deepParsedCourseActivityElementList.set(index,courseActivityElement);
+                                }
+
+                                System.out.println("Thread " + index + " finished");
                             }
-                            fetchedCourseActivityElement = GoogleActivityElementParser.parseSheet(activityElementSheet);
-                            fetchedCourseActivityElement.setGoogleSheetId(courseActivityElement.getGoogleSheetId());
-                            fetchedCourseActivityElement.setTitle(courseActivityElement.getTitle());
 
-                            //Add element to list at right index
-                            deepParsedCourseActivityElementList.set(index,fetchedCourseActivityElement);
-                        } else {
-                            //Add element to list at right index
-                            deepParsedCourseActivityElementList.set(index,courseActivityElement);
+                            private GoogleSheetFetch(int index, CourseActivityElement courseActivityElement) {
+                                this.index = index;
+                                this.courseActivityElement = courseActivityElement;
+                            }
                         }
 
-                        System.out.println("Thread " + index + " finished");
+                        threadList.add(new GoogleSheetFetch(elementIndex, templateCourseActivityElement)); //Create new thread
+                        elementIndex++;
                     }
 
-                    private GoogleSheetFetch(int index, CourseActivityElement courseActivityElement) {
-                        this.index = index;
-                        this.courseActivityElement = courseActivityElement;
+                    //Start all threads
+                    for (Thread t : threadList)
+                        t.start();
+
+                    //Wait for all threads to finish
+                    for (Thread t : threadList) {
+                        try {
+                            t.join();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
+                    System.out.println("Threads joined!");
+
+                    courseActivity.setActivityElementList(deepParsedCourseActivityElementList);
+                    deepParsedCourseActivityList.set(activityIndex,courseActivity);
+                    System.out.println("courseActivity ended: " + courseActivity.getTitle());
                 }
 
-                threadList.add(new GoogleSheetFetch(index, templateCourseActivityElement)); //Create new thread
-                index++;
-            }
-
-            //Start all threads
-            for (Thread t : threadList)
-                t.start();
-
-            //Wait for all threads to finish
-            for (Thread t : threadList) {
-                try {
-                    t.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                private ActivityFetch(int index, CourseActivity courseActivity){
+                    this.activityIndex = index;
+                    this.courseActivity = courseActivity;
                 }
             }
-            System.out.println("Threads joined!");
-
-            courseActivity.setActivityElementList(deepParsedCourseActivityElementList);
-            deepParsedCourseActivityList.add(courseActivity);
+            threadList.add(new ActivityFetch(activityIndex, courseActivity)); //Create new thread
+            activityIndex++;
         }
+
+        //Start all threads
+        for (Thread t : threadList)
+            t.start();
+
+        //Wait for all threads to finish
+        for (Thread t : threadList) {
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
         System.out.println("DeepParsedActivities: " + deepParsedCourseActivityList.size());
         googleFetchedCoursePlan.setCourseActivityList(deepParsedCourseActivityList);
         return googleFetchedCoursePlan;
