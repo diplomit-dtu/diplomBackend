@@ -64,15 +64,16 @@ public class CoursePlanControllerImpl implements CoursePlanController {
         List<Thread> threadList = new ArrayList<>();
         int activityIndex = 0;
         for (CourseActivity courseActivity: courseActivityList) {
-            class ActivityFetch extends Thread {
+            List<CourseActivityElement> activityElementList = courseActivity.getActivityElementList();
+            List<CourseActivityElement> deepParsedCourseActivityElementList = new ArrayList<>();
+
+            class ActivityThread extends Thread {
                 private final int activityIndex;
                 private final CourseActivity courseActivity;
 
                 @Override
                 public void run() {
                     System.out.println("courseActivity started: " + courseActivity.getTitle());
-                    List<CourseActivityElement> activityElementList = courseActivity.getActivityElementList();
-                    List<CourseActivityElement> deepParsedCourseActivityElementList = new ArrayList<>();
 
                     //Allocate space in list for right number of elements
                     for (int i = 0; i < activityElementList.size(); i++)
@@ -81,17 +82,14 @@ public class CoursePlanControllerImpl implements CoursePlanController {
                     List<Thread> threadList = new ArrayList<>();
                     int elementIndex = 0;
                     for (CourseActivityElement templateCourseActivityElement : activityElementList) {
-                        class GoogleSheetFetch extends Thread {
+                        class ActivityElementThread extends Thread {
                             private CourseActivityElement courseActivityElement;
                             private CourseActivityElement fetchedCourseActivityElement;
                             private final int index;
 
                             @Override
                             public void run() {
-                                System.out.println("Thread " + index + " started");
-
-                                if (courseActivityElement.getGoogleSheetId() != null) {
-                                    Spreadsheet activityElementSheet;
+                                Spreadsheet activityElementSheet;
                                     try {
                                         activityElementSheet = googleSheetsDAO.getSheet(courseActivityElement.getGoogleSheetId());
                                     } catch (PersistenceException e) {
@@ -104,52 +102,49 @@ public class CoursePlanControllerImpl implements CoursePlanController {
 
                                     //Add element to list at right index
                                     deepParsedCourseActivityElementList.set(index,fetchedCourseActivityElement);
-                                } else {
-                                    //Add element to list at right index
-                                    deepParsedCourseActivityElementList.set(index,courseActivityElement);
-                                }
-
-                                System.out.println("Thread " + index + " finished");
                             }
 
-                            private GoogleSheetFetch(int index, CourseActivityElement courseActivityElement) {
+                            private ActivityElementThread(int index, CourseActivityElement courseActivityElement) {
                                 this.index = index;
                                 this.courseActivityElement = courseActivityElement;
                             }
                         }
 
-                        threadList.add(new GoogleSheetFetch(elementIndex, templateCourseActivityElement)); //Create new thread
+                        if (templateCourseActivityElement.getGoogleSheetId() != null) {
+                            //Create new thread
+                            threadList.add(new ActivityElementThread(elementIndex, templateCourseActivityElement));
+                        } else {
+                            //Add element to list at right index
+                            deepParsedCourseActivityElementList.set(elementIndex, templateCourseActivityElement);
+                        }
                         elementIndex++;
                     }
 
-                    //Start all threads
-                    for (Thread t : threadList)
-                        t.start();
-
-                    //Wait for all threads to finish
-                    for (Thread t : threadList) {
-                        try {
-                            t.join();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    System.out.println("Threads joined!");
+                    startAndJoinThreads(threadList);
 
                     courseActivity.setActivityElementList(deepParsedCourseActivityElementList);
                     deepParsedCourseActivityList.set(activityIndex,courseActivity);
                     System.out.println("courseActivity ended: " + courseActivity.getTitle());
                 }
 
-                private ActivityFetch(int index, CourseActivity courseActivity){
+                private ActivityThread(int index, CourseActivity courseActivity) {
                     this.activityIndex = index;
                     this.courseActivity = courseActivity;
                 }
             }
-            threadList.add(new ActivityFetch(activityIndex, courseActivity)); //Create new thread
+            //Create new thread
+            threadList.add(new ActivityThread(activityIndex, courseActivity));
             activityIndex++;
         }
 
+        startAndJoinThreads(threadList);
+
+        System.out.println("DeepParsedActivities: " + deepParsedCourseActivityList.size());
+        googleFetchedCoursePlan.setCourseActivityList(deepParsedCourseActivityList);
+        return googleFetchedCoursePlan;
+    }
+
+    private void startAndJoinThreads(List<Thread> threadList){
         //Start all threads
         for (Thread t : threadList)
             t.start();
@@ -162,10 +157,6 @@ public class CoursePlanControllerImpl implements CoursePlanController {
                 e.printStackTrace();
             }
         }
-
-        System.out.println("DeepParsedActivities: " + deepParsedCourseActivityList.size());
-        googleFetchedCoursePlan.setCourseActivityList(deepParsedCourseActivityList);
-        return googleFetchedCoursePlan;
     }
 
     private void saveActivityList(List<CourseActivity> courseActivityList, List<CourseActivity> oldActivityList) throws PersistenceException, ValidException {
