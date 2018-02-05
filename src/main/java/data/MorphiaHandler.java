@@ -67,7 +67,7 @@ public class MorphiaHandler {
             User user = userList.get(0);
             boolean isSuperUser = false;
             for (Role role: user.getRoles()){
-                if (role.getRoleName()==Config.PORTAL_ADMIN){
+                if (role.getRoleName().equals(Config.PORTAL_ADMIN)){
                     isSuperUser=true;
                 }
             }
