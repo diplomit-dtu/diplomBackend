@@ -7,8 +7,12 @@ import com.google.api.services.sheets.v4.model.Spreadsheet;
 import data.dbDTO.CourseActivity;
 import data.dbDTO.CourseActivityElement;
 import data.dbDTO.CourseActivitySubElement;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.bson.types.ObjectId;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -52,23 +56,50 @@ public class GoogleActivityElementParser extends GoogleSheetParser {
             if (cData != null && cData.getFormattedValue()!=null) {
                 String formattedValue = cData.getFormattedValue();
                 switch (index) {
-                    case 0: //Title row
+                    case 0: //Title column
                         subElement.setTitle(formattedValue);
                         break;
-                    case 1: //Content Row
+                    case 1: //Content Column
                         parseContentField(subElement, cData, formattedValue);
                         break;
-                    case 2: //Type Row - Intelligent guess on type:
+                    case 2: //Type Column - Intelligent guess on type:
                         parseTypeField(subElement, formattedValue);
                         break;
                     default:
-                        //Do nothing about extra rows...
+                        //Do nothing about extra Columns...
                         break;
                 }
             }
             index++;
         }
+        if(CourseActivitySubElement.SubElementType.Embedded_Link.equals(subElement.getSubElementType()) ||
+            CourseActivitySubElement.SubElementType.Pop_Out_Link.equals(subElement.getSubElementType())){
+            if (!checkLink(subElement)){
+                subElement.setSubElementType(CourseActivitySubElement.SubElementType.Text);
+                subElement.setContent("Linket er ikke tilgængeligt aktuelt - hvis dette ikke er tilsigtet - så kontakt administrator");
+            }
+        }
         return subElement;
+    }
+
+    private static boolean checkLink(CourseActivitySubElement subElement) {
+        OkHttpClient okHttpClient = new OkHttpClient();
+        String url = subElement.getHyperLink();
+        boolean linkOk = false;
+        if (url!=null) {
+            Request request = new Request.Builder().url(url).build();
+            try {
+                Response execute = okHttpClient.newCall(request).execute();
+                if (execute.code() >= 200 && execute.code() <= 204){
+                    linkOk = true;
+                }
+            } catch (IOException e) {
+                linkOk=false;
+            }
+
+        }
+        return linkOk;
+
     }
 
     private static void parseTypeField(CourseActivitySubElement subElement, String formattedValue) {
@@ -107,7 +138,7 @@ public class GoogleActivityElementParser extends GoogleSheetParser {
         subElement.setContent(formattedValue);
         String hyperlink = cData.getHyperlink();
         if (hyperlink != null) {
-            try {//Look for a strig that resembles a google Sheet Id
+            try {//Look for a string that resembles a google Sheet Id
 
                 String googleId = parseLinkForSheetId(hyperlink);
                 subElement.setGoogleSheetId(googleId);

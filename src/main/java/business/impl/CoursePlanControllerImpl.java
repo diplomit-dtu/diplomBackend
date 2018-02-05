@@ -51,10 +51,11 @@ public class CoursePlanControllerImpl implements CoursePlanController {
 
     }
 
-    private CoursePlan deepParse(CoursePlan googleFetchedCoursePlan) throws PersistenceException {
+    private CoursePlan deepParse(CoursePlan googleFetchedCoursePlan) {
         System.out.println("---------------------\r\n DeepParse\r\n ---------------");
         System.out.println("activities Fetched: " + googleFetchedCoursePlan.getCourseActivityList().size());
         List<CourseActivity> courseActivityList = googleFetchedCoursePlan.getCourseActivityList();
+        //New courseActivityList for fetched CourseActivities
         List<CourseActivity> deepParsedCourseActivityList = new ArrayList<>();
 
         //Allocate space in list for right number of elements
@@ -63,8 +64,11 @@ public class CoursePlanControllerImpl implements CoursePlanController {
 
         List<Thread> threadList = new ArrayList<>();
         int activityIndex = 0;
+        //Iterate over Activities in original plan
         for (CourseActivity courseActivity: courseActivityList) {
+            //Get ActivityElements from original activities
             List<CourseActivityElement> activityElementList = courseActivity.getActivityElementList();
+            //New CourseActivityElementList for fetched ActivityElements
             List<CourseActivityElement> deepParsedCourseActivityElementList = new ArrayList<>();
 
             class ActivityThread extends Thread {
@@ -81,6 +85,7 @@ public class CoursePlanControllerImpl implements CoursePlanController {
 
                     List<Thread> threadList = new ArrayList<>();
                     int elementIndex = 0;
+                    //Iterate over ActivityElements in original plan
                     for (CourseActivityElement templateCourseActivityElement : activityElementList) {
                         class ActivityElementThread extends Thread {
                             private CourseActivityElement courseActivityElement;
@@ -89,19 +94,23 @@ public class CoursePlanControllerImpl implements CoursePlanController {
 
                             @Override
                             public void run() {
-                                Spreadsheet activityElementSheet;
-                                    try {
-                                        activityElementSheet = googleSheetsDAO.getSheet(courseActivityElement.getGoogleSheetId());
-                                    } catch (PersistenceException e) {
-                                        e.printStackTrace();
-                                        return;
-                                    }
+                                Spreadsheet activityElementSheet = null;
+                                //try to fetch SubSheet
+                                try {
+                                    activityElementSheet = googleSheetsDAO.getSheet(courseActivityElement.getGoogleSheetId());
                                     fetchedCourseActivityElement = GoogleActivityElementParser.parseSheet(activityElementSheet);
                                     fetchedCourseActivityElement.setGoogleSheetId(courseActivityElement.getGoogleSheetId());
+                                    //Write the title back...
                                     fetchedCourseActivityElement.setTitle(courseActivityElement.getTitle());
-
-                                    //Add element to list at right index
-                                    deepParsedCourseActivityElementList.set(index,fetchedCourseActivityElement);
+                                    deepParsedCourseActivityElementList.set(index, fetchedCourseActivityElement);
+                                    System.out.println("-------------------------\r\n" + templateCourseActivityElement);
+                                    System.out.println(templateCourseActivityElement);
+                                } catch (PersistenceException e) {
+                                    //SubSheetUnavailable!
+                                    CourseActivityElement unavailableElement = templateCourseActivityElement;
+                                    unavailableElement.setActivityElementType(CourseActivityElement.ActivityElementType.Unavailable);
+                                    deepParsedCourseActivityElementList.set(index, unavailableElement);
+                                }
                             }
 
                             private ActivityElementThread(int index, CourseActivityElement courseActivityElement) {
@@ -110,6 +119,7 @@ public class CoursePlanControllerImpl implements CoursePlanController {
                             }
                         }
 
+                        //Check if ActivityElement has a sheetId - meaning it has a subsheet
                         if (templateCourseActivityElement.getGoogleSheetId() != null) {
                             //Create new thread
                             threadList.add(new ActivityElementThread(elementIndex, templateCourseActivityElement));
