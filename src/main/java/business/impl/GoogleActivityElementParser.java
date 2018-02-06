@@ -72,13 +72,13 @@ public class GoogleActivityElementParser extends GoogleSheetParser {
             }
             index++;
         }
-        if(CourseActivitySubElement.SubElementType.Embedded_Link.equals(subElement.getSubElementType()) ||
+        /*if(CourseActivitySubElement.SubElementType.Embedded_Link.equals(subElement.getSubElementType()) ||
             CourseActivitySubElement.SubElementType.Pop_Out_Link.equals(subElement.getSubElementType())){
             if (!checkLink(subElement)){
                 subElement.setSubElementType(CourseActivitySubElement.SubElementType.Text);
                 subElement.setContent("Linket er ikke tilgængeligt aktuelt - hvis dette ikke er tilsigtet - så kontakt administrator");
             }
-        }
+        }*/
         return subElement;
     }
 
