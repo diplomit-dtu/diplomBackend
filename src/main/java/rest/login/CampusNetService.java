@@ -56,7 +56,7 @@ public class CampusNetService {
             String jwtToken = "";
             //STEP 4: Issue Token and redirect to frontpage including token in url:
             if (validationArray.length == 2 && validationArray[0].toLowerCase().trim().equals("yes")) { //Login success
-                User user = resolveUser(validationArray[1]); //validationArray[1] contains campusnet username.
+                User user = resolveUser(validationArray[1].trim()); //validationArray[1] contains campusnet username.
 //                user.setLastLoggedIn(LocalDateTime.now());
 //                userController.saveUser(user);
                 jwtToken = new JWTHandler().generateJwtToken(user);
