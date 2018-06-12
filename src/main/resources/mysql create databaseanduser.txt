@@ -1,0 +1,20 @@
+CREATE DATABASE s134000;
+CREATE USER s134000;
+GRANT ALL PRIVILEGES ON s134000.* TO 's134000'@'%'
+SET PASSWORD FOR 's134000'@'%' = PASSWORD('testpass')
+
+---- 
+SELECT table_schema "DBName",
+        ROUND(SUM(data_length + index_length) / 1024 / 1024, 1) "DBSize" 
+FROM information_schema.tables 
+GROUP BY table_schema; 
+
+SELECT table_schema "DBName",
+        ROUND(SUM(data_length + index_length) / 1024 / 1024, 1) "DBSize" 
+FROM information_schema.tables
+where table_schema = "s134000"
+
+REVOKE ALL PRIVILEGES ON s134000.* FROM 's134000'@'%'
+GRANT SELECT ON s134000.* TO 's134000'@'%'
+
+SELECT sql_grants FROM common_schema.sql_show_grants WHERE user='s134000';
