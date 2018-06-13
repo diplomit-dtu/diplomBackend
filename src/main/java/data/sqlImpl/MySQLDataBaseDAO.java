@@ -43,7 +43,7 @@ public class MySQLDataBaseDAO implements DataBaseDAO {
                 COMMIT;
         try {
             PreparedStatement statement =
-                    SQLHandler.getInstance().getStatement(sqlString);
+                    SQLHandler.getStatement(sqlString);
             statement.setString(1,userID); //grant table
             statement.setString(2,userID); //grant user
             statement.setString(3,pass); //grant pass
