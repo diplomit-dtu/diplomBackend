@@ -1,7 +1,11 @@
-CREATE DATABASE s134000;
-CREATE USER s134000;
-GRANT ALL PRIVILEGES ON s134000.* TO 's134000'@'%'
-SET PASSWORD FOR 's134000'@'%' = PASSWORD('testpass')
+START TRANSACTION;
+CREATE DATABASE test;
+CREATE USER test;
+GRANT ALL PRIVILEGES ON test.* TO 'test'@'%';
+SET PASSWORD FOR 'test'@'%' = PASSWORD('testpass');
+USE useradmin;
+INSERT INTO databasestatus (id, revoked, pass) VALUES ('test', 0,'testpass');
+COMMIT;
 
 ---- 
 SELECT table_schema "DBName",

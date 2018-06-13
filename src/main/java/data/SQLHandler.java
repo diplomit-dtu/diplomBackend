@@ -7,31 +7,24 @@ import java.sql.*;
 
 public class SQLHandler {
     private static Connection conn;
-    private static SQLHandler sqlHandler;
 
     static {
-        refreshConnection();
+        try {
+            refreshConnection();
+        } catch (SQLException e) {
+            System.err.println("SQL-Handler: Not able to establish connection!");
+        }
     }
 
-    private static void refreshConnection() {
-        if (sqlHandler == null){
-            sqlHandler = new SQLHandler();
-        }
-        if (conn == null){
-            try {
+    private static void refreshConnection() throws SQLException {
+        if (conn == null || !conn.isValid(100)){
                 conn = DriverManager.getConnection("jdbc:mysql://diplomportal.c2nouactg6m6.eu-west-1.rds.amazonaws.com?" +
-                        "user=root&password=Splat1477");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+                        "user=root&password=" + System.getenv("diplomportalsqlpass"));
         }
     }
-    public static SQLHandler getInstance(){
-        refreshConnection();
-        return sqlHandler;
-    }
 
-    public PreparedStatement getStatement(String sql) throws PersistenceException {
+    public static PreparedStatement getStatement(String sql) throws PersistenceException, SQLException {
+        refreshConnection();
         try {
             return conn.prepareStatement(sql);
         } catch (SQLException e) {
@@ -41,9 +34,9 @@ public class SQLHandler {
     }
 
     public static void main(String[] args) throws PersistenceException, SQLException {
-        PreparedStatement s134000 = SQLHandler.getInstance().getStatement("USE useradmin");
+        PreparedStatement s134000 = SQLHandler.getStatement("USE useradmin");
         boolean execute = s134000.execute();
-        PreparedStatement statement = SQLHandler.getInstance().getStatement("SELECT * from databasestatus");
+        PreparedStatement statement = SQLHandler.getStatement("SELECT * from databasestatus");
         ResultSet resultSet = statement.executeQuery();
         while(resultSet.next()) {
             boolean revoked = resultSet.getBoolean("revoked");
