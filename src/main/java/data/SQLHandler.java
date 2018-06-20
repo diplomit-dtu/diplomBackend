@@ -1,6 +1,5 @@
 package data;
 
-import data.dbDTO.DBInfo;
 import data.interfaces.PersistenceException;
 
 import java.sql.*;
@@ -42,8 +41,6 @@ public class SQLHandler {
             boolean revoked = resultSet.getBoolean("revoked");
             String id = resultSet.getString("id");
             String pass = resultSet.getString("pass");
-            DBInfo build = DBInfo.builder().id(id).pass(pass).revoked(revoked).build();
-            System.out.println(build);
         }
 
 
