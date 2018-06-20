@@ -9,14 +9,14 @@ import java.util.List;
 import java.util.Map;
 
 public interface DataBaseDAO {
-    DBInfo createNewUserDatabase(String userID) throws SQLException, PersistenceException;
-    List<DBInfo> getDBInfos() throws SQLException, PersistenceException;
-    DBInfo getDbInfo(String userID) throws SQLException, PersistenceException;
-    void deleteUserDB(String userID) throws SQLException, PersistenceException;
-    DBInfo resetPassword(String userID) throws SQLException, PersistenceException;
+    DBInfo createNewUserDatabase(String userID) throws PersistenceException, SQLException;
+    List<DBInfo> getDBInfos() throws PersistenceException, SQLException;
+    DBInfo getDbInfo(String userID) throws PersistenceException, SQLException;
+    void deleteUserDB(String userID) throws PersistenceException, SQLException;
+    DBInfo resetPassword(String userID) throws PersistenceException, SQLException;
 
 
-    Map<String, Double> getDBSizes() throws SQLException, PersistenceException;
+    Map<String, Double> getDBSizes() throws PersistenceException, SQLException;
     Double getDBSize(String userID);
     void revoke(String id);
     void grant(String id);

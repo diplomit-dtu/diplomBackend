@@ -10,19 +10,23 @@ public class SQLHandler {
     static {
         try {
             refreshConnection();
-        } catch (SQLException e) {
+        } catch (PersistenceException e) {
             System.err.println("SQL-Handler: Not able to establish connection!");
         }
     }
 
-    private static void refreshConnection() throws SQLException {
-        if (conn == null || !conn.isValid(100)){
-                conn = DriverManager.getConnection("jdbc:mysql://diplomportal.c2nouactg6m6.eu-west-1.rds.amazonaws.com?" +
-                        "user=root&password=" + System.getenv("diplomportalsqlpass"));
+    private static void refreshConnection() throws PersistenceException {
+        try {
+            if (conn == null || !conn.isValid(100)){
+                    conn = DriverManager.getConnection("jdbc:mysql://diplomportal.c2nouactg6m6.eu-west-1.rds.amazonaws.com?" +
+                            "user=root&password=" + System.getenv("diplomportalsqlpass"));
+            }
+        } catch (SQLException e) {
+            throw new PersistenceException(e.getMessage());
         }
     }
 
-    public static PreparedStatement getStatement(String sql) throws PersistenceException, SQLException {
+    public static PreparedStatement getStatement(String sql) throws PersistenceException {
         refreshConnection();
         try {
             return conn.prepareStatement(sql);
@@ -34,6 +38,7 @@ public class SQLHandler {
 
     public static void main(String[] args) throws PersistenceException, SQLException {
         PreparedStatement s134000 = SQLHandler.getStatement("USE useradmin");
+        SQLHandler.execute(s134000);
         boolean execute = s134000.execute();
         PreparedStatement statement = SQLHandler.getStatement("SELECT * from databasestatus");
         ResultSet resultSet = statement.executeQuery();
@@ -44,5 +49,13 @@ public class SQLHandler {
         }
 
 
+    }
+
+    public static boolean execute(PreparedStatement preparedStatement) throws PersistenceException {
+        try {
+            return preparedStatement.execute();
+        } catch (SQLException e) {
+            throw new PersistenceException(e.getMessage());
+        }
     }
 }
