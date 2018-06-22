@@ -17,12 +17,15 @@ public class SQLHandler {
 
     private static void refreshConnection() throws PersistenceException {
         try {
+            Class<?> aClass = Class.forName("com.mysql.cj.jdbc.Driver");
             if (conn == null || !conn.isValid(100)){
                     conn = DriverManager.getConnection("jdbc:mysql://diplomportal.c2nouactg6m6.eu-west-1.rds.amazonaws.com?" +
                             "user=root&password=" + System.getenv("diplomportalsqlpass"));
             }
         } catch (SQLException e) {
             throw new PersistenceException(e.getMessage());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 

@@ -115,7 +115,7 @@ public class MySQLDataBaseDAO implements DataBaseDAO {
             DELETE_USERADMIN = "DELETE FROM " + USER_TABLE + " WHERE id = ?;";
     @Override
     public void deleteUserDB(String userID) throws SQLException, PersistenceException {
-
+            selectUserAdminDB();
             //DROP DB
             PreparedStatement dropDBStatement = SQLHandler.getStatement(DROP_DB + userID);
             dropDBStatement.execute();

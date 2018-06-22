@@ -10,4 +10,10 @@ public interface UserDataBaseController {
     List<DBInfo> getAllDatabases() throws PersistenceException;
 
     DBInfo getDatabaseInfo(String userName) throws PersistenceException;
+
+    DBInfo createDB(String userName) throws PersistenceException;
+
+    DBInfo resetPass(String userName) throws PersistenceException;
+
+    void deleteDB(String userName) throws PersistenceException;
 }
