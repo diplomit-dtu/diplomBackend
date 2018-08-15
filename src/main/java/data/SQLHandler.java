@@ -17,8 +17,7 @@ public class SQLHandler {
 
     private static void refreshConnection() throws SQLException {
         if (conn == null || !conn.isValid(100)){
-                conn = DriverManager.getConnection("jdbc:mysql://diplomportal.c2nouactg6m6.eu-west-1.rds.amazonaws.com?" +
-                        "user=root&password=" + System.getenv("diplomportalsqlpass"));
+                conn = DriverManager.getConnection("jdbc:" + System.getenv("DIPLOMSQLURL"));
         }
     }
 

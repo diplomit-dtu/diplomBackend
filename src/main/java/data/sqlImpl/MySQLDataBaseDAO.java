@@ -25,10 +25,10 @@ public class MySQLDataBaseDAO implements DataBaseDAO {
     private final static String
             START_TRANS     = "START TRANSACTION;",
             CREATE_DB       = "CREATE DATABASE ",
-            CREATE_USER     = "CREATE USER ?",
+            CREATE_USER     = "CREATE USER ",
             GRANT_START     = "GRANT ALL PRIVILEGES ON ",
             GRANT_END       = ".* TO ?@'%';",
-            SET_PASS        = "SET PASSWORD FOR ?@'%' = PASSWORD(?);",
+            SET_PASS        = "SET PASSWORD FOR ?@'%' = ?;",
             USE_DB          = "USE ",
             INSERT_INTO_START = "INSERT INTO ",
             INSERT_INTO_END = " (id, revoked, pass) VALUES (?, ?,?);",
@@ -37,26 +37,41 @@ public class MySQLDataBaseDAO implements DataBaseDAO {
     @Override
     public DBInfo createNewUserDatabase(String userID) {
         String pass = new RandomString().nextString();
-        String sqlString = START_TRANS +
-                CREATE_DB + userID + ";" +
-                CREATE_USER + ";" +
-                GRANT_START + userID + GRANT_END +
-                SET_PASS +
-                USE_DB + ADMIN_DBNAME + ";" +
-                INSERT_INTO_START + USER_TABLE + INSERT_INTO_END +
-                COMMIT;
+        String sqlCreateDB =
+                CREATE_DB + userID + ";";
+        String sqlCreateUser =
+                CREATE_USER + "'" + userID + "'"  + ";"; //+
+        String sqlgrant =
+                GRANT_START + userID + GRANT_END;
+        String sqlPass = SET_PASS;
+        String sqlUseAdmin = USE_DB + ADMIN_DBNAME + ";";
+        String sqlUpdateUserDB =  INSERT_INTO_START + USER_TABLE + INSERT_INTO_END;
         try {
-            PreparedStatement statement =
-                    SQLHandler.getStatement(sqlString);
-            statement.setString(1,userID); //create user
-            statement.setString(2,userID); //grant table
-            statement.setString(3,userID); //grant user
-            statement.setString(4,pass); //grant pass
-            statement.setString(5,userID); //useradmin id
-            statement.setInt(6,0);//useradmin revoked
-            statement.setString(7,pass);
-            System.out.println(statement);
-            boolean execute = statement.execute();
+            PreparedStatement sqlStatement =
+                    SQLHandler.getStatement(sqlCreateDB);
+            PreparedStatement statementCreateUser =
+                    SQLHandler.getStatement(sqlCreateUser);
+            PreparedStatement statementGrant =
+                    SQLHandler.getStatement(sqlgrant);
+            statementGrant.setString(1,userID); //grant table
+            PreparedStatement statementPass =
+                    SQLHandler.getStatement(sqlPass);
+            statementPass.setString(1,userID); //grant user
+            statementPass.setString(2,pass); //grant pass
+            PreparedStatement statementUseAdmin =
+                    SQLHandler.getStatement(sqlUseAdmin);
+
+            PreparedStatement statementUpdateUsers = SQLHandler.getStatement(sqlUpdateUserDB);
+            statementUpdateUsers.setString(1,userID); //useradmin id
+            statementUpdateUsers.setInt(2,0);//useradmin revoked
+            statementUpdateUsers.setString(3,pass);
+            System.out.println(sqlStatement);
+            boolean execute = sqlStatement.execute();
+            boolean execute2 = statementCreateUser.execute();
+            boolean execute3 = statementGrant.execute();
+            boolean execute4 = statementPass.execute();
+            boolean execute5 = statementUseAdmin.execute();
+            boolean execute6 = statementUpdateUsers.execute();
             System.out.println(execute);
             DBInfo dbinfo = DBInfo.builder().id(userID).revoked(false).pass(pass).build();
             return dbinfo;
@@ -287,7 +302,7 @@ public class MySQLDataBaseDAO implements DataBaseDAO {
         for (DBInfo info: infos){
             System.out.println(info);
         }
-        String testUser = "s134000";
+        String testUser = "briana";
         mySQLDao.createNewUserDatabase(testUser);
         mySQLDao.resetPassword(testUser);
         DBInfo s134000 = mySQLDao.getDbInfo(testUser);
