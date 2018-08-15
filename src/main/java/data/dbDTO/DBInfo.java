@@ -13,4 +13,5 @@ public class DBInfo {
     private String id;
     private Boolean revoked;
     private String pass;
+    private transient Double size;
 }

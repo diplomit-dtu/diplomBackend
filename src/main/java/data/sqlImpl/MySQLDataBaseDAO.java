@@ -23,109 +23,75 @@ public class MySQLDataBaseDAO implements DataBaseDAO {
 
     //createNewUserDatabase
     private final static String
-            START_TRANS     = "START TRANSACTION;",
             CREATE_DB       = "CREATE DATABASE ",
-            CREATE_USER     = "CREATE USER ",
+            CREATE_USER     = "CREATE USER ? ;",
             GRANT_START     = "GRANT ALL PRIVILEGES ON ",
             GRANT_END       = ".* TO ?@'%';",
-            SET_PASS        = "SET PASSWORD FOR ?@'%' = ?;",
-            USE_DB          = "USE ",
+            SET_PASS        = "SET PASSWORD FOR ?@'%' = PASSWORD(?);",
             INSERT_INTO_START = "INSERT INTO ",
-            INSERT_INTO_END = " (id, revoked, pass) VALUES (?, ?,?);",
-            COMMIT          = "COMMIT;";
-
+            INSERT_INTO_END = " (id, revoked, pass) VALUES (?, ?,?);";
     @Override
-    public DBInfo createNewUserDatabase(String userID) {
+    public DBInfo createNewUserDatabase(String userID) throws SQLException, PersistenceException {
         String pass = new RandomString().nextString();
-        String sqlCreateDB =
-                CREATE_DB + userID + ";";
-        String sqlCreateUser =
-                CREATE_USER + "'" + userID + "'"  + ";"; //+
-        String sqlgrant =
-                GRANT_START + userID + GRANT_END;
-        String sqlPass = SET_PASS;
-        String sqlUseAdmin = USE_DB + ADMIN_DBNAME + ";";
-        String sqlUpdateUserDB =  INSERT_INTO_START + USER_TABLE + INSERT_INTO_END;
-        try {
-            PreparedStatement sqlStatement =
-                    SQLHandler.getStatement(sqlCreateDB);
-            PreparedStatement statementCreateUser =
-                    SQLHandler.getStatement(sqlCreateUser);
-            PreparedStatement statementGrant =
-                    SQLHandler.getStatement(sqlgrant);
-            statementGrant.setString(1,userID); //grant table
-            PreparedStatement statementPass =
-                    SQLHandler.getStatement(sqlPass);
-            statementPass.setString(1,userID); //grant user
-            statementPass.setString(2,pass); //grant pass
-            PreparedStatement statementUseAdmin =
-                    SQLHandler.getStatement(sqlUseAdmin);
-
-            PreparedStatement statementUpdateUsers = SQLHandler.getStatement(sqlUpdateUserDB);
-            statementUpdateUsers.setString(1,userID); //useradmin id
-            statementUpdateUsers.setInt(2,0);//useradmin revoked
-            statementUpdateUsers.setString(3,pass);
-            System.out.println(sqlStatement);
-            boolean execute = sqlStatement.execute();
-            boolean execute2 = statementCreateUser.execute();
-            boolean execute3 = statementGrant.execute();
-            boolean execute4 = statementPass.execute();
-            boolean execute5 = statementUseAdmin.execute();
-            boolean execute6 = statementUpdateUsers.execute();
-            System.out.println(execute);
-            DBInfo dbinfo = DBInfo.builder().id(userID).revoked(false).pass(pass).build();
-            return dbinfo;
-        } catch (PersistenceException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+        //Create DB
+        SQLHandler.getStatement(CREATE_DB + userID).execute();
+        //Create User
+        PreparedStatement statement = SQLHandler.getStatement(CREATE_USER);
+        statement.setString(1,userID);
+        statement.execute();
+        //Grant All
+        PreparedStatement grantStatement = SQLHandler.getStatement(GRANT_START + userID + GRANT_END);
+        grantStatement.setString(1,userID);
+        grantStatement.execute();
+        //Set Password
+        PreparedStatement setPassStatement = SQLHandler.getStatement(SET_PASS);
+        setPassStatement.setString(1,userID);
+        setPassStatement.setString(2,pass);
+        setPassStatement.execute();
+        //Select admin db
+        selectUserAdminDB();
+        //Insert into UserDB
+        PreparedStatement updateUserStatement = SQLHandler.getStatement(INSERT_INTO_START + USER_TABLE + INSERT_INTO_END);
+        updateUserStatement.setString(1,userID);
+        updateUserStatement.setBoolean(2,false);
+        updateUserStatement.setString(3,pass);
+        updateUserStatement.execute();
+        //Build result
+        DBInfo dbinfo = DBInfo.builder().id(userID).revoked(false).pass(pass).build();
+        return dbinfo;
     }
-    public final String
 
+    public final String
             GETDBINFOS = "SELECT id, revoked, pass FROM databasestatus";
     @Override
-    public List<DBInfo> getDBInfos() {
+    public List<DBInfo> getDBInfos() throws SQLException, PersistenceException {
         List<DBInfo> infos = new ArrayList<>();
-        try {
-            selectUserAdminDB();
-            PreparedStatement statement =
-                    SQLHandler.getStatement(GETDBINFOS+ ";");
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()){
-                String id = resultSet.getString("id");
-                boolean revoked = resultSet.getBoolean("revoked");
-                String pass = resultSet.getString("pass");
-                DBInfo dbInfo= DBInfo.builder().id(id).revoked(revoked).pass(pass).build();
-                infos.add( dbInfo);
-            }
 
-        } catch (PersistenceException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        selectUserAdminDB();
+        PreparedStatement statement =
+                SQLHandler.getStatement(GETDBINFOS+ ";");
+        ResultSet resultSet = statement.executeQuery();
+        while (resultSet.next()){
+            String id = resultSet.getString("id");
+            boolean revoked = resultSet.getBoolean("revoked");
+            String pass = resultSet.getString("pass");
+            DBInfo dbInfo= DBInfo.builder().id(id).revoked(revoked).pass(pass).build();
+            infos.add( dbInfo);
         }
+
         return infos;
     }
 
     @Override
-    public DBInfo getDbInfo(String userID) {
-        try {
-            selectUserAdminDB();
-            PreparedStatement statement =
-                    SQLHandler.getStatement(GETDBINFOS + " Where id = ?");
-            statement.setString(1,userID);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()){
-                DBInfo dbInfo = getDbInfo(resultSet);
-                return dbInfo;
-            }
-
-        } catch (PersistenceException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public DBInfo getDbInfo(String userID) throws SQLException, PersistenceException {
+        selectUserAdminDB();
+        PreparedStatement statement =
+                SQLHandler.getStatement(GETDBINFOS + " Where id = ?");
+        statement.setString(1,userID);
+        ResultSet resultSet = statement.executeQuery();
+        if (resultSet.next()){
+            DBInfo dbInfo = getDbInfo(resultSet);
+            return dbInfo;
         }
         return null;
 
@@ -148,46 +114,41 @@ public class MySQLDataBaseDAO implements DataBaseDAO {
             DROP_USER = "DROP USER ?",
             DELETE_USERADMIN = "DELETE FROM " + USER_TABLE + " WHERE id = ?;";
     @Override
-    public void deleteUserDB(String userID) {
-        try {
-            //DROP DB
-            PreparedStatement dropDBStatement = SQLHandler.getStatement(DROP_DB + userID);
-            dropDBStatement.execute();
-            //DROP USER
-            PreparedStatement dropUserStatement = SQLHandler.getStatement(DROP_USER);
-            dropUserStatement.setString(1,userID);
-            dropUserStatement.execute();
-            //DELETE USERDATA
-            PreparedStatement deleteUserStatus = SQLHandler.getStatement(DELETE_USERADMIN);
-            deleteUserStatus.setString(1,userID);
-            deleteUserStatus.execute();
-        } catch (PersistenceException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public void deleteUserDB(String userID) throws SQLException, PersistenceException {
+        selectUserAdminDB();
+        //DROP DB
+        PreparedStatement dropDBStatement = SQLHandler.getStatement(DROP_DB + userID);
+        dropDBStatement.execute();
+        //DROP USER
+        PreparedStatement dropUserStatement = SQLHandler.getStatement(DROP_USER);
+        dropUserStatement.setString(1,userID);
+        dropUserStatement.execute();
+        //DELETE USERDATA
+        PreparedStatement deleteUserStatus = SQLHandler.getStatement(DELETE_USERADMIN);
+        deleteUserStatus.setString(1,userID);
+        deleteUserStatus.execute();
+
 
 
     }
 
     private final String UPDATEPASS = "UPDATE databasestatus SET pass = ? where id = ? ;";
     @Override
-    public DBInfo resetPassword(String userID) {
-        try {
-            selectUserAdminDB();
-            String newPass = new RandomString().nextString();
-            PreparedStatement statement = SQLHandler.getStatement(UPDATEPASS);
-            statement.setString(1,newPass);
-            statement.setString(2,userID);
-            statement.execute();
-            return getDbInfo(userID);
-        } catch (PersistenceException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public DBInfo resetPassword(String userID) throws SQLException, PersistenceException {
+        selectUserAdminDB();
+        //Update admin db
+        String newPass = new RandomString().nextString();
+        PreparedStatement statement = SQLHandler.getStatement(UPDATEPASS);
+        statement.setString(1,newPass);
+        statement.setString(2,userID);
+        statement.execute();
+        //Update user
+        PreparedStatement userPassStatement = SQLHandler.getStatement(SET_PASS);
+        userPassStatement.setString(1,userID);
+        userPassStatement.setString(2,newPass);
+        userPassStatement.execute();
+        return getDbInfo(userID);
 
-        return null;
     }
 
 
@@ -198,23 +159,18 @@ public class MySQLDataBaseDAO implements DataBaseDAO {
             " FROM information_schema.tables" +
             " GROUP BY table_schema;";
     @Override
-    public Map<String, Double> getDBSizes() {
+    public Map<String, Double> getDBSizes() throws SQLException, PersistenceException {
 
         Map<String, Double> sizeMap = new HashMap<>();
-        try {
-            PreparedStatement statement = SQLHandler.getStatement(GET_DB_USAGE);
-            ResultSet execute = statement.executeQuery();
-            while(execute.next()){
-                String dbName = execute.getString("DBName" );
-                Double size = execute.getDouble("DBSize" );
-                sizeMap.put(dbName,size);
-            }
-
-        } catch (PersistenceException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        PreparedStatement statement = SQLHandler.getStatement(GET_DB_USAGE);
+        ResultSet execute = statement.executeQuery();
+        while(execute.next()){
+            String dbName = execute.getString("DBName" );
+            Double size = execute.getDouble("DBSize" );
+            sizeMap.put(dbName,size);
         }
+
+
         return sizeMap;
     }
 
@@ -292,7 +248,8 @@ public class MySQLDataBaseDAO implements DataBaseDAO {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException, PersistenceException {
+        //TODO convert to JUNIT
         MySQLDataBaseDAO mySQLDao = new MySQLDataBaseDAO();
         Map<String, Double> dbSizes = mySQLDao.getDBSizes();
         for (Map.Entry entry: dbSizes.entrySet()) {
@@ -302,8 +259,9 @@ public class MySQLDataBaseDAO implements DataBaseDAO {
         for (DBInfo info: infos){
             System.out.println(info);
         }
-        String testUser = "briana";
+        String testUser = "s134000";
         mySQLDao.createNewUserDatabase(testUser);
+        System.out.println(mySQLDao.getDbInfo(testUser));
         mySQLDao.resetPassword(testUser);
         DBInfo s134000 = mySQLDao.getDbInfo(testUser);
         System.out.println(s134000);
@@ -317,3 +275,4 @@ public class MySQLDataBaseDAO implements DataBaseDAO {
 
     }
 }
+

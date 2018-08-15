@@ -14,6 +14,7 @@ public class ControllerRegistry {
     private static UserController userController;
     private static UserDataController userDataController;
     private static RoleController roleController;
+    private static UserDataBaseController userDatabaseController;
 
     public static CourseController getCourseController(){
         if (courseController==null) courseController=new CourseControllerImpl();
@@ -45,5 +46,10 @@ public class ControllerRegistry {
         if (roleController == null) roleController = new RoleControllerImpl();
         return roleController;
 
+    }
+
+    public static UserDataBaseController getUserDatabaseController() {
+        if(userDatabaseController ==null) userDatabaseController = new UserDataBaseControllerImpl();
+        return userDatabaseController;
     }
 }
