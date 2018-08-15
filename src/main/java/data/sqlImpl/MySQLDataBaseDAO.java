@@ -31,31 +31,35 @@ public class MySQLDataBaseDAO implements DataBaseDAO {
             INSERT_INTO_START = "INSERT INTO ",
             INSERT_INTO_END = " (id, revoked, pass) VALUES (?, ?,?);";
     @Override
-    public DBInfo createNewUserDatabase(String userID) throws SQLException, PersistenceException {
+    public DBInfo createNewUserDatabase(String userID) throws PersistenceException {
         String pass = new RandomString().nextString();
         //Create DB
-        SQLHandler.getStatement(CREATE_DB + userID).execute();
-        //Create User
-        PreparedStatement statement = SQLHandler.getStatement(CREATE_USER);
-        statement.setString(1,userID);
-        statement.execute();
-        //Grant All
-        PreparedStatement grantStatement = SQLHandler.getStatement(GRANT_START + userID + GRANT_END);
-        grantStatement.setString(1,userID);
-        grantStatement.execute();
-        //Set Password
-        PreparedStatement setPassStatement = SQLHandler.getStatement(SET_PASS);
-        setPassStatement.setString(1,userID);
-        setPassStatement.setString(2,pass);
-        setPassStatement.execute();
-        //Select admin db
-        selectUserAdminDB();
-        //Insert into UserDB
-        PreparedStatement updateUserStatement = SQLHandler.getStatement(INSERT_INTO_START + USER_TABLE + INSERT_INTO_END);
-        updateUserStatement.setString(1,userID);
-        updateUserStatement.setBoolean(2,false);
-        updateUserStatement.setString(3,pass);
-        updateUserStatement.execute();
+        try {
+            SQLHandler.getStatement(CREATE_DB + userID).execute();
+            //Create User
+            PreparedStatement statement = SQLHandler.getStatement(CREATE_USER);
+            statement.setString(1, userID);
+            statement.execute();
+            //Grant All
+            PreparedStatement grantStatement = SQLHandler.getStatement(GRANT_START + userID + GRANT_END);
+            grantStatement.setString(1, userID);
+            grantStatement.execute();
+            //Set Password
+            PreparedStatement setPassStatement = SQLHandler.getStatement(SET_PASS);
+            setPassStatement.setString(1, userID);
+            setPassStatement.setString(2, pass);
+            setPassStatement.execute();
+            //Select admin db
+            selectUserAdminDB();
+            //Insert into UserDB
+            PreparedStatement updateUserStatement = SQLHandler.getStatement(INSERT_INTO_START + USER_TABLE + INSERT_INTO_END);
+            updateUserStatement.setString(1, userID);
+            updateUserStatement.setBoolean(2, false);
+            updateUserStatement.setString(3, pass);
+            updateUserStatement.execute();
+        } catch (SQLException e){
+            throw new PersistenceException(e.getMessage());
+        }
         //Build result
         DBInfo dbinfo = DBInfo.builder().id(userID).revoked(false).pass(pass).build();
         return dbinfo;

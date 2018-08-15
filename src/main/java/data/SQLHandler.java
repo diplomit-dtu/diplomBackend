@@ -21,9 +21,10 @@ public class SQLHandler {
         }
     }
 
-    public static PreparedStatement getStatement(String sql) throws PersistenceException, SQLException {
-        refreshConnection();
+    public static PreparedStatement getStatement(String sql) throws PersistenceException {
+
         try {
+            refreshConnection();
             return conn.prepareStatement(sql);
         } catch (SQLException e) {
             throw new PersistenceException(e.getMessage());
