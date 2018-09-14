@@ -3,14 +3,15 @@ package rest;
 import auth.AccessDeniedException;
 import auth.Permission;
 import auth.SecureEndpoint;
-import auth.UserUtil;
+import business.interfaces.ValidException;
+import data.interfaces.ElementNotFoundException;
+import util.UserUtil;
 import business.ControllerRegistry;
 import business.impl.AgendaControllerImpl;
 import business.impl.UserControllerImpl;
 import business.interfaces.AgendaController;
 import business.interfaces.RoleController;
 import business.interfaces.UserController;
-import config.Config;
 import data.dbDTO.AgendaInfo;
 import data.dbDTO.Role;
 import data.dbDTO.User;
@@ -22,7 +23,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * Created by Christian on 07-06-2017.

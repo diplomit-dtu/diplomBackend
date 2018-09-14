@@ -2,12 +2,14 @@ package business.impl;
 
 import auth.Permission;
 import auth.SecureEndpoint;
+import business.interfaces.DBValidationException;
 import business.interfaces.RoleController;
+import config.Config;
 import data.dbDTO.Role;
 import data.interfaces.PersistenceException;
 import data.interfaces.RoleDAO;
 import data.mongoImpl.MongoRoleDAO;
-import rest.ValidException;
+import business.interfaces.ValidException;
 
 import java.util.List;
 
@@ -29,7 +31,7 @@ public class RoleControllerImpl implements RoleController {
     @Override
     public Role getPortalAdmin() {
         Role role = new Role();
-        role.setRoleName("PortalAdmin");
+        role.setRoleName(Config.PORTAL_ADMIN);
         role.getPermissions().add(Permission.PORTAL_ADMIN);
         return role;
     }

@@ -1,9 +1,6 @@
 package data.interfaces;
 
 import data.dbDTO.User;
-import rest.ElementNotFoundException;
-
-import javax.ws.rs.NotFoundException;
 
 /**
  * Created by Christian on 11-05-2017.

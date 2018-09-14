@@ -1,9 +1,10 @@
 package rest;
 
 import auth.Permission;
-import business.impl.DBValidationException;
+import business.interfaces.DBValidationException;
 import business.impl.RoleControllerImpl;
 import business.interfaces.RoleController;
+import config.Config;
 import data.dbDTO.Role;
 import data.interfaces.PersistenceException;
 
@@ -25,7 +26,7 @@ public class RoleService {
     public Role getTemplate(){
         Role role = new Role();
         role.getPermissions().add(Permission.PORTAL_ADMIN);
-        role.setRoleName("PortalAdmin");
+        role.setRoleName(Config.PORTAL_ADMIN);
         return role;
     }
 

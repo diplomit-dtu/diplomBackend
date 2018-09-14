@@ -5,8 +5,7 @@ import data.dbDTO.*;
 import data.interfaces.PersistenceException;
 import data.viewDTO.CourseAddUserInfo;
 import data.viewDTO.CourseNameAndShort;
-import rest.ElementNotFoundException;
-import rest.ValidException;
+import data.interfaces.ElementNotFoundException;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import java.util.Collection;

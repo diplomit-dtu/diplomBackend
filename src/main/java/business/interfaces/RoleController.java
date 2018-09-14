@@ -1,9 +1,7 @@
 package business.interfaces;
 
-import business.impl.DBValidationException;
 import data.dbDTO.Role;
 import data.interfaces.PersistenceException;
-import rest.ValidException;
 
 import java.util.List;
 

@@ -3,7 +3,6 @@ package business.interfaces;
 import data.dbDTO.Link;
 import data.dbDTO.LinkCollection;
 import data.interfaces.PersistenceException;
-import rest.ValidException;
 
 import java.util.List;
 

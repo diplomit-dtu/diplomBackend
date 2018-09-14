@@ -1,7 +1,7 @@
 package data.interfaces;
 
 import data.dbDTO.BaseDTO;
-import rest.ValidException;
+import business.interfaces.ValidException;
 
 import java.util.Collection;
 import java.util.List;

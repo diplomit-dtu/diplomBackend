@@ -1,13 +1,10 @@
 package data.mongoImpl;
 
-import data.MorphiaHandler;
 import data.dbDTO.User;
 import data.interfaces.PersistenceException;
 import data.interfaces.UserDAO;
-import org.mongodb.morphia.Datastore;
-import rest.ElementNotFoundException;
+import data.interfaces.ElementNotFoundException;
 
-import javax.ws.rs.NotFoundException;
 import java.util.List;
 
 /**

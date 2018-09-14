@@ -1,14 +1,12 @@
 package business.impl;
 
 import business.interfaces.AgendaController;
-import business.ControllerRegistry;
 import data.dbDTO.*;
 import data.interfaces.AgendaDAO;
-import business.interfaces.CourseController;
 import data.interfaces.PersistenceException;
 import data.mongoImpl.MongoAgendaDAO;
-import rest.ElementNotFoundException;
-import rest.ValidException;
+import data.interfaces.ElementNotFoundException;
+import business.interfaces.ValidException;
 
 /** AgendaController - handles StudentAgendas
  * Created by Christian on 25-05-2017.

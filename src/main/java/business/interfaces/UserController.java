@@ -3,8 +3,7 @@ package business.interfaces;
 import data.dbDTO.Role;
 import data.dbDTO.User;
 import data.interfaces.PersistenceException;
-import rest.ElementNotFoundException;
-import rest.ValidException;
+import data.interfaces.ElementNotFoundException;
 
 import java.util.Collection;
 import java.util.List;

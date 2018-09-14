@@ -5,14 +5,16 @@ import business.impl.AgendaControllerImpl;
 import business.impl.CourseControllerImpl;
 import business.interfaces.AgendaController;
 import business.ControllerRegistry;
+import business.interfaces.ValidException;
 import data.dbDTO.*;
+import data.interfaces.ElementNotFoundException;
 import data.interfaces.PersistenceException;
+import util.UserUtil;
 
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.xml.bind.Element;
 import java.util.ArrayList;
 
 /**

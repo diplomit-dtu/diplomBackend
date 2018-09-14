@@ -2,15 +2,15 @@ package rest;
 
 import auth.AccessDeniedException;
 import auth.AuthorizationFilter;
-import auth.Permission;
-import auth.SecureEndpoint;
 import business.ControllerRegistry;
 import business.impl.GoogleSheetParser;
 import business.interfaces.CourseController;
+import business.interfaces.ValidException;
 import data.dbDTO.Course;
 import data.dbDTO.CourseInfoLine;
 import data.dbDTO.EmbeddedLink;
 import data.dbDTO.User;
+import data.interfaces.ElementNotFoundException;
 import data.interfaces.PersistenceException;
 import data.viewDTO.CSVUserString;
 import data.viewDTO.CourseAddUserInfo;

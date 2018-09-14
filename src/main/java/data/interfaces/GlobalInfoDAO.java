@@ -1,7 +1,7 @@
 package data.interfaces;
 
 import data.dbDTO.GlobalInfo;
-import rest.ValidException;
+import business.interfaces.ValidException;
 
 /**
  * Created by Christian on 18-05-2017.

@@ -15,4 +15,6 @@ public class Config {
 
     //Package for Morphia DTO's
     public static final String DATA_DB_DTO = "data.dbDTO";
+    //global vars
+    public static final String PORTAL_ADMIN = "PortalAdmin";
 }

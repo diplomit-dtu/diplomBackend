@@ -28,13 +28,12 @@ import static config.Config.DEBUG;
 @Priority(Priorities.AUTHENTICATION)
 @Provider
 public class AuthorizationFilter implements ContainerRequestFilter {
-    protected static final String DELIMITER = " ";
+    private static final String DELIMITER = " ";
     public static final String USER = "user";
     @Context
     ResourceInfo resourceInfo;
     @Context
     HttpHeaders headers;
-    private UserController userController = new UserControllerImpl();
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {

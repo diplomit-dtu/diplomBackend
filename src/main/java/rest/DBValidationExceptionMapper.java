@@ -1,6 +1,6 @@
 package rest;
 
-import business.impl.DBValidationException;
+import business.interfaces.DBValidationException;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;

@@ -9,7 +9,7 @@ import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
 import org.mongodb.morphia.query.UpdateResults;
-import rest.ValidException;
+import business.interfaces.ValidException;
 
 import java.util.*;
 

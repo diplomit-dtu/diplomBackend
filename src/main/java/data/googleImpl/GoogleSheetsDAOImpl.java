@@ -39,7 +39,7 @@ public class GoogleSheetsDAOImpl implements GoogleSheetsDAO {
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
         } catch (GoogleJsonResponseException e){
-            throw new PersistenceException("403 - Google sheet ikke delt!");
+            throw new PersistenceException("403 - Google sheet ikke delt!: " + "https://docs.google.com/spreadsheets/d/" + sheetId);
         } catch (IOException e) {
             e.printStackTrace();
         }

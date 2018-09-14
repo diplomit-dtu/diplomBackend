@@ -12,7 +12,7 @@ import data.mongoImpl.MongoCourseActivityDAO;
 import data.mongoImpl.MongoCourseActivityElementDAO;
 import data.mongoImpl.MongoCourseActivitySubElementDAO;
 import data.mongoImpl.MongoCoursePlanDAO;
-import rest.ValidException;
+import business.interfaces.ValidException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,34 +51,122 @@ public class CoursePlanControllerImpl implements CoursePlanController {
 
     }
 
-    private CoursePlan deepParse(CoursePlan googleFetchedCoursePlan) throws PersistenceException {
+    private CoursePlan deepParse(CoursePlan googleFetchedCoursePlan) {
         System.out.println("---------------------\r\n DeepParse\r\n ---------------");
         System.out.println("activities Fetched: " + googleFetchedCoursePlan.getCourseActivityList().size());
         List<CourseActivity> courseActivityList = googleFetchedCoursePlan.getCourseActivityList();
+        //New courseActivityList for fetched CourseActivities
         List<CourseActivity> deepParsedCourseActivityList = new ArrayList<>();
-        for (CourseActivity courseActivity: courseActivityList) {
-            List<CourseActivityElement> activityElementList = courseActivity.getActivityElementList();
-            List<CourseActivityElement> deepParsedCourseActivityElementList = new ArrayList<>();
-            for (CourseActivityElement templateCourseActivityElement: activityElementList){
-                String title =templateCourseActivityElement.getTitle();
-                if (templateCourseActivityElement.getGoogleSheetId()!=null) {
-                    Spreadsheet activityElementSheet = googleSheetsDAO.getSheet(templateCourseActivityElement.getGoogleSheetId());
-                    CourseActivityElement fetchedGoogleCourseActivityElement = GoogleActivityElementParser.parseSheet(activityElementSheet);
-                    fetchedGoogleCourseActivityElement.setGoogleSheetId(templateCourseActivityElement.getGoogleSheetId());
-                    templateCourseActivityElement = fetchedGoogleCourseActivityElement;
-                    System.out.println("-------------------------\r\n" + templateCourseActivityElement);
-                    System.out.println(templateCourseActivityElement);
-                    templateCourseActivityElement.setTitle(title);
 
+        //Allocate space in list for right number of elements
+        for (int i = 0; i < courseActivityList.size(); i++)
+            deepParsedCourseActivityList.add(null);
+
+        List<Thread> threadList = new ArrayList<>();
+        int activityIndex = 0;
+        //Iterate over Activities in original plan
+        for (CourseActivity courseActivity: courseActivityList) {
+            //Get ActivityElements from original activities
+            List<CourseActivityElement> activityElementList = courseActivity.getActivityElementList();
+            //New CourseActivityElementList for fetched ActivityElements
+            List<CourseActivityElement> deepParsedCourseActivityElementList = new ArrayList<>();
+
+            class ActivityThread extends Thread {
+                private final int activityIndex;
+                private final CourseActivity courseActivity;
+
+                @Override
+                public void run() {
+                    System.out.println("courseActivity started: " + courseActivity.getTitle());
+
+                    //Allocate space in list for right number of elements
+                    for (int i = 0; i < activityElementList.size(); i++)
+                        deepParsedCourseActivityElementList.add(null);
+
+                    List<Thread> threadList = new ArrayList<>();
+                    int elementIndex = 0;
+                    //Iterate over ActivityElements in original plan
+                    for (CourseActivityElement templateCourseActivityElement : activityElementList) {
+                        class ActivityElementThread extends Thread {
+                            private CourseActivityElement courseActivityElement;
+                            private CourseActivityElement fetchedCourseActivityElement;
+                            private final int index;
+
+                            @Override
+                            public void run() {
+                                Spreadsheet activityElementSheet = null;
+                                //try to fetch SubSheet
+                                try {
+                                    activityElementSheet = googleSheetsDAO.getSheet(courseActivityElement.getGoogleSheetId());
+                                    fetchedCourseActivityElement = GoogleActivityElementParser.parseSheet(activityElementSheet);
+                                    fetchedCourseActivityElement.setGoogleSheetId(courseActivityElement.getGoogleSheetId());
+                                    //Write the title back...
+                                    fetchedCourseActivityElement.setTitle(courseActivityElement.getTitle());
+                                    deepParsedCourseActivityElementList.set(index, fetchedCourseActivityElement);
+                                    System.out.println("-------------------------\r\n" + templateCourseActivityElement);
+                                    System.out.println(templateCourseActivityElement);
+                                } catch (PersistenceException e) {
+                                    //SubSheetUnavailable!
+                                    CourseActivityElement unavailableElement = templateCourseActivityElement;
+                                    unavailableElement.setActivityElementType(CourseActivityElement.ActivityElementType.Unavailable);
+                                    deepParsedCourseActivityElementList.set(index, unavailableElement);
+                                }
+                            }
+
+                            private ActivityElementThread(int index, CourseActivityElement courseActivityElement) {
+                                this.index = index;
+                                this.courseActivityElement = courseActivityElement;
+                            }
+                        }
+
+                        //Check if ActivityElement has a sheetId - meaning it has a subsheet
+                        if (templateCourseActivityElement.getGoogleSheetId() != null) {
+                            //Create new thread
+                            threadList.add(new ActivityElementThread(elementIndex, templateCourseActivityElement));
+                        } else {
+                            //Add element to list at right index
+                            deepParsedCourseActivityElementList.set(elementIndex, templateCourseActivityElement);
+                        }
+                        elementIndex++;
+                    }
+
+                    startAndJoinThreads(threadList);
+
+                    courseActivity.setActivityElementList(deepParsedCourseActivityElementList);
+                    deepParsedCourseActivityList.set(activityIndex,courseActivity);
+                    System.out.println("courseActivity ended: " + courseActivity.getTitle());
                 }
-                deepParsedCourseActivityElementList.add(templateCourseActivityElement);
+
+                private ActivityThread(int index, CourseActivity courseActivity) {
+                    this.activityIndex = index;
+                    this.courseActivity = courseActivity;
+                }
             }
-            courseActivity.setActivityElementList(deepParsedCourseActivityElementList);
-            deepParsedCourseActivityList.add(courseActivity);
+            //Create new thread
+            threadList.add(new ActivityThread(activityIndex, courseActivity));
+            activityIndex++;
         }
+
+        startAndJoinThreads(threadList);
+
         System.out.println("DeepParsedActivities: " + deepParsedCourseActivityList.size());
         googleFetchedCoursePlan.setCourseActivityList(deepParsedCourseActivityList);
         return googleFetchedCoursePlan;
+    }
+
+    private void startAndJoinThreads(List<Thread> threadList){
+        //Start all threads
+        for (Thread t : threadList)
+            t.start();
+
+        //Wait for all threads to finish
+        for (Thread t : threadList) {
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void saveActivityList(List<CourseActivity> courseActivityList, List<CourseActivity> oldActivityList) throws PersistenceException, ValidException {

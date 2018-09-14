@@ -4,7 +4,7 @@ import business.interfaces.CourseController;
 import business.ControllerRegistry;
 import data.dbDTO.*;
 import data.interfaces.PersistenceException;
-import rest.ValidException;
+import business.interfaces.ValidException;
 
 import java.util.List;
 
