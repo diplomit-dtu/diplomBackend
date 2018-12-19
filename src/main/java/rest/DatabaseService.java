@@ -3,6 +3,7 @@ package rest;
 import auth.NotLoggedInException;
 import auth.Permission;
 import auth.SecureEndpoint;
+import config.DeployConfig;
 import data.dbDTO.DBInfo;
 import data.dbDTO.User;
 import data.interfaces.PersistenceException;
@@ -40,7 +41,12 @@ public class DatabaseService {
     @SecureEndpoint({Permission.PORTAL_ADMIN,Permission.ADMIN_ALLUSERS})
     public DBInfo getDatabase(@PathParam("id") String id) throws PersistenceException, NotLoggedInException {
         resolveUser();
-        return getUserDatabaseController().getDatabaseInfo(id);
+        DBInfo databaseInfo = getUserDatabaseController().getDatabaseInfo(id);
+        String[] sqlurl = DeployConfig.SQLURL.split("@");
+        if (sqlurl.length >= 1) {
+            databaseInfo.setHostUrl(sqlurl[sqlurl.length - 1]);
+        }
+        return databaseInfo;
     }
 
     @POST
@@ -74,7 +80,12 @@ public class DatabaseService {
     @Path("self")
     public DBInfo getOwnInfo() throws PersistenceException, NotLoggedInException {
         resolveUser();
-        return getUserDatabaseController().getDatabaseInfo(user.getUserName());
+        DBInfo databaseInfo = getUserDatabaseController().getDatabaseInfo(user.getUserName());
+        String[] sqlurl = DeployConfig.SQLURL.split("@");
+        if (databaseInfo!=null && sqlurl.length >= 1) {
+            databaseInfo.setHostUrl(sqlurl[sqlurl.length - 1]);
+        }
+        return databaseInfo;
     }
 
     @POST

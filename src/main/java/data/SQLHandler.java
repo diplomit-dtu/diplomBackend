@@ -8,10 +8,12 @@ public class SQLHandler {
     private static Connection conn;
 
     static {
+
         try {
+            Class.forName("com.mysql.jdbc.Driver");
             refreshConnection();
-        } catch (SQLException e) {
-            System.err.println("SQL-Handler: Not able to establish connection!");
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("SQL-Handler: Not able to establish connection!:" + e.getMessage());
         }
     }
 

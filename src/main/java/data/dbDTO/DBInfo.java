@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DBInfo {
+    private transient String hostUrl;
     private String id;
     private Boolean revoked;
     private String pass;
