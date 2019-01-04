@@ -24,10 +24,10 @@ public class MySQLDataBaseDAO implements DataBaseDAO {
     //createNewUserDatabase
     private final static String
             CREATE_DB       = "CREATE DATABASE ",
-            CREATE_USER     = "CREATE USER ? ;",
+            CREATE_USER     = "CREATE USER ? IDENTIFIED BY ?;",
             GRANT_START     = "GRANT ALL PRIVILEGES ON ",
             GRANT_END       = ".* TO ?@'%';",
-            SET_PASS        = "SET PASSWORD FOR ?@'%' = PASSWORD(?);",
+            SET_PASS        = "SET PASSWORD FOR ?@'%' = ?;",
             INSERT_INTO_START = "INSERT INTO ",
             INSERT_INTO_END = " (id, revoked, pass) VALUES (?, ?,?);";
     @Override
@@ -39,6 +39,7 @@ public class MySQLDataBaseDAO implements DataBaseDAO {
             //Create User
             PreparedStatement statement = SQLHandler.getStatement(CREATE_USER);
             statement.setString(1, userID);
+            statement.setString(2,pass);
             statement.execute();
             //Grant All
             PreparedStatement grantStatement = SQLHandler.getStatement(GRANT_START + userID + GRANT_END);
