@@ -26,6 +26,7 @@ public class UserControllerImpl implements UserController {
 
     @Override
     public User saveUser(User user) throws PersistenceException {
+        user.setUserName(user.getUserName().trim());
         return userDAO.save(user);
     }
 

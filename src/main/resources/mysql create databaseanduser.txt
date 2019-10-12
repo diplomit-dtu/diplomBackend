@@ -1,0 +1,40 @@
+START TRANSACTION;
+CREATE DATABASE test;
+CREATE USER test;
+GRANT ALL PRIVILEGES ON test.* TO 'test'@'%';
+SET PASSWORD FOR 'test'@'%' = PASSWORD('testpass');
+USE useradmin;
+INSERT INTO databasestatus (id, revoked, pass) VALUES ('test', 0,'testpass');
+COMMIT;
+
+---- 
+SELECT table_schema "DBName",
+        ROUND(SUM(data_length + index_length) / 1024 / 1024, 1) "DBSize" 
+FROM information_schema.tables 
+GROUP BY table_schema; 
+
+SELECT table_schema "DBName",
+        ROUND(SUM(data_length + index_length) / 1024 / 1024, 1) "DBSize" 
+FROM information_schema.tables
+where table_schema = "s134000"
+
+REVOKE ALL PRIVILEGES ON s134000.* FROM 's134000'@'%'
+GRANT SELECT ON s134000.* TO 's134000'@'%'
+
+SELECT sql_grants FROM common_schema.sql_show_grants WHERE user='s134000';
+--- Broken
+BEGIN
+ CREATE TRIGGER checkSize
+ 	BEFORE INSERT
+ 		ON NEW.TABLE_NAME
+ 		BEGIN
+	 		(SELECT table_schema "DBName",
+	        	ROUND(SUM(data_length + index_length) / 1024 / 1024, 1) "DBSize"
+				FROM information_schema.tables
+				where table_schema = "s134000") as size;
+				IF (size > 50) THEN
+					REVOKE ALL PRIVILEGES ON (NEW.TABLE_SCHEMA).* FROM (NEW.TABLE_SCHEMA)@'%';
+				END IF;
+			END
+
+END

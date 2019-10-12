@@ -4,6 +4,7 @@ package config;
  * Created by Christian on 28-04-2017.
  */
 public class DeployConfig {
+    public static final String SQLURL = System.getenv("DIPLOMSQLURL") ;
     //----Constants----
     private static final String DEFAULT_CN_REDIRECT_URL = "http://localhost:8080" + Config.BASE_API_PATH + "/" + Config.CN_SERVICE_PATH;
     public static final String PORTAL_NAME = "DiplomPortal";
