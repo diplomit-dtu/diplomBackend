@@ -1,9 +1,9 @@
 package data.dbDTO;
 
+import dev.morphia.annotations.Entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.mongodb.morphia.annotations.Entity;
 
 import java.util.ArrayList;
 import java.util.List;

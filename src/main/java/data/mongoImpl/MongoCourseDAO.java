@@ -4,7 +4,7 @@ import data.MorphiaHandler;
 import data.dbDTO.Course;
 import data.interfaces.CourseDAO;
 import data.interfaces.PersistenceException;
-import org.mongodb.morphia.Datastore;
+import dev.morphia.Datastore;
 
 import java.util.List;
 

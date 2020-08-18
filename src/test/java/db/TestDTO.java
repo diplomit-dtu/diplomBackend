@@ -1,9 +1,9 @@
 package db;
 
 import data.dbDTO.BaseDTO;
+import dev.morphia.annotations.Id;
 import lombok.Data;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Id;
 
 /**
  * Created by Christian on 15-05-2017.

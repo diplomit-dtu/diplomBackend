@@ -1,8 +1,9 @@
 package data.dbDTO;
 
+import dev.morphia.annotations.Embedded;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.mongodb.morphia.annotations.Embedded;
+
 
 /**
  * Created by Christian on 07-06-2017.

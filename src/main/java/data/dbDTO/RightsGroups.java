@@ -1,7 +1,7 @@
 package data.dbDTO;
 
+import dev.morphia.annotations.Embedded;
 import lombok.Data;
-import org.mongodb.morphia.annotations.Embedded;
 
 import java.util.HashMap;
 import java.util.HashSet;

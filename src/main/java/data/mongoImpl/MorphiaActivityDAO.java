@@ -3,8 +3,8 @@ package data.mongoImpl;
 import data.MorphiaHandler;
 import data.dbDTO.CourseActivity;
 import data.interfaces.PersistenceException;
-import org.mongodb.morphia.dao.BasicDAO;
-import org.mongodb.morphia.dao.DAO;
+import dev.morphia.dao.BasicDAO;
+import dev.morphia.dao.DAO;
 
 /**
  * Created by Christian on 22-05-2017.

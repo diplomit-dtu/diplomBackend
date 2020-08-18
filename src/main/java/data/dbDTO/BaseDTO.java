@@ -2,10 +2,10 @@ package data.dbDTO;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import dev.morphia.annotations.Id;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Id;
 
 import java.util.HashSet;
 import java.util.Set;

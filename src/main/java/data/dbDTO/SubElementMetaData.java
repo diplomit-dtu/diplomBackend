@@ -2,9 +2,9 @@ package data.dbDTO;
 
 
 
+import dev.morphia.annotations.Embedded;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.mongodb.morphia.annotations.Embedded;
 
 import java.util.ArrayList;
 import java.util.List;

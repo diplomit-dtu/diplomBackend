@@ -1,13 +1,16 @@
 package data.dbDTO;
 
+import dev.morphia.annotations.Embedded;
+import dev.morphia.annotations.Entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.mongodb.morphia.annotations.Embedded;
-import org.mongodb.morphia.annotations.Entity;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /** CourseDTO
  * Created by Christian on 11-05-2017.
