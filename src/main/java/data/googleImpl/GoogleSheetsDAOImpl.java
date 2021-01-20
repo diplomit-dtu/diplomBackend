@@ -34,11 +34,16 @@ public class GoogleSheetsDAOImpl implements GoogleSheetsDAO {
             Sheets.Spreadsheets.Get request = sheetsService.spreadsheets().get(sheetId);
             request.setKey(apiKey);
             request.setIncludeGridData(true);
+            System.out.println(System.getenv("GOOGLE_API_KEY"));
+            System.out.println(System.getenv().toString());
+            System.out.println(DeployConfig.GOOGLE_API_KEY);
             Spreadsheet spreadSheet = request.execute();
             return spreadSheet;
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
         } catch (GoogleJsonResponseException e){
+
+            e.printStackTrace();
             throw new PersistenceException("403 - Google sheet ikke delt!: " + "https://docs.google.com/spreadsheets/d/" + sheetId);
         } catch (IOException e) {
             e.printStackTrace();

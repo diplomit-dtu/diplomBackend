@@ -10,9 +10,9 @@ public class SQLHandler {
     static {
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+          //  Class.forName("com.mysql.cj.jdbc.Driver");
             refreshConnection();
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             System.err.println("SQL-Handler: Not able to establish connection!:" + e.getMessage());
         }
     }
