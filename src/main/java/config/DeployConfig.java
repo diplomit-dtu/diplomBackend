@@ -22,6 +22,7 @@ public class DeployConfig {
     public static final String GOOGLE_API_KEY = System.getenv("GOOGLE_API_KEY");
 
     public static final String PORTAL_SUPER_USER = (System.getenv("PORTAL_SUPER_USER"));
+    public static final int JWT_EXP = System.getenv("JWT_EXP") == null ? 28000 : Integer.parseInt(System.getenv("JWT_EXP"));
 
 
 

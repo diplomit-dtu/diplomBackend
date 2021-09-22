@@ -11,8 +11,10 @@ import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.util.Calendar;
 
+import static config.DeployConfig.JWT_EXP;
+
 public class JWTHandler {
-	private static final int TOKEN_EXPIRY = 28800;
+	private static final int TOKEN_EXPIRY = JWT_EXP;
 
 	public static class AuthException extends Exception {
 		public AuthException(String string) {
@@ -29,7 +31,7 @@ public class JWTHandler {
 
 	private static Key getKey(){
 		if (key==null) {
-			if (DeployConfig.JWT_SECRET_KEY != null && DeployConfig.JWT_SECRET_KEY != "") {
+			if (DeployConfig.JWT_SECRET_KEY != null && !DeployConfig.JWT_SECRET_KEY.equals("")) {
 				String string = DeployConfig.JWT_SECRET_KEY;
 				key = new SecretKeySpec(string.getBytes(), 0, string.length(), "HS512");
 			} else {
