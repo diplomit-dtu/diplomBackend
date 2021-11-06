@@ -1,4 +1,4 @@
-FROM node AS REACT
+FROM node:16-alpine AS REACT
 WORKDIR /tmp
 COPY /web/package.json  ./
 COPY /web/src ./src
