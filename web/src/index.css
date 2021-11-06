@@ -1,0 +1,29 @@
+body {
+  margin: 0;
+  padding-top: 70px;
+  font-family: sans-serif;
+}
+@media(min-width: 768px) {
+  .custom-modal {
+    width: 90% !important;
+  }
+}
+
+.modal-body {
+  max-height: calc(100vh - 60px);
+}
+
+.scroll-div {
+  overflow-y: scroll;
+  max-height: calc(100vh - 150px);
+}
+
+.td-wrap {
+  white-space: pre-wrap !important;
+}
+.td-wide{
+  min-width: 300px;
+}
+.td-med{
+  min-width: 100px;
+}
