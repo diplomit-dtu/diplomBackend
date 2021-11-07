@@ -16,5 +16,5 @@ RUN mvn package
 FROM openjdk:14-alpine
 WORKDIR /tmp
 COPY --from=MAVEN /tmp/target ./
-
-CMD ["java", "-jar","/tmp/Heroku01.jar"]
+EXPOSE 8080
+CMD ["java","-jar", "target/dependency/webapp-runner.jar", "--port","8080", "target/*.war"]
