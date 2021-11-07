@@ -13,7 +13,7 @@ COPY /pom.xml ./
 COPY --from=REACT /tmp/build ./src/main/webapp/
 RUN mvn package
 
-FROM openjdk:14-alpine
+FROM openjdk:15-alpine
 WORKDIR /tmp
 COPY --from=MAVEN /tmp/target ./
 EXPOSE 8080
