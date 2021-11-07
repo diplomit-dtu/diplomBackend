@@ -17,4 +17,4 @@ FROM openjdk:14-alpine
 WORKDIR /tmp
 COPY --from=MAVEN /tmp/target ./
 EXPOSE 8080
-CMD ["java","-jar", "/tmp/dependency/webapp-runner.jar", "--port","8080", "/tmp/*.war"]
+CMD ["java","-jar", "/tmp/dependency/webapp-runner.jar", "--port","8080", "*.war"]
