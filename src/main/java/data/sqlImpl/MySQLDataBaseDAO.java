@@ -30,6 +30,20 @@ public class MySQLDataBaseDAO implements DataBaseDAO {
             SET_PASS        = "SET PASSWORD FOR ?@'%' = ?;",
             INSERT_INTO_START = "INSERT INTO ",
             INSERT_INTO_END = " (id, revoked, pass) VALUES (?, ?,?);";
+
+    static {
+        try {
+            PreparedStatement createDb= SQLHandler.getStatement("CREATE DATABASE IF NOT EXISTS useradmin;");
+            System.out.println("Creating useradminDB: " + createDb.execute());
+            var createTable = SQLHandler.getStatement("CREATE TABLE IF NOT EXISTS databasestatus (id VARCHAR(50),revoked TINYINT, pass VARCHAR(50));");
+            createTable.execute("creating databasestatus: "+createTable.execute());
+        } catch (PersistenceException | SQLException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+    
     @Override
     public DBInfo createNewUserDatabase(String userID) throws PersistenceException {
         String pass = new RandomString().nextString();
