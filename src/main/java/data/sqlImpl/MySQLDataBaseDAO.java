@@ -35,6 +35,8 @@ public class MySQLDataBaseDAO implements DataBaseDAO {
         try {
             PreparedStatement createDb= SQLHandler.getStatement("CREATE DATABASE IF NOT EXISTS useradmin;");
             System.out.println("Creating useradminDB: " + createDb.execute());
+            PreparedStatement useDb= SQLHandler.getStatement("USE useradmin;");
+            System.out.println("Using useradminDB: " + useDb.execute());
             var createTable = SQLHandler.getStatement("CREATE TABLE IF NOT EXISTS databasestatus (id VARCHAR(50),revoked TINYINT, pass VARCHAR(50));");
             createTable.execute("creating databasestatus: "+createTable.execute());
         } catch (PersistenceException | SQLException e) {
