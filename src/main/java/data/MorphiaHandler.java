@@ -48,8 +48,11 @@ public class MorphiaHandler {
     }
 
     private String getDbName(String mongodbUri) {
-        String dbname = mongodbUri.split(":")[1];
-        return dbname.substring(2);
+        String[] split = mongodbUri.split("/");
+        String end = split[split.length - 1];
+        String dbname = end.split("\\?")[0];
+        System.out.println("Found db name: " + dbname);
+        return dbname;
 
     }
 
